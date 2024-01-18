@@ -9,6 +9,7 @@ import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -53,6 +54,13 @@ public class DBService<T extends DBEntity> {
     @Transactional
     public void create(T entry) {
         em.persist(entry);
+    }
+
+    @Transactional
+    public void create(Collection<T> entries) {
+        for (T entry : entries) {
+            em.persist(entry);
+        }
     }
 
     @Transactional
