@@ -14,7 +14,7 @@ import org.springframework.security.config.annotation.web.configurers.LogoutConf
 @Configuration
 public class SecurityConfig implements WebMvcConfigurer {
     @Bean
-    private PasswordEncoder encoder() {
+    public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -23,8 +23,8 @@ public class SecurityConfig implements WebMvcConfigurer {
         http
                 .csrf(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize -> authorize
-                        .anyRequest().hasRole("ADMIN")
-                        .requestMatchers("/").authenticated())
+                        .requestMatchers("/").authenticated()
+                        .anyRequest().hasRole("ADMIN"))
                 .formLogin(FormLoginConfigurer::permitAll)
                 .logout(LogoutConfigurer::permitAll);
         return http.build();
