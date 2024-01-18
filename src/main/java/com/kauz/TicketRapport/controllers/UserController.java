@@ -40,7 +40,6 @@ public class UserController extends BaseController {
     public String create(@ModelAttribute UserFormData entry, BindingResult result, Model model) {
         boolean passError = !validatePassword(entry.getPassword(), entry.getConfirmPassword());
 
-        System.out.println("UserFormData = " + entry);
         if (result.hasErrors() || passError) {
             addBaseAttributes(model);
             model.addAttribute("entry", entry);
@@ -68,8 +67,22 @@ public class UserController extends BaseController {
     @GetMapping("/users/edit")
     public String edit(Model model, @RequestParam UUID id) {
         super.addBaseAttributes(model);
-        model.addAttribute("entry", unitOfWork.getUserService().find(User.class, id));
+        User user = unitOfWork.getUserService().find(User.class, id);
+        model.addAttribute("entry", user);
+        model.addAttribute("roles", unitOfWork.getRoleService().getAll(Role.class));
         return "users/edit";
+    }
+
+    @RequestMapping(value = "/users/edit", method = RequestMethod.POST)
+    public String edit(@RequestParam UUID id, @ModelAttribute User entry, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            addBaseAttributes(model);
+            model.addAttribute("entry", entry);
+            model.addAttribute("roles", unitOfWork.getRoleService().getAll(Role.class));
+            return "users/edit";
+        }
+        unitOfWork.getUserService().update(entry);
+        return "redirect:/users";
     }
 
     @GetMapping("/users/delete")
@@ -77,5 +90,13 @@ public class UserController extends BaseController {
         super.addBaseAttributes(model);
         model.addAttribute("entry", unitOfWork.getUserService().find(User.class, id));
         return "users/delete";
+    }
+
+    @RequestMapping(value = "/users/delete", method = RequestMethod.POST)
+    public String delete(@RequestParam UUID id, @ModelAttribute User entry, BindingResult result) {
+        if (!result.hasErrors()) {
+            unitOfWork.getUserService().delete(entry);
+        }
+        return "redirect:/users";
     }
 }

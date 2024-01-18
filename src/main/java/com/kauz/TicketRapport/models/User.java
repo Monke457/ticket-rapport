@@ -1,10 +1,7 @@
 package com.kauz.TicketRapport.models;
 
 import com.kauz.TicketRapport.models.helpers.DBEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,6 +19,8 @@ public class User implements DBEntity {
     private UUID id;
     private String firstname;
     private String lastname;
+
+    @Column(unique = true)
     private String email;
     private String password;
 

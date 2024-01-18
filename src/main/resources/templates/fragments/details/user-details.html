@@ -1,0 +1,21 @@
+<div th:fragment="user-details" xmlns:th="http://www.w3.org/1999/xhtml">
+    <div class="mb-3">
+        <div class="form-label">Firstname</div>
+        <div class="form-control bg-light" th:text="${entry.firstname}"></div>
+    </div>
+    <div class="mb-3">
+        <div class="form-label">Lastname</div>
+        <div class="form-control bg-light" th:text="${entry.lastname}"></div>
+    </div>
+    <div class="mb-3">
+        <div class="form-label">Email</div>
+        <div class="form-control bg-light" th:text="${entry.email}"></div>
+    </div>
+    <div class="mb-3">
+        <div class="form-label">Role</div>
+        <div class="form-control bg-light" >
+            <span th:unless="${entry.role.description == null}" th:text="${entry.role.description}"></span>
+            <span th:if="${entry.role.description == null}">None</span>
+        </div>
+    </div>
+</div>

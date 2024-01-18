@@ -9,6 +9,7 @@
     <a class="btn btn-sm btn-success" th:href="@{/users/create}">New User</a>
     <table class="table my-4">
         <tr>
+            <th>Id</th>
             <th>Firstname</th>
             <th>Lastname</th>
             <th>Email</th>
@@ -16,6 +17,7 @@
             <th></th>
         </tr>
         <tr th:each="entry: ${entries}">
+            <td th:text="${entry.id}"></td>
             <td th:text="${entry.firstname}"></td>
             <td th:text="${entry.lastname}"></td>
             <td th:text="${entry.email}"></td>
