@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments/head :: head('Create User')}"></head>
+<body>
+<header th:replace="~{fragments/header :: header}"></header>
+
+<main class="container">
+    <div class="form-wrapper">
+        <div class="d-flex justify-content-between align-items-center my-4">
+            <span></span>
+            <h3>New User</h3>
+            <a class="btn btn-sm btn-secondary" th:href="@{/users}">Back</a>
+        </div>
+        <form th:action="@{create}" th:object="${entry}" method="post">
+            <div class="mb-3">
+                <label class="form-label" th:for="*{firstname}">Firstname</label>
+                <input class="form-control" th:field="*{firstname}">
+            </div>
+            <div class="mb-3">
+                <label class="form-label" th:for="*{lastname}">Lastname</label>
+                <input class="form-control" th:field="*{lastname}">
+            </div>
+            <div class="mb-3">
+                <label class="form-label" th:for="*{email}">Email</label>
+                <input class="form-control" th:field="*{email}">
+            </div>
+            <div class="mb-3">
+                <label class="form-label" th:for="*{password}">Password</label>
+                <input class="form-control" type="password" th:field="*{password}">
+            </div>
+            <div class="mb-3">
+                <label class="form-label" th:for="*{confirmPassword}">Confirm Password</label>
+                <input class="form-control" type="password" th:field="*{confirmPassword}">
+            </div>
+            <div class="mb-3">
+                <label class="form-label" th:for="*{role}">Role</label>
+                <select class="mb-3 form-select" th:field="*{role.id}">
+                    <option th:if="*{role.id == null || role.id == ''}" value="null">Select Role</option>
+                    <option th:each="role: ${roles}" th:value="${role.id}" th:text="${role.description}"></option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</main>
+</body>
+</html>

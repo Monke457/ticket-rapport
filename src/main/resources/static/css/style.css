@@ -1,0 +1,16 @@
+.form-wrapper {
+    width: 75%;
+    margin: auto;
+}
+
+/* Tablet */
+@media only screen and (max-width: 1024px) {
+
+}
+
+/* Mobile */
+@media only screen and (max-width: 720px) {
+    .form-wrapper {
+        width: 100%;
+    }
+}
