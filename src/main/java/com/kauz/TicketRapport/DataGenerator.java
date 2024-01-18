@@ -1,8 +1,8 @@
 package com.kauz.TicketRapport;
 
-import com.kauz.TicketRapport.model.*;
-import com.kauz.TicketRapport.model.templates.ChecklistItemTemplate;
-import com.kauz.TicketRapport.model.templates.ChecklistTemplate;
+import com.kauz.TicketRapport.models.*;
+import com.kauz.TicketRapport.models.templates.ChecklistItemTemplate;
+import com.kauz.TicketRapport.models.templates.ChecklistTemplate;
 import com.kauz.TicketRapport.services.DBService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;

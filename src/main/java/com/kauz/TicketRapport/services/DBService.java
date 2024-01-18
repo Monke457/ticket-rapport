@@ -1,6 +1,6 @@
 package com.kauz.TicketRapport.services;
 
-import com.kauz.TicketRapport.model.helpers.DBEntity;
+import com.kauz.TicketRapport.models.helpers.DBEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.CriteriaBuilder;

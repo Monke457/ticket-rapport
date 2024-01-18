@@ -1,6 +1,6 @@
-package com.kauz.TicketRapport.model;
+package com.kauz.TicketRapport.models;
 
-import com.kauz.TicketRapport.model.helpers.DBEntity;
+import com.kauz.TicketRapport.models.helpers.DBEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -14,14 +14,14 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Status implements DBEntity {
+public class Client implements DBEntity {
 
     @Id
     @GeneratedValue
     private UUID id;
-    private String description;
+    private String name;
 
-    public Status(String description) {
-        this.description = description;
+    public Client(String name) {
+        this.name = name;
     }
 }

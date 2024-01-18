@@ -1,6 +1,6 @@
 package com.kauz.TicketRapport.services;
 
-import com.kauz.TicketRapport.model.User;
+import com.kauz.TicketRapport.models.User;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;

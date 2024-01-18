@@ -1,6 +1,6 @@
-package com.kauz.TicketRapport.model;
+package com.kauz.TicketRapport.models;
 
-import com.kauz.TicketRapport.model.helpers.DBEntity;
+import com.kauz.TicketRapport.models.helpers.DBEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;

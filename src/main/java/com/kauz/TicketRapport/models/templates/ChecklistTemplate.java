@@ -1,8 +1,7 @@
-package com.kauz.TicketRapport.model.templates;
+package com.kauz.TicketRapport.models.templates;
 
-import com.kauz.TicketRapport.model.helpers.DBEntity;
+import com.kauz.TicketRapport.models.helpers.DBEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

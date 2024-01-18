@@ -1,7 +1,7 @@
 package com.kauz.TicketRapport.security;
 
-import com.kauz.TicketRapport.model.User;
-import com.kauz.TicketRapport.services.UserService;
+import com.kauz.TicketRapport.models.User;
+import com.kauz.TicketRapport.services.UnitOfWork;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class AuthUser {
     @Autowired
-    private UserService service;
+    private UnitOfWork unitOfWork;
 
     public User getUser() {
-        return service.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        return unitOfWork.getUserService().findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
     }
 }

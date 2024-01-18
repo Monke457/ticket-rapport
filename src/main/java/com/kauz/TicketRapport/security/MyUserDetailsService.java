@@ -1,7 +1,7 @@
 package com.kauz.TicketRapport.security;
 
-import com.kauz.TicketRapport.model.User;
-import com.kauz.TicketRapport.services.UserService;
+import com.kauz.TicketRapport.models.User;
+import com.kauz.TicketRapport.services.UnitOfWork;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,11 +17,11 @@ import java.util.Set;
 @Service
 public class MyUserDetailsService implements UserDetailsService {
     @Autowired
-    private UserService service;
+    private UnitOfWork unitOfWork;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = service.findByEmail(username);
+        User user = unitOfWork.getUserService().findByEmail(username);
         if (user == null) {
             throw new EntityNotFoundException("Email '" + username + "' not found");
         }
