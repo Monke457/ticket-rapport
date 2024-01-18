@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+/**
+ * TODO: COMMENTS
+ */
 @Controller
 public class UserController extends BaseController {
     @Autowired
