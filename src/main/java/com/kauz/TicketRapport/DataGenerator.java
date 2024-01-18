@@ -30,8 +30,8 @@ public class DataGenerator {
             if (roleService.anyExists(Role.class)) return;
 
             // create roles
-            Role adminRole = new Role("Admin");
-            Role learnerRole = new Role("learner");
+            Role adminRole = new Role("ADMIN");
+            Role learnerRole = new Role("LEARNER");
             roleService.create(Set.of(adminRole, learnerRole));
 
             // create users
