@@ -3,7 +3,7 @@ package com.kauz.TicketRapport;
 import com.kauz.TicketRapport.models.*;
 import com.kauz.TicketRapport.models.templates.ChecklistItemTemplate;
 import com.kauz.TicketRapport.models.templates.ChecklistTemplate;
-import com.kauz.TicketRapport.services.DBService;
+import com.kauz.TicketRapport.services.UnitOfWork;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,39 +17,32 @@ import java.util.Set;
 public class DataGenerator {
 
     @Bean
-    public CommandLineRunner seedData(DBService<User> userService,
-                                      DBService<Ticket> ticketService,
-                                      DBService<Status> statusService,
-                                      DBService<Role> roleService,
-                                      DBService<Client> clientService,
-                                      DBService<ChecklistItem> clItemService,
-                                      DBService<ChecklistTemplate> clTemplateService,
-                                      DBService<ChecklistItemTemplate> clItemTemplateService,
+    public CommandLineRunner seedData(UnitOfWork unitOfWork,
                                       PasswordEncoder encoder) {
         return args -> {
-            if (roleService.anyExists(Role.class)) return;
+            if (unitOfWork.getRoleService().anyExists(Role.class)) return;
 
             // create roles
             Role adminRole = new Role("ADMIN");
             Role learnerRole = new Role("LEARNER");
-            roleService.create(Set.of(adminRole, learnerRole));
+            unitOfWork.getRoleService().create(Set.of(adminRole, learnerRole));
 
             // create users
             User adminUser = new User("Test", "Admin", "admin@ticket-kauz.ch", encoder.encode("Pass123!"), adminRole);
             User learnerUser1 = new User("Test", "Learner", "learner@ticket-kauz.ch", encoder.encode("Pass123!"), learnerRole);
             User learnerUser2 = new User("John", "Smith", "john.smith@ticket-kauz.ch", encoder.encode("Pass123!"), learnerRole);
-            userService.create(Set.of(adminUser, learnerUser1, learnerUser2));
+            unitOfWork.getUserService().create(Set.of(adminUser, learnerUser1, learnerUser2));
 
             // create statuses
             Status open = new Status("In Progress");
             Status complete = new Status("Complete");
             Status closed = new Status("Closed");
-            statusService.create(Set.of(open, complete, closed));
+            unitOfWork.getStatusService().create(Set.of(open, complete, closed));
 
             // create clients
             Client client1 = new Client("Company Inc.");
             Client client2 = new Client("Firm & Co.");
-            clientService.create(Set.of(client1, client2));
+            unitOfWork.getClientService().create(Set.of(client1, client2));
 
             // create tickets
             Ticket ticket1 = new Ticket("VPN", "Set up and test internal VPN server.",
@@ -66,7 +59,7 @@ public class DataGenerator {
             Ticket ticket5 = new Ticket("App Translation", "Add German translation to on-boarding app.",
                     "", "", null, learnerUser2, client1, open);
             Set<Ticket> tickets = Set.of(ticket1, ticket2, ticket3, ticket4, ticket5);
-            ticketService.create(tickets);
+            unitOfWork.getTicketService().create(tickets);
 
             // create checklist items
             Set<ChecklistItem> checklistItems = new HashSet<>();
@@ -83,7 +76,7 @@ public class DataGenerator {
                     checklistItems.add(new ChecklistItem("Updates have been carried out", t.getStatus() != open, t));
                 }
             }
-            clItemService.create(checklistItems);
+            unitOfWork.getChecklistItemService().create(checklistItems);
 
             // create checklist item templates
             ChecklistItemTemplate itemT1 = new ChecklistItemTemplate("The workplace is clean and tidy", new HashSet<>());
@@ -91,12 +84,12 @@ public class DataGenerator {
             ChecklistItemTemplate itemT3 = new ChecklistItemTemplate("Updates have been carried out", new HashSet<>());
             ChecklistItemTemplate itemT4 = new ChecklistItemTemplate("Required tools were provided at the designated location", new HashSet<>());
             ChecklistItemTemplate itemT5 = new ChecklistItemTemplate("Customer's hardware labeled and returned", new HashSet<>());
-            clItemTemplateService.create(Set.of(itemT1, itemT2, itemT3, itemT4, itemT5));
+            unitOfWork.getChecklistItemTemplateService().create(Set.of(itemT1, itemT2, itemT3, itemT4, itemT5));
 
             // create checklist templates
             ChecklistTemplate template1 = new ChecklistTemplate(Set.of(itemT1, itemT2, itemT3, itemT4, itemT5));
             ChecklistTemplate template2 = new ChecklistTemplate(Set.of(itemT1, itemT2, itemT3));
-            clTemplateService.create(Set.of(template1, template2));
+            unitOfWork.getChecklistTemplateService().create(Set.of(template1, template2));
         };
     }
 }

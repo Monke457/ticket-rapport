@@ -23,9 +23,9 @@ public class UnitOfWork {
     @Autowired
     private DBService<Client> clientService;
     @Autowired
-    private DBService<ChecklistItem> clItemService;
+    private DBService<ChecklistItem> checklistItemService;
     @Autowired
-    private DBService<ChecklistTemplate> clTemplateService;
+    private DBService<ChecklistTemplate> checklistTemplateService;
     @Autowired
-    private DBService<ChecklistItemTemplate> clItemTemplateService;
+    private DBService<ChecklistItemTemplate> checklistItemTemplateService;
 }
