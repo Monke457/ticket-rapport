@@ -12,6 +12,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 
+/**
+ * Security configuration for handling http requests.
+ * Handles authorization logic.
+ */
 @Configuration
 public class SecurityConfig implements WebMvcConfigurer {
     @Bean

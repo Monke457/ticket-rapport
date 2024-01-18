@@ -13,6 +13,9 @@ import java.sql.Time;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * This component generates data and stores it in the database for development, testing, and demonstration purposes
+ */
 @Component
 public class DataGenerator {
 

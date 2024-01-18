@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 /**
- * TODO: COMMENTS
+ * A controller for handling all requests pertaining to user data.
  */
 @Controller
 public class UserController extends BaseController {
@@ -40,25 +40,26 @@ public class UserController extends BaseController {
     }
 
     @RequestMapping(value = "/users/create", method = RequestMethod.POST)
-    public String create(@ModelAttribute UserFormData entry, BindingResult result, Model model) {
-        boolean passError = !validatePassword(entry.getPassword(), entry.getConfirmPassword());
+    public String create(@ModelAttribute UserFormData entry,
+                         BindingResult result, Model model) {
+        boolean passError = !validatePassword(entry.getPassword(),
+                entry.getConfirmPassword());
 
         if (result.hasErrors() || passError) {
             addBaseAttributes(model);
             model.addAttribute("entry", entry);
-            model.addAttribute("roles", unitOfWork.getRoleService().getAll(Role.class));
+            model.addAttribute("roles",
+                    unitOfWork.getRoleService().getAll(Role.class));
             return "users/create";
         }
 
-        unitOfWork.getUserService().create(
-                new User(entry.getFirstname(),
-                        entry.getLastname(),
-                        entry.getEmail(),
-                        encoder.encode(entry.getPassword()),
-                        entry.getRole()));
+        unitOfWork.getUserService().create(new User(entry.getFirstname(),
+                entry.getLastname(), entry.getEmail(),
+                encoder.encode(entry.getPassword()), entry.getRole()));
         return "redirect:/users";
     }
 
+    // additional code (request controllers)
     private boolean validatePassword(String pass, String confirm) {
         // @TODO: add validation error messages
         if (pass.isBlank()) return false;

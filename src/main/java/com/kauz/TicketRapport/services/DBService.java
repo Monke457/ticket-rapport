@@ -13,6 +13,12 @@ import java.util.Collection;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+/**
+ * Base ORM for DBEntity classes. Interfaces with the database using EntityManager.
+ * Uses the PersistenceContext and Transactional annotations to prevent consistency errors.
+ *
+ * @param <T> any model that implements the DBEntity interface.
+ */
 @Repository
 public class DBService<T extends DBEntity> {
 

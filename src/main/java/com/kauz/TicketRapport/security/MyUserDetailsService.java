@@ -14,6 +14,9 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Custom user details service which stores user data in the session context on login.
+ */
 @Service
 public class MyUserDetailsService implements UserDetailsService {
     @Autowired

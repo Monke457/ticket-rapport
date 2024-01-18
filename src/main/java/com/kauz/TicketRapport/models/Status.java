@@ -1,6 +1,7 @@
 package com.kauz.TicketRapport.models;
 
 import com.kauz.TicketRapport.models.helpers.DBEntity;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -10,6 +11,11 @@ import lombok.Setter;
 
 import java.util.UUID;
 
+/**
+ * Represents a status in the database.
+ * Must have an id and a description.
+ * May be assigned to any number of Tickets.
+ */
 @Entity
 @Getter
 @Setter
@@ -19,6 +25,7 @@ public class Status implements DBEntity {
     @Id
     @GeneratedValue
     private UUID id;
+    @Column(nullable = false)
     private String description;
 
     public Status(String description) {

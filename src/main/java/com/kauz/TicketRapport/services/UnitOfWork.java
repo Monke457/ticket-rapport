@@ -8,6 +8,9 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+/**
+ * A central repository from which all other repositories can be accessed.
+ */
 @Getter
 @Setter
 @Repository

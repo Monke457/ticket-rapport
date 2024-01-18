@@ -1,10 +1,8 @@
 package com.kauz.TicketRapport.models;
 
 import com.kauz.TicketRapport.models.helpers.DBEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.annotation.Nullable;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,6 +10,12 @@ import lombok.Setter;
 import java.sql.Time;
 import java.util.UUID;
 
+/**
+ * Represents a ticket in the database.
+ * Must have an id, title, client and status (open, closed, etc.).
+ * May have a description, protocol, solution, work time and assigned user.
+ * The protocol represents the steps the learner took to work on the ticket.
+ */
 @Entity
 @Getter
 @Setter
@@ -21,6 +25,7 @@ public class Ticket implements DBEntity {
     @Id
     @GeneratedValue
     private UUID id;
+    @Column(nullable = false)
     private String title;
     private String description;
     private String protocol;
@@ -31,9 +36,11 @@ public class Ticket implements DBEntity {
     private User assignedUser;
 
     @ManyToOne
+    @Column(nullable = false)
     private Client client;
 
     @ManyToOne
+    @Column(nullable = false)
     private Status status;
 
     public Ticket(String title, String description, String protocol, String solution, Time worktime, User assignedUser, Client client, Status status) {

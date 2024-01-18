@@ -5,6 +5,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * User DTO containing all User attributes as well as password and confirm password.
+ * For creating new users and assigning a password.
+ */
 @Getter
 @Setter
 @NoArgsConstructor

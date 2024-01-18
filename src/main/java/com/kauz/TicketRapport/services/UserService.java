@@ -7,6 +7,9 @@ import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
+/**
+ * A repository specifically for querying user data.
+ */
 @Repository
 public class UserService extends DBService<User> {
 

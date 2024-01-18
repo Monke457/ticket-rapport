@@ -8,6 +8,12 @@ import lombok.Setter;
 
 import java.util.UUID;
 
+/**
+ * Represents a user in the database.
+ * Must have an id and email.
+ * May have a firstname, lastname, and password.
+ * The password must be hashed using a BCryptEncoder.
+ */
 @Entity
 @Getter
 @Setter

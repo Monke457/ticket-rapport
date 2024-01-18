@@ -10,6 +10,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * Represents a checklist template in the database.
+ * Must have an id.
+ * May have any number of checklist item templates.
+ */
 @Entity
 @Getter
 @Setter
