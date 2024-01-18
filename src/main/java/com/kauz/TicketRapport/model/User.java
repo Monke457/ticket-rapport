@@ -23,14 +23,16 @@ public class User implements DBEntity {
     private String firstname;
     private String lastname;
     private String email;
+    private String password;
 
     @ManyToOne
     private Role role;
 
-    public User(String firstname, String lastname, String email, Role role) {
+    public User(String firstname, String lastname, String email, String password, Role role) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
+        this.password = password;
         this.role = role;
     }
 }

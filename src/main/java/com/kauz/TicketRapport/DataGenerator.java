@@ -6,6 +6,7 @@ import com.kauz.TicketRapport.model.templates.ChecklistTemplate;
 import com.kauz.TicketRapport.services.DBService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.sql.Time;
@@ -23,7 +24,8 @@ public class DataGenerator {
                                       DBService<Client> clientService,
                                       DBService<ChecklistItem> clItemService,
                                       DBService<ChecklistTemplate> clTemplateService,
-                                      DBService<ChecklistItemTemplate> clItemTemplateService) {
+                                      DBService<ChecklistItemTemplate> clItemTemplateService,
+                                      PasswordEncoder encoder) {
         return args -> {
             if (roleService.anyExists(Role.class)) return;
 
@@ -33,9 +35,9 @@ public class DataGenerator {
             roleService.create(Set.of(adminRole, learnerRole));
 
             // create users
-            User adminUser = new User("Test", "Admin", "admin@ticket-kauz.ch", adminRole);
-            User learnerUser1 = new User("Test", "Learner", "learner@ticket-kauz.ch", learnerRole);
-            User learnerUser2 = new User("John", "Smith", "john.smith@ticket-kauz.ch", learnerRole);
+            User adminUser = new User("Test", "Admin", "admin@ticket-kauz.ch", encoder.encode("Pass123!"), adminRole);
+            User learnerUser1 = new User("Test", "Learner", "learner@ticket-kauz.ch", encoder.encode("Pass123!"), learnerRole);
+            User learnerUser2 = new User("John", "Smith", "john.smith@ticket-kauz.ch", encoder.encode("Pass123!"), learnerRole);
             userService.create(Set.of(adminUser, learnerUser1, learnerUser2));
 
             // create statuses
