@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
@@ -23,8 +24,8 @@ public class SecurityConfig implements WebMvcConfigurer {
         http
                 .csrf(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/").authenticated()
-                        .anyRequest().hasRole("ADMIN"))
+                        .requestMatchers("/tickets").hasRole("ADMIN")
+                        .anyRequest().authenticated())
                 .formLogin(FormLoginConfigurer::permitAll)
                 .logout(LogoutConfigurer::permitAll);
         return http.build();
