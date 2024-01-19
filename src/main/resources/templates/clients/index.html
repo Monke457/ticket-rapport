@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments/head :: head('Client')}"></head>
+<body>
+<header th:replace="~{fragments/header :: header}"></header>
+
+<main class="container">
+    <h3 class="text-center my-4">Client</h3>
+    <a class="btn btn-sm btn-success" th:href="@{/clients/create}">New Client</a>
+    <table class="table my-4">
+        <tr>
+            <th>Name</th>
+            <th></th>
+        </tr>
+        <tr th:each="entry: ${entries}">
+            <td th:text="${entry.name}"></td>
+            <td class="text-end pb-2">
+                <a class="btn btn-sm btn-primary" th:href="@{/clients(id=${entry.id})}">View</a>
+                <a class="btn btn-sm btn-warning" th:href="@{/clients/edit(id=${entry.id})}">Edit</a>
+                <a class="btn btn-sm btn-danger" th:href="@{/clients/delete(id=${entry.id})}">Delete</a>
+            </td>
+        </tr>
+    </table>
+</main>
+</body>
+</html>

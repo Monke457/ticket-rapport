@@ -59,7 +59,6 @@ public class UserController extends BaseController {
         return "redirect:/users";
     }
 
-    // additional code (request controllers)
     private boolean validatePassword(String pass, String confirm) {
         // @TODO: add validation error messages
         if (pass.isBlank()) return false;
