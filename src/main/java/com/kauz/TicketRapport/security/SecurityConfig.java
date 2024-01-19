@@ -28,7 +28,10 @@ public class SecurityConfig implements WebMvcConfigurer {
         http
                 .csrf(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/tickets").hasRole("ADMIN")
+                        .requestMatchers("/tickets/update").hasRole("LEARNER")
+                        .requestMatchers("/tickets/*").hasRole("ADMIN")
+                        .requestMatchers("/clients*").hasRole("ADMIN")
+                        .requestMatchers("/users*").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .formLogin(FormLoginConfigurer::permitAll)
                 .logout(LogoutConfigurer::permitAll);

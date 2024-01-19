@@ -11,8 +11,12 @@
             <h3>Ticket Details</h3>
             <a class="btn btn-sm btn-secondary" th:href="@{/tickets}">Back</a>
         </div>
-
-        <div th:replace="~{fragments/details/ticket-details :: ticket-details}"></div>
+        <div th:replace="~{fragments/details/ticket-details :: ticket-details('false')}"></div>
+        <form th:if="${authUser.role.description == 'ADMIN' && entry.status.description == 'Complete'}"
+              th:action="@{/tickets/status(id=${entry.id})}"  method="post" class="text-end">
+            <button class="btn btn-success" name="action" value="close">Mark as closed</button>
+            <button class="btn btn-danger" name="action" value="reopen">Reopen</button>
+        </form>
     </div>
 </main>
 </body>

@@ -31,7 +31,8 @@ public class Ticket implements DBEntity {
     private String description;
     private String protocol;
     private String solution;
-    private String worktime;
+    private int workHours;
+    private int workMinutes;
 
     @ManyToOne
     private User assignedUser;
@@ -44,14 +45,22 @@ public class Ticket implements DBEntity {
     @JoinColumn(nullable = false)
     private Status status;
 
-    public Ticket(String title, String description, String protocol, String solution, String worktime, User assignedUser, Client client, Status status) {
+    @Transient
+    private String worktime;
+
+    public Ticket(String title, String description, String protocol, String solution, int workHours, int workMinutes, User assignedUser, Client client, Status status) {
         this.title = title;
         this.description = description;
         this.protocol = protocol;
         this.solution = solution;
-        this.worktime = worktime;
+        this.workHours = workHours;
+        this.workMinutes = workMinutes;
         this.assignedUser = assignedUser;
         this.client = client;
         this.status = status;
+    }
+
+    public String getWorktime() {
+        return workHours + "h " + workMinutes + "m";
     }
 }

@@ -6,13 +6,17 @@
 
 <main class="container">
     <h3 class="text-center my-4">Tickets</h3>
-    <a class="btn btn-sm btn-success" th:href="@{/tickets/create}">New Ticket</a>
+    <div th:if="${authUser.role.description == 'ADMIN'}">
+        <a class="btn btn-sm btn-success" th:href="@{/tickets/create}">New Ticket</a>
+    </div>
     <table class="table my-4">
         <tr>
             <th>Title</th>
             <th>Description</th>
             <th>Work Time</th>
-            <th>Assigned Learner</th>
+            <div th:if="${authUser.role.description == 'ADMIN'}">
+                <th>Assigned Learner</th>
+            </div>
             <th>Client</th>
             <th>Status</th>
             <th></th>
@@ -21,13 +25,17 @@
             <td th:text="${entry.title}"></td>
             <td th:text="${entry.description}"></td>
             <td th:text="${entry.worktime}"></td>
-            <td th:text="${entry.assignedUser.fullName}"></td>
+            <div th:if="${authUser.role.description == 'ADMIN'}">
+                <td th:text="${entry.assignedUser.fullName}"></td>
+            </div>
             <td th:text="${entry.client.name}"></td>
             <td th:text="${entry.status.description}"></td>
             <td class="text-end pb-2">
                 <a class="btn btn-sm btn-primary" th:href="@{/tickets(id=${entry.id})}">View</a>
-                <a class="btn btn-sm btn-warning" th:href="@{/tickets/edit(id=${entry.id})}">Edit</a>
-                <a class="btn btn-sm btn-danger" th:href="@{/tickets/delete(id=${entry.id})}">Delete</a>
+                <div th:if="${authUser.role.description == 'ADMIN'}">
+                    <a class="btn btn-sm btn-warning" th:href="@{/tickets/edit(id=${entry.id})}">Edit</a>
+                    <a class="btn btn-sm btn-danger" th:href="@{/tickets/delete(id=${entry.id})}">Delete</a>
+                </div>
             </td>
         </tr>
     </table>

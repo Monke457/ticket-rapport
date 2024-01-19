@@ -49,18 +49,18 @@ public class DataGenerator {
 
             // create tickets
             Ticket ticket1 = new Ticket("VPN", "Set up and test internal VPN server.",
-                    "", "", null, learnerUser1, client1, open);
+                    "", "", 0, 0, learnerUser1, client1, open);
             Ticket ticket2 = new Ticket("Fix Laptop", "Laptop has performance issues and shuts down unexpectedly.",
                     "Ran laptop in safe mode. Ran antivirus scan. Found and removed 5 viruses. Ran tests to check if the problem was fixed.",
-                    "Antivirus scan.", "04:00:00", learnerUser1, client1, closed);
+                    "Antivirus scan.", 3, 0, learnerUser1, client1, closed);
             Ticket ticket3 = new Ticket("Website Images", "Replace all png images on company site with webp.",
                     "Downloaded all images from site. Converted to webp. Re-uploaded the images. Removed original images.",
-                    "Conversion and re-upload.", "01:30:00", learnerUser2, client2, closed);
+                    "Conversion and re-upload.",2, 30, learnerUser2, client2, closed);
             Ticket ticket4 = new Ticket("Website Redesign", "Draft a new design (wireframe mockups) for the company homepage. Content must be the same.",
                     "Researched current web design trends. Looked for inspiration. used draw.io to create a mock up.", "Minimalist with large banner.",
-                    "02:00:00", learnerUser2, client2, complete);
+                    1, 45, learnerUser2, client2, complete);
             Ticket ticket5 = new Ticket("App Translation", "Add German translation to on-boarding app.",
-                    "", "", null, learnerUser2, client1, open);
+                    "", "", 0, 0, learnerUser2, client1, open);
             Set<Ticket> tickets = Set.of(ticket1, ticket2, ticket3, ticket4, ticket5);
             unitOfWork.getTicketService().create(tickets);
 

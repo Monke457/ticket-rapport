@@ -1,4 +1,4 @@
-<div th:fragment="ticket-details" xmlns:th="http://www.w3.org/1999/xhtml">
+<div th:fragment="ticket-details(delete)" xmlns:th="http://www.w3.org/1999/xhtml">
     <div class="mb-3">
         <div class="form-label">Title</div>
         <div class="form-control bg-light" th:text="${entry.title}"></div>
@@ -6,18 +6,6 @@
     <div class="mb-3">
         <div class="form-label">Description</div>
         <div class="form-control bg-light" th:text="${entry.description}"></div>
-    </div>
-    <div class="mb-3">
-        <div class="form-label">Protocol</div>
-        <div class="form-control bg-light" th:text="${entry.protocol}"></div>
-    </div>
-    <div class="mb-3">
-        <div class="form-label">Solution</div>
-        <div class="form-control bg-light" th:text="${entry.solution}"></div>
-    </div>
-    <div class="mb-3">
-        <div class="form-label">Work Time</div>
-        <div class="form-control bg-light" th:text="${entry.worktime}"></div>
     </div>
     <div class="mb-3">
         <div class="form-label">Assigned Learner</div>
@@ -40,4 +28,51 @@
             <span th:if="${entry.status == null}">None</span>
         </div>
     </div>
+
+    <div th:if="${delete == 'true' || authUser.role.description == 'ADMIN' || entry.status.description != 'In Progress'}">
+        <div class="mb-3">
+            <div class="form-label">Protocol</div>
+            <div class="form-control bg-light" th:text="${entry.protocol}"></div>
+        </div>
+        <div class="mb-3">
+            <div class="form-label">Solution</div>
+            <div class="form-control bg-light" th:text="${entry.solution}"></div>
+        </div>
+        <div class="mb-3">
+            <div class="form-label">Work Time</div>
+            <div class="form-control bg-light" th:text="${entry.worktime}"></div>
+        </div>
+    </div>
+
+    <form th:unless="${delete == 'true' || authUser.role.description == 'ADMIN' || entry.status.description != 'In Progress'}"
+          th:action="@{/tickets/update(id=${entry.id})}" th:object="${entry}" method="post">
+        <div class="mb-3">
+            <div class="form-label" th:for="*{protocol}">Protocol</div>
+            <textarea class="form-control mb-2" th:field="*{protocol}"></textarea>
+        </div>
+        <div class="mb-3">
+            <div class="form-label" th:for="*{solution}">Solution</div>
+            <textarea class="form-control" th:field="*{solution}"></textarea>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Work Time</label>
+            <div class="d-flex gap-2">
+                <div>
+                    <label class="form-label" th:for="*{workHours}">Hours</label>
+                    <input class="form-control" type="number" min="0" max="99" th:field="${entry.workHours}">
+                </div>
+                <div>
+                    <label class="form-label" th:for="*{workMinutes}">Minutes</label>
+                    <input class="form-control" type="number" min="0" max="59" th:field="${entry.workMinutes}">
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-between">
+            <div>
+                <button class="btn btn-primary btn-sm" name="action" value="update">Update</button>
+                <button class="btn btn-primary btn-sm" name="action" value="exit">Update and exit</button>
+            </div>
+            <button class="btn btn-success btn-sm float-end" name="action" value="complete">Mark as complete</button>
+        </div>
+    </form>
 </div>

@@ -13,7 +13,7 @@
         </div>
         <form th:action="@{edit(id=${entry.id})}" th:object="${entry}" method="post">
             <div th:replace="~{fragments/forms/client-form :: client-form}"></div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary float-end">Submit</button>
         </form>
     </div>
 </main>

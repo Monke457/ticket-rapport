@@ -12,12 +12,12 @@
             <a class="btn btn-sm btn-secondary" th:href="@{/tickets}">Back</a>
         </div>
 
-        <div th:replace="~{fragments/details/ticket-details :: ticket-details}"></div>
+        <div th:replace="~{fragments/details/ticket-details :: ticket-details('true')}"></div>
 
         <form th:action="@{delete(id=${entry.id})}" method="post">
             <div class="text-end">
-                <a class="btn btn-outline-primary btn-sm" th:href="@{/tickets}">Cancel</a>
-                <button class="btn btn-danger btn-sm">Delete</button>
+                <a class="btn btn-outline-primary" th:href="@{/tickets}">Cancel</a>
+                <button class="btn btn-danger">Delete</button>
             </div>
         </form>
     </div>

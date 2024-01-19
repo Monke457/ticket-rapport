@@ -1,6 +1,7 @@
 package com.kauz.TicketRapport.services;
 
 import com.kauz.TicketRapport.models.User;
+import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
@@ -23,9 +24,10 @@ public class UserService extends DBService<User> {
 
         cq.where(cb.equal(root.get("email"), email));
 
-        if (em.createQuery(cq).getResultStream().findAny().isEmpty()) return null;
+        TypedQuery<User> query = em.createQuery(cq);
+        if (query.getResultStream().findAny().isEmpty()) return null;
 
-        return em.createQuery(cq).getSingleResult();
+        return query.getSingleResult();
     }
 
     public Stream<User> getLearners() {

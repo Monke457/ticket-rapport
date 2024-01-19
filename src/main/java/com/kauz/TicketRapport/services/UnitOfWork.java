@@ -18,11 +18,11 @@ public class UnitOfWork {
     @Autowired
     private UserService userService;
     @Autowired
-    private DBService<Ticket> ticketService;
+    private TicketService ticketService;
     @Autowired
     private DBService<Role> roleService;
     @Autowired
-    private DBService<Status> statusService;
+    private StatusService statusService;
     @Autowired
     private DBService<Client> clientService;
     @Autowired

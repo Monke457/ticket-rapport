@@ -3,6 +3,7 @@ package com.kauz.TicketRapport.services;
 import com.kauz.TicketRapport.models.helpers.DBEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
@@ -42,10 +43,11 @@ public class DBService<T extends DBEntity> {
 
         cq.where(cb.equal(root.get("id"), id));
 
-        if (em.createQuery(cq).getResultStream().findAny().isEmpty()) {
+        TypedQuery<T> query = em.createQuery(cq);
+        if (query.getResultStream().findAny().isEmpty()) {
             return null;
         }
-        return em.createQuery(cq).getSingleResult();
+        return query.getSingleResult();
     }
 
     @Transactional
