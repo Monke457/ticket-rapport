@@ -33,11 +33,17 @@ public class User implements DBEntity {
     @ManyToOne
     private Role role;
 
+    @Transient
+    private String fullName;
     public User(String firstname, String lastname, String email, String password, Role role) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
         this.password = password;
         this.role = role;
+    }
+
+    public String getFullName() {
+        return firstname + ' ' + lastname;
     }
 }

@@ -3,6 +3,7 @@ package com.kauz.TicketRapport.models;
 import com.kauz.TicketRapport.models.helpers.DBEntity;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -30,7 +31,7 @@ public class Ticket implements DBEntity {
     private String description;
     private String protocol;
     private String solution;
-    private Time worktime;
+    private String worktime;
 
     @ManyToOne
     private User assignedUser;
@@ -43,7 +44,7 @@ public class Ticket implements DBEntity {
     @JoinColumn(nullable = false)
     private Status status;
 
-    public Ticket(String title, String description, String protocol, String solution, Time worktime, User assignedUser, Client client, Status status) {
+    public Ticket(String title, String description, String protocol, String solution, String worktime, User assignedUser, Client client, Status status) {
         this.title = title;
         this.description = description;
         this.protocol = protocol;

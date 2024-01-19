@@ -1,0 +1,45 @@
+<div th:fragment="ticket-form(type)" xmlns:th="http://www.w3.org/1999/xhtml">
+    <div class="mb-3">
+        <label class="form-label" th:for="*{title}">Title</label>
+        <input class="form-control" th:field="*{title}">
+    </div>
+    <div class="mb-3">
+        <label class="form-label" th:for="*{description}">Description</label>
+        <input class="form-control" th:field="*{description}">
+    </div>
+    <div class="mb-3">
+        <label class="form-label" th:for="*{assignedUser}">Assigned Learner</label>
+        <select class="mb-3 form-select" th:field="*{assignedUser.id}">
+            <option th:if="*{assignedUser.id == null || assignedUser.id == ''}" value="null">Select Learner</option>
+            <option th:each="user: ${users}" th:value="${user.id}" th:text="${user.fullName}"></option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" th:for="*{client}">Client</label>
+        <select class="mb-3 form-select" th:field="*{client.id}">
+            <option th:if="*{client.id == null || client.id == ''}" value="null">Select Client</option>
+            <option th:each="client: ${clients}" th:value="${client.id}" th:text="${client.name}"></option>
+        </select>
+    </div>
+    <div th:if="${type == 'edit'}">
+        <div class="mb-3">
+            <label class="form-label" th:for="*{protocol}">Protocol</label>
+            <input class="form-control" th:field="*{protocol}">
+        </div>
+        <div class="mb-3">
+            <label class="form-label" th:for="*{solution}">Solution</label>
+            <input class="form-control" th:field="*{solution}">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Work Time</label>
+            <div th:replace="~{fragments/forms/work-time-input :: work-time-input}"></div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" th:for="*{status}">Status</label>
+            <select class="mb-3 form-select" th:field="*{status.id}">
+                <option th:if="*{status.id == null || status.id == ''}" value="null">Select Status</option>
+                <option th:each="status: ${statuses}" th:value="${status.id}" th:text="${status.description}"></option>
+            </select>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,10 @@
+<div th:fragment="work-time-input" class="d-flex gap-2" xmlns:th="http://www.w3.org/1999/xhtml">
+    <div>
+        <label class="form-label" th:for="*{hours}">Hours</label>
+        <input class="form-control" type="number" min="0" max="99" th:field="*{hours}">
+    </div>
+    <div>
+        <label class="form-label" th:for="*{minutes}">Minutes</label>
+        <input class="form-control" type="number" min="0" max="59" th:field="*{minutes}">
+    </div>
+</div>

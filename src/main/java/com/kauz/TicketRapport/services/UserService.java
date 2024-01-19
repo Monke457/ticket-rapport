@@ -7,6 +7,8 @@ import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
+import java.util.stream.Stream;
+
 /**
  * A repository specifically for querying user data.
  */
@@ -24,5 +26,15 @@ public class UserService extends DBService<User> {
         if (em.createQuery(cq).getResultStream().findAny().isEmpty()) return null;
 
         return em.createQuery(cq).getSingleResult();
+    }
+
+    public Stream<User> getLearners() {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<User> cq = cb.createQuery(User.class);
+        Root<User> root = cq.from(User.class);
+
+        cq.where(cb.equal(root.get("role").get("description"), "LEARNER"));
+
+        return em.createQuery(cq).getResultStream();
     }
 }

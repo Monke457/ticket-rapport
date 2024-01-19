@@ -1,0 +1,43 @@
+<div th:fragment="ticket-details" xmlns:th="http://www.w3.org/1999/xhtml">
+    <div class="mb-3">
+        <div class="form-label">Title</div>
+        <div class="form-control bg-light" th:text="${entry.title}"></div>
+    </div>
+    <div class="mb-3">
+        <div class="form-label">Description</div>
+        <div class="form-control bg-light" th:text="${entry.description}"></div>
+    </div>
+    <div class="mb-3">
+        <div class="form-label">Protocol</div>
+        <div class="form-control bg-light" th:text="${entry.protocol}"></div>
+    </div>
+    <div class="mb-3">
+        <div class="form-label">Solution</div>
+        <div class="form-control bg-light" th:text="${entry.solution}"></div>
+    </div>
+    <div class="mb-3">
+        <div class="form-label">Work Time</div>
+        <div class="form-control bg-light" th:text="${entry.worktime}"></div>
+    </div>
+    <div class="mb-3">
+        <div class="form-label">Assigned Learner</div>
+        <div class="form-control bg-light" >
+            <span th:unless="${entry.assignedUser == null}" th:text="${entry.assignedUser.fullName}"></span>
+            <span th:if="${entry.assignedUser == null}">None</span>
+        </div>
+    </div>
+    <div class="mb-3">
+        <div class="form-label">Client</div>
+        <div class="form-control bg-light" >
+            <span th:unless="${entry.client == null}" th:text="${entry.client.name}"></span>
+            <span th:if="${entry.client == null}">None</span>
+        </div>
+    </div>
+    <div class="mb-3">
+        <div class="form-label">Status</div>
+        <div class="form-control bg-light" >
+            <span th:unless="${entry.status == null}" th:text="${entry.status.description}"></span>
+            <span th:if="${entry.status == null}">None</span>
+        </div>
+    </div>
+</div>
