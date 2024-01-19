@@ -15,6 +15,7 @@ import java.util.UUID;
  * Must have an id, title, client and status (open, closed, etc.).
  * May have a description, protocol, solution, work time and assigned user.
  * The protocol represents the steps the learner took to work on the ticket.
+ * May also have any number of checklist items.
  */
 @Entity
 @Getter

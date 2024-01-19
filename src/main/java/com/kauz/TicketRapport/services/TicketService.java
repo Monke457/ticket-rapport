@@ -10,6 +10,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.stream.Stream;
 
+/**
+ * A repository specifically for querying ticket data.
+ */
 @Repository
 public class TicketService extends DBService<Ticket> {
 

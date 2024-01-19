@@ -8,6 +8,9 @@ import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
+/**
+ * A repository specifically for querying status data.
+ */
 @Repository
 public class StatusService extends DBService<Status> {
     @Transactional
