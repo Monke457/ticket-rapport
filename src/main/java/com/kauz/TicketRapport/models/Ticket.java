@@ -36,11 +36,11 @@ public class Ticket implements DBEntity {
     private User assignedUser;
 
     @ManyToOne
-    @Column(nullable = false)
+    @JoinColumn(nullable = false)
     private Client client;
 
     @ManyToOne
-    @Column(nullable = false)
+    @JoinColumn(nullable = false)
     private Status status;
 
     public Ticket(String title, String description, String protocol, String solution, Time worktime, User assignedUser, Client client, Status status) {

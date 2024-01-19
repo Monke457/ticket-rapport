@@ -30,7 +30,7 @@ public class ChecklistItem implements DBEntity {
     private boolean completed;
 
     @ManyToOne
-    @Column(nullable = false)
+    @JoinColumn(nullable = false)
     private Ticket ticket;
 
     public ChecklistItem(String description, boolean completed, Ticket ticket) {
