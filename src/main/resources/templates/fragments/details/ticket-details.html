@@ -42,6 +42,12 @@
             <div class="form-label">Work Time</div>
             <div class="form-control bg-light" th:text="${entry.worktime}"></div>
         </div>
+        <ul class="list-group" th:each="item: ${entry.checklist}">
+            <li class="list-group-item">
+                <img th:src="@{/img/} + (${item.completed} ? 'check.svg' : 'square.svg')" alt="item-box" title="Item Box"/>
+                <span th:text="${item.description}"></span>
+            </li>
+        </ul>
     </div>
 
     <form th:unless="${delete == 'true' || authUser.role.description == 'ADMIN' || entry.status.description != 'In Progress'}"
@@ -59,14 +65,23 @@
             <div class="d-flex gap-2">
                 <div>
                     <label class="form-label" th:for="*{workHours}">Hours</label>
-                    <input class="form-control" type="number" min="0" max="99" th:field="${entry.workHours}">
+                    <input class="form-control" type="number" min="0" max="99" th:field="*{workHours}">
                 </div>
                 <div>
                     <label class="form-label" th:for="*{workMinutes}">Minutes</label>
-                    <input class="form-control" type="number" min="0" max="59" th:field="${entry.workMinutes}">
+                    <input class="form-control" type="number" min="0" max="59" th:field="*{workMinutes}">
                 </div>
             </div>
         </div>
+
+        <div class="mb-3">
+            <label>Checklist</label>
+            <div class="form-check" th:each="item: ${entry.checklist}">
+                <input class="form-check-input" th:name="checklistItems" type="checkbox" th:for="${item.id}" th:value="${item.id}" th:checked="${item.completed}">
+                <label class="form-check-label" th:for="${item.id}" th:text="${item.description}"></label>
+            </div>
+        </div>
+
         <div class="d-flex justify-content-between">
             <div>
                 <button class="btn btn-primary btn-sm" name="action" value="update">Update</button>

@@ -1,14 +1,13 @@
 package com.kauz.TicketRapport.models;
 
 import com.kauz.TicketRapport.models.helpers.DBEntity;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Time;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -45,10 +44,13 @@ public class Ticket implements DBEntity {
     @JoinColumn(nullable = false)
     private Status status;
 
+    @OneToMany(mappedBy = "ticket")
+    private Set<ChecklistItem> checklist = new HashSet<>();
+
     @Transient
     private String worktime;
 
-    public Ticket(String title, String description, String protocol, String solution, int workHours, int workMinutes, User assignedUser, Client client, Status status) {
+    public Ticket(String title, String description, String protocol, String solution, int workHours, int workMinutes, User assignedUser, Client client, Status status, Set<ChecklistItem> checklist) {
         this.title = title;
         this.description = description;
         this.protocol = protocol;
@@ -58,6 +60,7 @@ public class Ticket implements DBEntity {
         this.assignedUser = assignedUser;
         this.client = client;
         this.status = status;
+        this.checklist = checklist;
     }
 
     public String getWorktime() {

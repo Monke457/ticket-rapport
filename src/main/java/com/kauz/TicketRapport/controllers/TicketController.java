@@ -1,5 +1,6 @@
 package com.kauz.TicketRapport.controllers;
 
+import com.kauz.TicketRapport.models.ChecklistItem;
 import com.kauz.TicketRapport.models.Client;
 import com.kauz.TicketRapport.models.Status;
 import com.kauz.TicketRapport.models.Ticket;
@@ -7,10 +8,11 @@ import jakarta.annotation.security.RolesAllowed;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Objects;
-import java.util.UUID;
+import java.lang.reflect.Array;
+import java.util.*;
 
 /**
  * A controller for handling all requests pertaining to ticket data.
@@ -20,12 +22,13 @@ public class TicketController extends BaseController {
     @GetMapping("/tickets")
     public String getIndex(Model model, @RequestParam(required = false) UUID id) {
         super.addBaseAttributes(model);
+
         if (id != null) {
-            if (Objects.equals(authUser.getUser().getRole().getDescription(), "ADMIN")) {
-                model.addAttribute("entry", unitOfWork.getTicketService().find(Ticket.class, id));
-            } else {
-                model.addAttribute("entry", unitOfWork.getTicketService().find(Ticket.class, id));
+            Ticket entry = unitOfWork.getTicketService().find(Ticket.class, id);
+            if (entry.getAssignedUser().getId() != authUser.getUser().getId() && !Objects.equals(authUser.getUser().getRole().getDescription(), "ADMIN")) {
+                return "redirect:/tickets";
             }
+            model.addAttribute("entry", entry);
             return "tickets/details";
         }
 
@@ -38,9 +41,8 @@ public class TicketController extends BaseController {
     }
 
     @RequestMapping(value = "/tickets/status", method = RequestMethod.POST)
-    public String status(@RequestParam UUID id, @RequestParam String action, Model model) {
+    public String status(@RequestParam UUID id, @RequestParam String action) {
         Ticket ticket = unitOfWork.getTicketService().find(Ticket.class, id);
-
         if (Objects.equals(action, "close")) {
             ticket.setStatus(unitOfWork.getStatusService().find("Closed"));
         } else {
@@ -52,35 +54,32 @@ public class TicketController extends BaseController {
 
     @RequestMapping(value = "/tickets/update", method = RequestMethod.POST)
     public String update(@RequestParam UUID id,
-                         @RequestParam String protocol,
-                         @RequestParam String solution,
-                         @RequestParam int workHours,
-                         @RequestParam int workMinutes,
+                         @ModelAttribute Ticket entry,
+                         BindingResult result,
                          @RequestParam String action,
-                         Model model) {
+                         @RequestParam(required = false) String checklistItems) {
 
         Ticket ticket = unitOfWork.getTicketService().find(Ticket.class, id);
 
-        if (ticket.getAssignedUser().getId() != authUser.getUser().getId()) {
-            return "redirect:/tickets";
-        }
+        if (!result.hasErrors()) {
+            if (ticket.getAssignedUser().getId() != authUser.getUser().getId()) return "redirect:/tickets";
+            if (checklistItems == null) checklistItems = "";
 
-        ticket.setProtocol(protocol);
-        ticket.setSolution(solution);
-        ticket.setWorkHours(workHours);
-        ticket.setWorkMinutes(workMinutes);
-        if (Objects.equals(action, "complete")) {
-            ticket.setStatus(unitOfWork.getStatusService().find("Complete"));
-        }
-        unitOfWork.getTicketService().update(ticket);
+            ticket.setProtocol(entry.getProtocol());
+            ticket.setSolution(entry.getSolution());
+            ticket.setWorkHours(entry.getWorkHours());
+            ticket.setWorkMinutes(entry.getWorkMinutes());
+            for (ChecklistItem item : ticket.getChecklist()) {
+                item.setCompleted(checklistItems.contains(item.getId().toString()));
+            }
+            if (Objects.equals(action, "complete")) {
+                ticket.setStatus(unitOfWork.getStatusService().find("Complete"));
+            }
+            unitOfWork.getTicketService().update(ticket);
 
-        if (Objects.equals(action, "exit")) {
-            return "redirect:/tickets";
+            if (Objects.equals(action, "exit")) return "redirect:/tickets";
         }
-
-        super.addBaseAttributes(model);
-        model.addAttribute("entry", ticket);
-        return "tickets/details";
+        return "redirect:/tickets?id=" + id;
     }
 
     @GetMapping("/tickets/create")
