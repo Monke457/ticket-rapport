@@ -12,8 +12,8 @@ import java.util.UUID;
 
 /**
  * Represents a ticket in the database.
- * Must have an id, title, client and status (open, closed, etc.).
- * May have a description, protocol, solution, work time and assigned user.
+ * Must have an id, title, client.
+ * May have a description, protocol, solution, work time, assigned user, and status (open, closed, etc.).
  * The protocol represents the steps the learner took to work on the ticket.
  * May also have any number of checklist items.
  */
@@ -42,10 +42,9 @@ public class Ticket implements DBEntity {
     private Client client;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
     private Status status;
 
-    @OneToMany(mappedBy = "ticket")
+    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL)
     private Set<ChecklistItem> checklist = new HashSet<>();
 
     @Transient

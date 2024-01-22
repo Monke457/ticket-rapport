@@ -90,8 +90,8 @@ public class DataGenerator {
             unitOfWork.getChecklistItemTemplateService().create(Set.of(itemT1, itemT2, itemT3, itemT4, itemT5));
 
             // create checklist templates
-            ChecklistTemplate template1 = new ChecklistTemplate(Set.of(itemT1, itemT2, itemT3, itemT4, itemT5));
-            ChecklistTemplate template2 = new ChecklistTemplate(Set.of(itemT1, itemT2, itemT3));
+            ChecklistTemplate template1 = new ChecklistTemplate("Full Check", Set.of(itemT1, itemT2, itemT3, itemT4, itemT5));
+            ChecklistTemplate template2 = new ChecklistTemplate("Software Only", Set.of(itemT1, itemT2, itemT3));
             unitOfWork.getChecklistTemplateService().create(Set.of(template1, template2));
         };
     }

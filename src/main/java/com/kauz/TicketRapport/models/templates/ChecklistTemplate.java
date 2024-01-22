@@ -24,6 +24,8 @@ public class ChecklistTemplate implements DBEntity {
     @GeneratedValue
     private UUID id;
 
+    private String description;
+
     @ManyToMany
     @JoinTable(
             name = "checklist_template_items",
@@ -32,7 +34,8 @@ public class ChecklistTemplate implements DBEntity {
     )
     private Set<ChecklistItemTemplate> items = new HashSet<>();
 
-    public ChecklistTemplate(Set<ChecklistItemTemplate> items) {
+    public ChecklistTemplate(String description, Set<ChecklistItemTemplate> items) {
+        this.description = description;
         this.items = items;
     }
 }

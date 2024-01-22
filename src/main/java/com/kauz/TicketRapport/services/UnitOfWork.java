@@ -1,7 +1,7 @@
 package com.kauz.TicketRapport.services;
 
-import com.kauz.TicketRapport.models.*;
-import com.kauz.TicketRapport.models.templates.ChecklistItemTemplate;
+import com.kauz.TicketRapport.models.Client;
+import com.kauz.TicketRapport.models.Role;
 import com.kauz.TicketRapport.models.templates.ChecklistTemplate;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,9 +26,9 @@ public class UnitOfWork {
     @Autowired
     private DBService<Client> clientService;
     @Autowired
-    private DBService<ChecklistItem> checklistItemService;
+    private ChecklistItemService checklistItemService;
     @Autowired
     private DBService<ChecklistTemplate> checklistTemplateService;
     @Autowired
-    private DBService<ChecklistItemTemplate> checklistItemTemplateService;
+    private ChecklistItemTemplateService checklistItemTemplateService;
 }

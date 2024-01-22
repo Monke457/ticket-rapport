@@ -80,4 +80,11 @@ public class DBService<T extends DBEntity> {
     public void delete(T entry) {
         em.remove(em.merge(entry));
     }
+
+    @Transactional
+    public void delete(Collection<T> entries) {
+        for (T entry : entries) {
+            em.remove(em.merge(entry));
+        }
+    }
 }

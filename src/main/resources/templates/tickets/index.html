@@ -29,7 +29,8 @@
                 <td th:text="${entry.assignedUser.fullName}"></td>
             </div>
             <td th:text="${entry.client.name}"></td>
-            <td th:text="${entry.status.description}"></td>
+            <td th:unless="${entry.status == null}" th:text="${entry.status.description}"></td>
+            <td th:if="${entry.status == null}">No Status</td>
             <td class="text-end pb-2">
                 <a class="btn btn-sm btn-primary" th:href="@{/tickets(id=${entry.id})}">View</a>
                 <div th:if="${authUser.role.description == 'ADMIN'}">
