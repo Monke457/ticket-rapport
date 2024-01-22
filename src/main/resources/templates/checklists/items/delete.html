@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments/head :: head('Delete Checklist Item Template')}"></head>
+<body>
+<header th:replace="~{fragments/header :: header}"></header>
+
+<main class="container">
+    <div class="form-wrapper">
+        <div class="d-flex justify-content-between align-items-center my-4">
+            <span></span>
+            <h3>Delete Checklist Item Template</h3>
+            <a class="btn btn-sm btn-secondary" th:href="@{/checklists/items}">Back</a>
+        </div>
+
+        <div class="mb-3">
+            <div class="form-label">Description</div>
+            <div class="form-control bg-light" th:text="${entry.description}"></div>
+        </div>
+
+        <form th:action="@{delete(id=${entry.id})}" method="post">
+            <div class="text-end">
+                <a class="btn btn-outline-primary" th:href="@{/checklists/items}">Cancel</a>
+                <button class="btn btn-danger">Delete</button>
+            </div>
+        </form>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

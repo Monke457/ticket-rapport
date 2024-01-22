@@ -1,0 +1,65 @@
+<div th:fragment="checklist-form" xmlns:th="http://www.w3.org/1999/xhtml">
+    <div class="mb-3">
+        <label class="form-label" th:for="*{description}">Description</label>
+        <input class="form-control" th:field="*{description}">
+    </div>
+    <div class="mb-3">
+        <label class="form-label" th:for="*{items}">Items (Ctrl + click to select multiple)</label>
+        <div>
+            <select id="itemTemplates" class="form-control" multiple="multiple" style="min-height:200px;" th:onchange="updateIds()">
+                <option th:each="item: ${itemTemplates}" th:value="${item.id}" th:text="${item.description}" th:selected="${#arrays.contains(entry.items, item)}"></option>
+            </select>
+            <input id="ids" type="hidden" th:name="itemIds" value="">
+        </div>
+    </div>
+    <div>
+        <button class="btn btn-sm btn-success mt-2" type="button" th:onclick="add(this.parentElement)">Add Item +</button>
+    </div>
+    <script th:inline="javascript">
+        var count = 1;
+        var ids = document.getElementById('ids');
+        var options = document.getElementById('itemTemplates').options;
+
+        function updateIds() {
+            ids.value = "";
+            for (var i = 0; i < options.length; i++) {
+                if (options[i].selected) {
+                    ids.value += options[i].value + ",";
+                }
+            }
+        }
+        updateIds();
+
+        function add(el) {
+            outerDiv = document.createElement('div');
+            innerDiv = document.createElement('div');
+            textInput = document.createElement('input');
+            button = document.createElement('button');
+
+            outerDiv.classList.add('d-flex', 'justify-content-between', 'align-items-center', 'p-1', 'gap-2');
+            innerDiv.classList.add('d-flex', 'gap-2', 'align-items-center', 'w-100');
+
+            textInput.classList.add('form-control');
+            textInput.type = 'text';
+            textInput.name = 'list_desc';
+            textInput.placeholder = 'Checklist task description';
+
+            button.classList.add('btn', 'btn-sm', 'btn-outline-danger');
+            button.type = 'button';
+            button.addEventListener('click', function() {
+                remove(this.parentElement);
+            }, false);
+            button.innerHTML = 'X';
+
+            innerDiv.appendChild(textInput);
+            outerDiv.appendChild(innerDiv);
+            outerDiv.appendChild(button);
+            el.insertBefore(outerDiv, el.lastElementChild);
+        }
+
+        function remove(el) {
+            el.parentElement.removeChild(el);
+        }
+    </script>
+</div>
+

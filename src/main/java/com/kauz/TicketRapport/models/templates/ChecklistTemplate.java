@@ -26,12 +26,13 @@ public class ChecklistTemplate implements DBEntity {
 
     private String description;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "checklist_template_items",
             joinColumns = { @JoinColumn(name = "template_id") },
             inverseJoinColumns = { @JoinColumn(name = "item_id") }
     )
+    @OrderBy("id")
     private Set<ChecklistItemTemplate> items = new HashSet<>();
 
     public ChecklistTemplate(String description, Set<ChecklistItemTemplate> items) {

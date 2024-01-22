@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments/head :: head('Checklist Item Templates')}"></head>
+<body>
+<header th:replace="~{fragments/header :: header}"></header>
+
+<main class="container">
+    <h3 class="text-center my-4">Checklist Item Templates</h3>
+    <table class="table my-4">
+        <tr>
+            <th>Description</th>
+            <th></th>
+        </tr>
+        <tr th:each="entry: ${entries}">
+            <td th:text="${entry.description}"></td>
+            <td class="text-end pb-2">
+                <a class="btn btn-sm btn-warning" th:href="@{/checklists/items/edit(id=${entry.id})}">Edit</a>
+                <a class="btn btn-sm btn-danger" th:href="@{/checklists/items/delete(id=${entry.id})}">Delete</a>
+            </td>
+        </tr>
+    </table>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

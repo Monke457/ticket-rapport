@@ -1,0 +1,14 @@
+<div th:fragment="checklist-details" xmlns:th="http://www.w3.org/1999/xhtml">
+    <div class="mb-3">
+        <div class="form-label">Description</div>
+        <div class="form-control bg-light" th:text="${entry.description}"></div>
+    </div>
+    <div class="mb-3">
+        <div class="form-label">Items</div>
+        <ul class="list-group" th:each="item: ${entry.items}">
+            <li class="list-group-item">
+                <span th:text="${item.description}"></span>
+            </li>
+        </ul>
+    </div>
+</div>

@@ -77,6 +77,13 @@ public class DBService<T extends DBEntity> {
     }
 
     @Transactional
+    public void update(Collection<T> entries) {
+        for (T entry : entries) {
+            em.merge(entry);
+        }
+    }
+
+    @Transactional
     public void delete(Class<T> type, T entry) {
         T dbEntry = find(type, entry.getId());
         em.remove(em.merge(dbEntry));

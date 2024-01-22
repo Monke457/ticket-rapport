@@ -101,6 +101,8 @@ public class TicketController extends BaseController {
     public String create(@RequestParam String checkboxes,
                          @RequestParam String descriptions,
                          @RequestParam String ids,
+                         @RequestParam(required = false) String saveTemplate,
+                         @RequestParam(required = false) String templateName,
                          @ModelAttribute Ticket entry,
                          BindingResult result, Model model) {
 
@@ -114,7 +116,7 @@ public class TicketController extends BaseController {
             return "tickets/create";
         }
 
-        updateChecklist(entry, checkboxes, descriptions, ids);
+        updateChecklist(entry, checkboxes, descriptions, ids, saveTemplate != null, templateName);
 
         entry.setStatus(unitOfWork.getStatusService().find("In Progress"));
         unitOfWork.getTicketService().create(entry);
@@ -145,7 +147,7 @@ public class TicketController extends BaseController {
                        @RequestParam String ids,
                        @ModelAttribute Ticket entry, BindingResult result, Model model) {
         if (result.hasErrors()) {
-            addBaseAttributes(model);
+            super.addBaseAttributes(model);
             model.addAttribute("entry", entry);
             model.addAttribute("users", unitOfWork.getUserService().getLearners());
             model.addAttribute("clients", unitOfWork.getClientService().getAll(Client.class));
@@ -160,11 +162,22 @@ public class TicketController extends BaseController {
     }
 
     private void updateChecklist(Ticket entry, String checkboxes, String descriptions, String ids) {
+        updateChecklist(entry, checkboxes, descriptions, ids, false, null);
+    }
+
+    private void updateChecklist(Ticket entry, String checkboxes, String descriptions, String ids, boolean saveTemplate, String templateName) {
         String[] checkArray = checkboxes.split(";;");
         String[] descArray = descriptions.split(";;");
         String[] idArray = ids.split(";;");
 
         Set<ChecklistItem> originalItems = unitOfWork.getChecklistItemService().findByTicket(entry.getId()).collect(Collectors.toSet());
+        ChecklistTemplate template = new ChecklistTemplate();
+        if (saveTemplate) {
+            if (templateName == null) templateName = "New Template";
+            template.setDescription(templateName);
+            unitOfWork.getChecklistTemplateService().create(template);
+        }
+
         entry.setChecklist(new HashSet<>());
 
         for (int i = 0; i < idArray.length; i++) {
@@ -181,11 +194,28 @@ public class TicketController extends BaseController {
             item.setTicket(entry);
             item.setCompleted(Objects.equals(checkArray[i], "true"));
 
+            if (saveTemplate) {
+                ChecklistItemTemplate itemTemplate = null;
+                if (idArray[i].length() > 3) {
+                     itemTemplate = unitOfWork.getChecklistItemTemplateService().find(ChecklistItemTemplate.class, UUID.fromString(idArray[i]));
+                }
+                if (itemTemplate == null) {
+                    itemTemplate = new ChecklistItemTemplate();
+                }
+                itemTemplate.getTemplates().add(template);
+                itemTemplate.setDescription(descArray[i]);
+                template.getItems().add(itemTemplate);
+            }
+
             entry.getChecklist().add(item);
         }
 
         // delete removed items
         unitOfWork.getChecklistItemService().delete(ChecklistItem.class, originalItems);
+
+        if (saveTemplate) {
+            unitOfWork.getChecklistTemplateService().update(template);
+        }
     }
 
     @GetMapping("/tickets/delete")
