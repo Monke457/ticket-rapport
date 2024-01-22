@@ -1,3 +1,17 @@
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    padding: 20px 0;
+}
+
+footer {
+    margin-top: auto;
+}
+
 .form-wrapper {
     width: 75%;
     margin: auto;
