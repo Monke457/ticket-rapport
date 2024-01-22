@@ -98,7 +98,7 @@ public class UserController extends BaseController {
     @RequestMapping(value = "/users/delete", method = RequestMethod.POST)
     public String delete(@RequestParam UUID id, @ModelAttribute User entry, BindingResult result) {
         if (!result.hasErrors()) {
-            unitOfWork.getUserService().delete(entry);
+            unitOfWork.getUserService().delete(User.class, entry);
         }
         return "redirect:/users";
     }

@@ -77,14 +77,15 @@ public class DBService<T extends DBEntity> {
     }
 
     @Transactional
-    public void delete(T entry) {
-        em.remove(em.merge(entry));
+    public void delete(Class<T> type, T entry) {
+        T dbEntry = find(type, entry.getId());
+        em.remove(em.merge(dbEntry));
     }
 
     @Transactional
-    public void delete(Collection<T> entries) {
+    public void delete(Class<T> type, Collection<T> entries) {
         for (T entry : entries) {
-            em.remove(em.merge(entry));
+            delete(type, entry);
         }
     }
 }

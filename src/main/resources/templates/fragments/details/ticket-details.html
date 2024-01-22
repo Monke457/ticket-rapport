@@ -42,12 +42,14 @@
             <div class="form-label">Work Time</div>
             <div class="form-control bg-light" th:text="${entry.worktime}"></div>
         </div>
-        <ul class="list-group" th:each="item: ${entry.checklist}">
-            <li class="list-group-item">
-                <img th:src="@{/img/} + (${item.completed} ? 'check.svg' : 'square.svg')" alt="item-box" title="Item Box"/>
-                <span th:text="${item.description}"></span>
-            </li>
-        </ul>
+        <div class="mb-3">
+            <ul class="list-group" th:each="item: ${entry.checklist}">
+                <li class="list-group-item">
+                    <img th:src="@{/img/} + (${item.completed} ? 'check.svg' : 'square.svg')" alt="item-box" title="Item Box"/>
+                    <span th:text="${item.description}"></span>
+                </li>
+            </ul>
+        </div>
     </div>
 
     <form th:unless="${delete == 'true' || authUser.role.description == 'ADMIN' || entry.status.description != 'In Progress'}"

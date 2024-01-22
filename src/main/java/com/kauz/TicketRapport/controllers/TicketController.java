@@ -185,7 +185,7 @@ public class TicketController extends BaseController {
         }
 
         // delete removed items
-        unitOfWork.getChecklistItemService().delete(originalItems);
+        unitOfWork.getChecklistItemService().delete(ChecklistItem.class, originalItems);
     }
 
     @GetMapping("/tickets/delete")
@@ -198,7 +198,7 @@ public class TicketController extends BaseController {
     @RequestMapping(value = "/tickets/delete", method = RequestMethod.POST)
     public String delete(@RequestParam UUID id, @ModelAttribute Ticket entry, BindingResult result) {
         if (!result.hasErrors()) {
-            unitOfWork.getTicketService().delete(entry);
+            unitOfWork.getTicketService().delete(Ticket.class, entry);
         }
         return "redirect:/tickets";
     }

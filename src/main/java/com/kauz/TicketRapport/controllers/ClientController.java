@@ -71,7 +71,7 @@ public class ClientController extends BaseController {
     @RequestMapping(value = "/clients/delete", method = RequestMethod.POST)
     public String delete(@RequestParam UUID id, @ModelAttribute Client entry, BindingResult result) {
         if (!result.hasErrors()) {
-            unitOfWork.getClientService().delete(entry);
+            unitOfWork.getClientService().delete(Client.class, entry);
         }
         return "redirect:/clients";
     }
