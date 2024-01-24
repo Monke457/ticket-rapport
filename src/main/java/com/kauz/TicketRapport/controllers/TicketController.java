@@ -31,17 +31,23 @@ public class TicketController extends BaseController {
         if (id != null) {
             model.addAttribute("referer", referer);
             Ticket entry = unitOfWork.getTicketService().find(Ticket.class, id);
-            if (entry.getAssignedUser().getId() != authUser.getUser().getId() && !Objects.equals(authUser.getUser().getRole().getDescription(), "ADMIN")) {
+
+            if (entry.getAssignedUser().getId() != authUser.getUser().getId() &&
+                    !Objects.equals(authUser.getUser().getRole().getDescription(), "ADMIN")) {
                 return "redirect:/tickets";
             }
+
             model.addAttribute("entry", entry);
             return "tickets/details";
         }
 
         if (Objects.equals(authUser.getUser().getRole().getDescription(), "ADMIN")) {
             model.addAttribute("entries", unitOfWork.getTicketService().getAll(Ticket.class));
+
         } else {
-            model.addAttribute("entries", unitOfWork.getTicketService().find(new TicketFilter(null, authUser.getUser().getId(), null, null)));
+            TicketFilter filter = new TicketFilter();
+            filter.setLearnerId(authUser.getUser().getId());
+            model.addAttribute("entries", unitOfWork.getTicketService().find(filter));
         }
         return "tickets/index";
     }
@@ -63,6 +69,7 @@ public class TicketController extends BaseController {
 
     @RequestMapping(value = "/tickets/update", method = RequestMethod.POST)
     public String update(@RequestParam UUID id,
+                         @RequestParam(required = false) String referer,
                          @ModelAttribute Ticket entry,
                          BindingResult result,
                          @RequestParam String action,
@@ -71,7 +78,10 @@ public class TicketController extends BaseController {
         Ticket ticket = unitOfWork.getTicketService().find(Ticket.class, id);
 
         if (!result.hasErrors()) {
-            if (ticket.getAssignedUser().getId() != authUser.getUser().getId()) return "redirect:/tickets";
+            if (ticket.getAssignedUser().getId() != authUser.getUser().getId()) {
+                if(Objects.equals(referer, "home")) return "redirect:/";
+                return "redirect:/tickets";
+            }
             if (checklistItems == null) checklistItems = "";
 
             ticket.setProtocol(entry.getProtocol());
@@ -86,9 +96,12 @@ public class TicketController extends BaseController {
             }
             unitOfWork.getTicketService().update(ticket);
 
-            if (Objects.equals(action, "exit")) return "redirect:/tickets";
+            if (Objects.equals(action, "exit")) {
+                if(Objects.equals(referer, "home")) return "redirect:/";
+                return "redirect:/tickets";
+            }
         }
-        return "redirect:/tickets?id=" + id;
+        return "redirect:/tickets?id=" + id + "&referer=" + referer;
     }
 
     @GetMapping("/tickets/create")

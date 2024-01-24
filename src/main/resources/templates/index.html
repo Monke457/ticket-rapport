@@ -7,21 +7,27 @@
 <main class="container">
     <div th:if="${authUser.role.description == 'ADMIN'}">
         <h3 class="my-4">Completed Tickets</h3>
-        <form th:replace="~{fragments/forms/ticket-filter :: ticket-filter}"></form>
+        <div class="alert alert-warning" th:if="${#arrays.length(completed) == 0}">No completed tickets found</div>
         <div th:replace="~{fragments/ticket-cards :: ticket-cards(${completed})}"></div>
         <hr class="my-5">
         <h3 class="my-4">Tickets In Progress</h3>
         <form th:replace="~{fragments/forms/ticket-filter :: ticket-filter}"></form>
+        <div class="alert alert-warning" th:if="${#arrays.length(open) == 0}">No open tickets found</div>
         <div th:replace="~{fragments/ticket-cards :: ticket-cards(${open})}"></div>
     </div>
 
     <div th:if="${authUser.role.description == 'LEARNER'}">
         <h3 class="my-4">Your Tasks</h3>
-        <form th:replace="~{fragments/forms/ticket-filter :: ticket-filter}"></form>
+        <div class="alert alert-success" th:if="${#arrays.length(userTicketsOpen) == 0}">You have completed all your tasks!</div>
         <div th:replace="~{fragments/ticket-cards :: ticket-cards(${userTicketsOpen})}"></div>
+        <hr class="my-5">
+        <h3 class="my-4">Completed Tasks</h3>
+        <div class="alert alert-warning" th:if="${#arrays.length(userTicketsCompleted) == 0}">No completed tasks found</div>
+        <div th:replace="~{fragments/ticket-cards :: ticket-cards(${userTicketsCompleted})}"></div>
         <hr class="my-5">
         <h3 class="my-4">Closed Tickets</h3>
         <form th:replace="~{fragments/forms/ticket-filter :: ticket-filter}"></form>
+        <div class="alert alert-warning" th:if="${#arrays.length(userTicketsClosed) == 0}">No closed tickets found</div>
         <div th:replace="~{fragments/ticket-cards :: ticket-cards(${userTicketsClosed})}"></div>
     </div>
 </main>

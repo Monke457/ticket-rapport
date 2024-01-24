@@ -16,17 +16,33 @@ public class HomeController extends BaseController {
     @GetMapping("/")
     public String getIndex(Model model) {
         super.addBaseAttributes(model);
+
         if (Objects.equals(authUser.getUser().getRole().getDescription(), "ADMIN")) {
-            model.addAttribute("completed", unitOfWork.getTicketService().find(
-                    new TicketFilter(null, null, null, "Completed")));
-            model.addAttribute("open", unitOfWork.getTicketService().find(
-                    new TicketFilter(null, null, null, "In Progress")));
+            TicketFilter completedFilter = new TicketFilter();
+            TicketFilter openFilter = new TicketFilter();
+
+            completedFilter.setStatus("Completed");
+            openFilter.setStatus("In Progress");
+
+            model.addAttribute("completed", unitOfWork.getTicketService().find(completedFilter).toList());
+            model.addAttribute("open", unitOfWork.getTicketService().find(openFilter).toList());
         }
+
         if (Objects.equals(authUser.getUser().getRole().getDescription(), "LEARNER")) {
-            model.addAttribute("userTicketsOpen", unitOfWork.getTicketService().find(
-                    new TicketFilter(null, authUser.getUser().getId(), null, "In Progress, Completed")));
-            model.addAttribute("userTicketsClosed", unitOfWork.getTicketService().find(
-                    new TicketFilter(null, authUser.getUser().getId(), null, "Closed")));
+            TicketFilter openFilter = new TicketFilter();
+            TicketFilter completedFilter = new TicketFilter();
+            TicketFilter closedFilter = new TicketFilter();
+
+            openFilter.setStatus("In Progress");
+            openFilter.setLearnerId(authUser.getUser().getId());
+            completedFilter.setStatus("Completed");
+            completedFilter.setLearnerId(authUser.getUser().getId());
+            closedFilter.setStatus("Closed");
+            closedFilter.setLearnerId(authUser.getUser().getId());
+
+            model.addAttribute("userTicketsOpen", unitOfWork.getTicketService().find(openFilter).toList());
+            model.addAttribute("userTicketsCompleted", unitOfWork.getTicketService().find(completedFilter).toList());
+            model.addAttribute("userTicketsClosed", unitOfWork.getTicketService().find(closedFilter).toList());
         }
 
         model.addAttribute("filter", new TicketFilter());

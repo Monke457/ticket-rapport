@@ -11,4 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public abstract class Filter {
     private String search;
+    private String sort;
+    private int page;
+    private boolean asc;
 }

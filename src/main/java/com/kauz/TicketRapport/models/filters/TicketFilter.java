@@ -13,11 +13,11 @@ public class TicketFilter extends Filter {
     private UUID learnerId;
     private UUID clientId;
 
-    // multiple statuses separated by a comma
+    // multiple statuses separated by commas
     private String status;
 
-    public TicketFilter(String search, UUID learnerId, UUID clientId, String status) {
-        super(search);
+    public TicketFilter(String search, String sort, int page, boolean asc, UUID learnerId, UUID clientId, String status) {
+        super(search, sort, page, asc);
         this.learnerId = learnerId;
         this.clientId = clientId;
         this.status = status;
