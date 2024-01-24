@@ -6,7 +6,7 @@
     <div class="mb-3">
         <label class="form-label" th:for="*{items}">Items (Ctrl + click to select multiple)</label>
         <div>
-            <select id="itemTemplates" class="form-control" multiple="multiple" style="min-height:200px;" th:onchange="updateIds()">
+            <select id="itemTemplates" class="form-select" multiple="multiple" style="min-height:150px;" th:onchange="updateIds()">
                 <option th:each="item: ${itemTemplates}" th:value="${item.id}" th:text="${item.description}" th:selected="${#arrays.contains(entry.items, item)}"></option>
             </select>
             <input id="ids" type="hidden" th:name="itemIds" value="">

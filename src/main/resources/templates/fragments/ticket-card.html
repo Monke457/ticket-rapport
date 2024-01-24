@@ -1,0 +1,22 @@
+<div th:fragment="ticket-card(tickets)" th:each="ticket: ${tickets}"
+     class="card text-light bg-gradient" th:classappend="${ticket.status.description == 'In Progress' ? 'bg-primary' : 'bg-success'}" style="width: 300px;"
+     xmlns:th="http://www.w3.org/1999/xhtml">
+    <div class="card-body d-flex flex-column justify-content-between">
+        <div>
+            <h5 class="card-title" th:text="${ticket.title}"></h5>
+            <div class="card-subtitle mb-1">
+                <span>Learner: </span>
+                <span th:text="${ticket.assignedUser.fullName}"></span>
+            </div>
+            <div class="card-subtitle mb-1">
+                <span>Client: </span>
+                <span th:text="${ticket.client.name}"></span>
+            </div>
+            <hr>
+            <p class="card-text" th:text="${#strings.abbreviate(ticket.description, 100)}"></p>
+        </div>
+        <div class="text-end card-link">
+            <a class="btn btn-sm btn-outline-light" th:href="@{tickets(id=${ticket.id}, referer='home')}">View</a>
+        </div>
+    </div>
+</div>

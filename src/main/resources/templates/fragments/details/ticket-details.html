@@ -1,11 +1,11 @@
 <div th:fragment="ticket-details(delete)" xmlns:th="http://www.w3.org/1999/xhtml">
     <div class="mb-3">
         <div class="form-label">Title</div>
-        <div class="form-control bg-light" th:text="${entry.title}"></div>
+        <div class="form-control bg-light" style="min-height:37px;" th:text="${entry.title}"></div>
     </div>
     <div class="mb-3">
         <div class="form-label">Description</div>
-        <div class="form-control bg-light" th:text="${entry.description}"></div>
+        <div class="form-control bg-light" style="min-height:37px;" th:text="${entry.description}"></div>
     </div>
     <div class="mb-3">
         <div class="form-label">Assigned Learner</div>
@@ -32,15 +32,15 @@
     <div th:if="${delete == 'true' || authUser.role.description == 'ADMIN' || entry.status.description != 'In Progress'}">
         <div class="mb-3">
             <div class="form-label">Protocol</div>
-            <div class="form-control bg-light" th:text="${entry.protocol}"></div>
+            <div class="form-control bg-light" style="min-height:37px;" th:text="${entry.protocol}"></div>
         </div>
         <div class="mb-3">
             <div class="form-label">Solution</div>
-            <div class="form-control bg-light" th:text="${entry.solution}"></div>
+            <div class="form-control bg-light" style="min-height:37px;" th:text="${entry.solution}"></div>
         </div>
         <div class="mb-3">
             <div class="form-label">Work Time</div>
-            <div class="form-control bg-light" th:text="${entry.worktime}"></div>
+            <div class="form-control bg-light" style="min-height:37px;" th:text="${entry.worktime}"></div>
         </div>
         <div class="mb-3">
             <ul class="list-group" th:each="item: ${entry.checklist}">

@@ -4,6 +4,7 @@ import com.kauz.TicketRapport.models.ChecklistItem;
 import com.kauz.TicketRapport.models.Client;
 import com.kauz.TicketRapport.models.Status;
 import com.kauz.TicketRapport.models.Ticket;
+import com.kauz.TicketRapport.models.filters.TicketFilter;
 import com.kauz.TicketRapport.models.templates.ChecklistItemTemplate;
 import com.kauz.TicketRapport.models.templates.ChecklistTemplate;
 import jakarta.annotation.security.RolesAllowed;
@@ -24,10 +25,11 @@ import java.util.stream.Stream;
 @Controller
 public class TicketController extends BaseController {
     @GetMapping("/tickets")
-    public String getIndex(Model model, @RequestParam(required = false) UUID id) {
+    public String getIndex(Model model, @RequestParam(required = false) UUID id, @RequestParam(required = false) String referer) {
         super.addBaseAttributes(model);
 
         if (id != null) {
+            model.addAttribute("referer", referer);
             Ticket entry = unitOfWork.getTicketService().find(Ticket.class, id);
             if (entry.getAssignedUser().getId() != authUser.getUser().getId() && !Objects.equals(authUser.getUser().getRole().getDescription(), "ADMIN")) {
                 return "redirect:/tickets";
@@ -39,13 +41,13 @@ public class TicketController extends BaseController {
         if (Objects.equals(authUser.getUser().getRole().getDescription(), "ADMIN")) {
             model.addAttribute("entries", unitOfWork.getTicketService().getAll(Ticket.class));
         } else {
-            model.addAttribute("entries", unitOfWork.getTicketService().findByLearner(authUser.getUser()));
+            model.addAttribute("entries", unitOfWork.getTicketService().find(new TicketFilter(null, authUser.getUser().getId(), null, null)));
         }
         return "tickets/index";
     }
 
     @RequestMapping(value = "/tickets/status", method = RequestMethod.POST)
-    public String status(@RequestParam UUID id, @RequestParam String action) {
+    public String status(@RequestParam UUID id, @RequestParam String action, @RequestParam(required = false) String referer) {
         Ticket ticket = unitOfWork.getTicketService().find(Ticket.class, id);
         if (Objects.equals(action, "close")) {
             ticket.setStatus(unitOfWork.getStatusService().find("Closed"));
@@ -53,6 +55,9 @@ public class TicketController extends BaseController {
             ticket.setStatus(unitOfWork.getStatusService().find("In Progress"));
         }
         unitOfWork.getTicketService().update(ticket);
+        if (Objects.equals(referer, "home")) {
+            return "redirect:/";
+        }
         return "redirect:/tickets";
     }
 
@@ -77,7 +82,7 @@ public class TicketController extends BaseController {
                 item.setCompleted(checklistItems.contains(item.getId().toString()));
             }
             if (Objects.equals(action, "complete")) {
-                ticket.setStatus(unitOfWork.getStatusService().find("Complete"));
+                ticket.setStatus(unitOfWork.getStatusService().find("Completed"));
             }
             unitOfWork.getTicketService().update(ticket);
 
@@ -126,7 +131,7 @@ public class TicketController extends BaseController {
     @GetMapping("/tickets/getTemplate")
     public String checklistTemplate(@RequestParam("id") UUID id, Model model) {
         model.addAttribute("items", unitOfWork.getChecklistItemTemplateService().findByTemplate(id));
-        return "fragments/forms/checklist :: checklist";
+        return "fragments/checklist :: checklist";
     }
 
     @GetMapping("/tickets/edit")

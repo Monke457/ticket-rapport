@@ -38,7 +38,7 @@ public class DataGenerator {
 
             // create statuses
             Status open = new Status("In Progress");
-            Status complete = new Status("Complete");
+            Status complete = new Status("Completed");
             Status closed = new Status("Closed");
             unitOfWork.getStatusService().create(Set.of(open, complete, closed));
 

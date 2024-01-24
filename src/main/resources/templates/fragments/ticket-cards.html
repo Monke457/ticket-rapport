@@ -1,0 +1,3 @@
+<div th:fragment="ticket-cards(tickets)" class="d-flex flex-wrap gap-3" xmlns:th="http://www.w3.org/1999/xhtml">
+    <div th:replace="~{fragments/ticket-card :: ticket-card(${tickets})}"></div>
+</div>

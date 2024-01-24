@@ -5,7 +5,25 @@
 <header th:replace="~{fragments/header :: header}"></header>
 
 <main class="container">
-    Hello
+    <div th:if="${authUser.role.description == 'ADMIN'}">
+        <h3 class="my-4">Completed Tickets</h3>
+        <form th:replace="~{fragments/forms/ticket-filter :: ticket-filter}"></form>
+        <div th:replace="~{fragments/ticket-cards :: ticket-cards(${completed})}"></div>
+        <hr class="my-5">
+        <h3 class="my-4">Tickets In Progress</h3>
+        <form th:replace="~{fragments/forms/ticket-filter :: ticket-filter}"></form>
+        <div th:replace="~{fragments/ticket-cards :: ticket-cards(${open})}"></div>
+    </div>
+
+    <div th:if="${authUser.role.description == 'LEARNER'}">
+        <h3 class="my-4">Your Tasks</h3>
+        <form th:replace="~{fragments/forms/ticket-filter :: ticket-filter}"></form>
+        <div th:replace="~{fragments/ticket-cards :: ticket-cards(${userTicketsOpen})}"></div>
+        <hr class="my-5">
+        <h3 class="my-4">Closed Tickets</h3>
+        <form th:replace="~{fragments/forms/ticket-filter :: ticket-filter}"></form>
+        <div th:replace="~{fragments/ticket-cards :: ticket-cards(${userTicketsClosed})}"></div>
+    </div>
 </main>
 
 <footer th:replace="~{fragments/footer :: footer}"></footer>
