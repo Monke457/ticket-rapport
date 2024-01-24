@@ -1,19 +1,14 @@
 package com.kauz.TicketRapport.services;
 
 import com.kauz.TicketRapport.models.Ticket;
-import com.kauz.TicketRapport.models.User;
+import com.kauz.TicketRapport.models.filters.Filter;
 import com.kauz.TicketRapport.models.filters.TicketFilter;
-import jakarta.persistence.Query;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Stream;
 
 /**
@@ -22,33 +17,24 @@ import java.util.stream.Stream;
 @Repository
 public class TicketService extends DBService<Ticket> {
 
-    @Transactional
-    public Stream<Ticket> find(TicketFilter filter) {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Ticket> cq = cb.createQuery(Ticket.class);
-        Root<Ticket> root = cq.from(Ticket.class);
-
-        addFilter(cb, cq, root, filter);
-
-        return em.createQuery(cq).getResultStream();
-    }
-
-    private void addFilter(CriteriaBuilder cb, CriteriaQuery<Ticket> cq, Root<Ticket> root, TicketFilter filter) {
+    @Override
+    protected void addFilter(CriteriaBuilder cb, CriteriaQuery<Ticket> cq, Root<Ticket> root, Filter filter) {
+        TicketFilter f = (TicketFilter) filter;
         List<Predicate> predicates = new ArrayList<>();
-        if (filter.getSearch() != null && !filter.getSearch().isBlank()) {
+        if (f.getSearch() != null && !f.getSearch().isBlank()) {
             predicates.add(cb.or(
-                    cb.like(root.join("assignedUser").get("firstname"), "%" + filter.getSearch() + "%"),
-                    cb.like(root.join("assignedUser").get("lastname"), "%" + filter.getSearch() + "%")));
+                    cb.like(root.join("assignedUser").get("firstname"), "%" + f.getSearch() + "%"),
+                    cb.like(root.join("assignedUser").get("lastname"), "%" + f.getSearch() + "%")));
         }
-        if (filter.getLearnerId() != null) {
-            predicates.add(cb.equal(root.join("assignedUser").get("id"), filter.getLearnerId()));
+        if (f.getLearnerId() != null) {
+            predicates.add(cb.equal(root.join("assignedUser").get("id"), f.getLearnerId()));
         }
-        if (filter.getClientId() != null) {
-            predicates.add(cb.equal(root.join("client").get("id"), filter.getClientId()));
+        if (f.getClientId() != null) {
+            predicates.add(cb.equal(root.join("client").get("id"), f.getClientId()));
         }
-        if (filter.getStatus() != null && !filter.getStatus().isBlank()) {
+        if (f.getStatus() != null && !f.getStatus().isBlank()) {
             List<Predicate> statusPreds = new ArrayList<>();
-            String[] statuses = filter.getStatus().split(",");
+            String[] statuses = f.getStatus().split(",");
             for (String status : statuses) {
                 statusPreds.add(cb.equal(root.join("status").get("description"), status));
             }

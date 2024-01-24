@@ -1,6 +1,7 @@
 package com.kauz.TicketRapport.controllers;
 
 import com.kauz.TicketRapport.models.Client;
+import com.kauz.TicketRapport.models.filters.Filter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,12 +15,21 @@ import java.util.UUID;
 @Controller
 public class ClientController extends BaseController {
     @GetMapping("/clients")
-    public String getIndex(Model model, @RequestParam(required = false) UUID id) {
+    public String getIndex(Model model,
+                           @RequestParam(required = false) UUID id,
+                           @RequestParam(defaultValue = "") String search,
+                           @RequestParam(defaultValue = "name") String sort,
+                           @RequestParam(defaultValue = "1") int page,
+                           @RequestParam(defaultValue = "true") boolean asc) {
         super.addBaseAttributes(model);
+
         if (id == null) {
-            model.addAttribute("entries", unitOfWork.getClientService().getAll(Client.class));
+            Filter filter = new Filter(search, sort, page, asc);
+            model.addAttribute("entries", unitOfWork.getClientService().find(Client.class, filter));
+            model.addAttribute("filter", filter);
             return "clients/index";
         }
+
         model.addAttribute("entry", unitOfWork.getClientService().find(Client.class, id));
         return "clients/details";
     }

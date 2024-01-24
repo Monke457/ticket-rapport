@@ -1,5 +1,6 @@
 package com.kauz.TicketRapport.controllers;
 
+import com.kauz.TicketRapport.models.filters.Filter;
 import com.kauz.TicketRapport.models.templates.ChecklistItemTemplate;
 import com.kauz.TicketRapport.models.templates.ChecklistTemplate;
 import org.springframework.stereotype.Controller;
@@ -20,10 +21,18 @@ import java.util.stream.Stream;
 @Controller
 public class TemplateController extends BaseController {
     @GetMapping("/checklists")
-    public String getIndex(@RequestParam(required = false) UUID id, Model model) {
+    public String getIndex(@RequestParam(required = false) UUID id,
+                           @RequestParam(defaultValue = "") String search,
+                           @RequestParam(defaultValue = "description") String sort,
+                           @RequestParam(defaultValue = "1") int page,
+                           @RequestParam(defaultValue = "true") boolean asc,
+                           Model model) {
         super.addBaseAttributes(model);
+
         if (id == null) {
-            model.addAttribute("entries", unitOfWork.getChecklistTemplateService().getAll(ChecklistTemplate.class));
+            Filter filter = new Filter(search, sort, page, asc);
+            model.addAttribute("entries", unitOfWork.getChecklistTemplateService().find(ChecklistTemplate.class, filter));
+            model.addAttribute("filter", filter);
             return "checklists/index";
         }
         model.addAttribute("entry", unitOfWork.getChecklistTemplateService().find(ChecklistTemplate.class, id));
@@ -31,9 +40,15 @@ public class TemplateController extends BaseController {
     }
 
     @GetMapping("/checklists/items")
-    public String getItems(Model model) {
+    public String getItems(@RequestParam(defaultValue = "") String search,
+                           @RequestParam(defaultValue = "description") String sort,
+                           @RequestParam(defaultValue = "1") int page,
+                           @RequestParam(defaultValue = "true") boolean asc,
+                           Model model) {
         super.addBaseAttributes(model);
-        model.addAttribute("entries", unitOfWork.getChecklistItemTemplateService().getAll(ChecklistItemTemplate.class));
+        Filter filter = new Filter(search, sort, page, asc);
+        model.addAttribute("entries", unitOfWork.getChecklistItemTemplateService().find(ChecklistItemTemplate.class, filter));
+        model.addAttribute("filter", filter);
         return "checklists/items/index";
     }
 

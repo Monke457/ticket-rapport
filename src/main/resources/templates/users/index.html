@@ -9,10 +9,10 @@
     <a class="btn btn-sm btn-success" th:href="@{/users/create}">New User</a>
     <table class="table my-4">
         <tr>
-            <th>Firstname</th>
-            <th>Lastname</th>
-            <th>Email</th>
-            <th>Role</th>
+            <th th:replace="~{fragments/table-header :: table-header('users', 'firstname,lastname', 'Firstname')}"></th>
+            <th th:replace="~{fragments/table-header :: table-header('users', 'lastname,firstname', 'Lastname')}"></th>
+            <th th:replace="~{fragments/table-header :: table-header('users', 'email', 'Email')}"></th>
+            <th th:replace="~{fragments/table-header :: table-header('users', 'role', 'Role')}"></th>
             <th></th>
         </tr>
         <tr th:each="entry: ${entries}">

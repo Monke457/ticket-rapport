@@ -1,16 +1,18 @@
 package com.kauz.TicketRapport.services;
 
+import com.kauz.TicketRapport.models.Ticket;
+import com.kauz.TicketRapport.models.filters.Filter;
 import com.kauz.TicketRapport.models.helpers.DBEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -48,6 +50,42 @@ public class DBService<T extends DBEntity> {
             return null;
         }
         return query.getSingleResult();
+    }
+
+    @Transactional
+    public Stream<T> find(Class<T> type, Filter filter) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<T> cq = cb.createQuery(type);
+        Root<T> root = cq.from(type);
+
+        addFilter(cb, cq, root, filter);
+        sortQuery(cb, cq, root, filter.getSort(), filter.isAsc());
+
+        return em.createQuery(cq).getResultStream();
+    }
+
+    protected void addFilter(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root, Filter filter) {
+    }
+
+    private void sortQuery(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root, String sort, boolean asc) {
+        if (sort != null && !sort.isBlank()) {
+            String[] orderStrings = sort.split(",");
+            List<Order> orders = new ArrayList<>();
+            for (String order : orderStrings) {
+                if (order.contains(".")) {
+                    String join = order.substring(0, order.indexOf("."));
+                    String field = order.substring(order.indexOf(".") + 1);
+
+                    orders.add(asc
+                            ? cb.asc(root.join(join, JoinType.LEFT).get(field))
+                            : cb.desc(root.join(join, JoinType.LEFT).get(field))
+                    );
+                } else {
+                    orders.add(asc ? cb.asc(root.get(order)) : cb.desc(root.get(order)));
+                }
+            }
+            cq.orderBy(orders);
+        }
     }
 
     @Transactional

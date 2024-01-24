@@ -11,14 +11,14 @@
     </div>
     <table class="table my-4">
         <tr>
-            <th>Title</th>
+            <th th:replace="~{fragments/table-header :: table-header('tickets', 'title', 'Title')}"></th>
             <th>Description</th>
-            <th>Work Time</th>
+            <th th:replace="~{fragments/table-header :: table-header('tickets', 'workHours,workMinutes', 'Work Time')}"></th>
             <div th:if="${authUser.role.description == 'ADMIN'}">
-                <th>Assigned Learner</th>
+                <th th:replace="~{fragments/table-header :: table-header('tickets', 'assignedUser.firstname,assignedUser.lastname', 'Assigned Learner')}"></th>
             </div>
-            <th>Client</th>
-            <th>Status</th>
+            <th th:replace="~{fragments/table-header :: table-header('tickets', 'client.name', 'Client')}"></th>
+            <th th:replace="~{fragments/table-header :: table-header('tickets', 'status.description', 'Status')}"></th>
             <th></th>
         </tr>
         <tr th:each="entry: ${entries}">
@@ -26,7 +26,8 @@
             <td th:text="${entry.description}"></td>
             <td th:text="${entry.worktime}"></td>
             <div th:if="${authUser.role.description == 'ADMIN'}">
-                <td th:text="${entry.assignedUser.fullName}"></td>
+                <td th:if="${entry.assignedUser == null}">None</td>
+                <td th:unless="${entry.assignedUser == null}" th:text="${entry.assignedUser.fullName}"></td>
             </div>
             <td th:text="${entry.client.name}"></td>
             <td th:unless="${entry.status == null}" th:text="${entry.status.description}"></td>

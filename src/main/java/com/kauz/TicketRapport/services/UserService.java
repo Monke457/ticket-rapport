@@ -1,13 +1,16 @@
 package com.kauz.TicketRapport.services;
 
+import com.kauz.TicketRapport.models.Role;
 import com.kauz.TicketRapport.models.User;
+import com.kauz.TicketRapport.models.filters.Filter;
+import com.kauz.TicketRapport.models.filters.UserFilter;
 import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 /**
@@ -30,13 +33,32 @@ public class UserService extends DBService<User> {
         return query.getSingleResult();
     }
 
+    @Transactional
     public Stream<User> getLearners() {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<User> cq = cb.createQuery(User.class);
-        Root<User> root = cq.from(User.class);
+        UserFilter filter = new UserFilter();
+        filter.setRole("LEARNER");
+        return find(User.class, filter);
+    }
 
-        cq.where(cb.equal(root.get("role").get("description"), "LEARNER"));
+    @Override
+    protected void addFilter(CriteriaBuilder cb, CriteriaQuery<User> cq, Root<User> root, Filter filter) {
+        UserFilter f = (UserFilter) filter;
+        List<Predicate> predicates = new ArrayList<>();
+        Join<User, Role> roleJoin = root.join("role");
 
-        return em.createQuery(cq).getResultStream();
+        if (f.getSearch() != null && !f.getSearch().isBlank()) {
+            predicates.add(cb.or(
+                    cb.like(root.get("firstname"), "%" + f.getSearch() + "%"),
+                    cb.like(root.get("lastname"), "%" + f.getSearch() + "%"),
+                    cb.like(root.get("email"), "%" + f.getSearch() + "%")
+            ));
+        }
+        if (f.getRoleId() != null) {
+            predicates.add(cb.equal(roleJoin.get("id"), f.getRoleId()));
+        }
+        if (f.getRole() != null && !f.getRole().isBlank()) {
+            predicates.add(cb.like(roleJoin.get("description"), "%" + f.getRole() + "%"));
+        }
+        cq.where(cb.and(predicates.toArray(new Predicate[]{})));
     }
 }

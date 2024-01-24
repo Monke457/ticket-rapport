@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -45,5 +46,9 @@ public class User implements DBEntity {
 
     public String getFullName() {
         return firstname + ' ' + lastname;
+    }
+
+    public boolean isAdmin() {
+        return Objects.equals(role.getDescription(), "ADMIN");
     }
 }

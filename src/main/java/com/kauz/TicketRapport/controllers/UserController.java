@@ -2,6 +2,7 @@ package com.kauz.TicketRapport.controllers;
 
 import com.kauz.TicketRapport.models.Role;
 import com.kauz.TicketRapport.models.User;
+import com.kauz.TicketRapport.models.filters.UserFilter;
 import com.kauz.TicketRapport.models.helpers.UserFormData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,14 +22,25 @@ public class UserController extends BaseController {
     private PasswordEncoder encoder;
 
     @GetMapping("/users")
-    public String getIndex(Model model, @RequestParam(required = false) UUID id) {
+    public String getIndex(Model model,
+                           @RequestParam(required = false) UUID id,
+                           @RequestParam(defaultValue = "") String search,
+                           @RequestParam(defaultValue = "") UUID roleId,
+                           @RequestParam(defaultValue = "") String role,
+                           @RequestParam(defaultValue = "lastname") String sort,
+                           @RequestParam(defaultValue = "1") int page,
+                           @RequestParam(defaultValue = "true") boolean asc) {
         super.addBaseAttributes(model);
-        if (id != null) {
-            model.addAttribute("entry", unitOfWork.getUserService().find(User.class, id));
-            return "users/details";
+
+        if (id == null) {
+            UserFilter filter = new UserFilter(search, sort, page, asc, roleId, role);
+            model.addAttribute("entries", unitOfWork.getUserService().find(User.class, filter));
+            model.addAttribute("filter", filter);
+            return "users/index";
         }
-        model.addAttribute("entries", unitOfWork.getUserService().getAll(User.class));
-        return "users/index";
+
+        model.addAttribute("entry", unitOfWork.getUserService().find(User.class, id));
+        return "users/details";
     }
 
     @GetMapping("/users/create")

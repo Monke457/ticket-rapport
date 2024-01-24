@@ -24,11 +24,11 @@ public class UnitOfWork {
     @Autowired
     private StatusService statusService;
     @Autowired
-    private DBService<Client> clientService;
+    private ClientService clientService;
     @Autowired
     private ChecklistItemService checklistItemService;
     @Autowired
-    private DBService<ChecklistTemplate> checklistTemplateService;
+    private ChecklistTemplateService checklistTemplateService;
     @Autowired
     private ChecklistItemTemplateService checklistItemTemplateService;
 }

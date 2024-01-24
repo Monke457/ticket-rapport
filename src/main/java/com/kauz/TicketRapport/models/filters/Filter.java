@@ -9,8 +9,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class Filter {
+public class Filter {
     private String search;
+
+    // multiple sort order separated by commas
     private String sort;
     private int page;
     private boolean asc;

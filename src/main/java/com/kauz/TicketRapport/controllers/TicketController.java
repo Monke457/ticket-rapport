@@ -25,31 +25,38 @@ import java.util.stream.Stream;
 @Controller
 public class TicketController extends BaseController {
     @GetMapping("/tickets")
-    public String getIndex(Model model, @RequestParam(required = false) UUID id, @RequestParam(required = false) String referer) {
+    public String getIndex(Model model,
+                           @RequestParam(required = false) UUID id,
+                           @RequestParam(required = false) String referer,
+                           @RequestParam(defaultValue = "") String search,
+                           @RequestParam(defaultValue = "") UUID clientId,
+                           @RequestParam(defaultValue = "") String status,
+                           @RequestParam(defaultValue = "title") String sort,
+                           @RequestParam(defaultValue = "1") int page,
+                           @RequestParam(defaultValue = "true") boolean asc) {
         super.addBaseAttributes(model);
 
-        if (id != null) {
-            model.addAttribute("referer", referer);
-            Ticket entry = unitOfWork.getTicketService().find(Ticket.class, id);
+        if (id == null) {
+            TicketFilter filter = new TicketFilter(search, sort, page, asc, clientId, status);
+            if (!authUser.getUser().isAdmin()) {
+                filter.setLearnerId(authUser.getUser().getId());
+            }
+            model.addAttribute("entries", unitOfWork.getTicketService().find(Ticket.class, filter));
+            model.addAttribute("filter", filter);
+            return "tickets/index";
+        }
 
-            if (entry.getAssignedUser().getId() != authUser.getUser().getId() &&
-                    !Objects.equals(authUser.getUser().getRole().getDescription(), "ADMIN")) {
+        Ticket entry = unitOfWork.getTicketService().find(Ticket.class, id);
+
+        if (entry.getAssignedUser().getId() != authUser.getUser().getId()) {
+            if (!authUser.getUser().isAdmin()) {
                 return "redirect:/tickets";
             }
-
-            model.addAttribute("entry", entry);
-            return "tickets/details";
         }
 
-        if (Objects.equals(authUser.getUser().getRole().getDescription(), "ADMIN")) {
-            model.addAttribute("entries", unitOfWork.getTicketService().getAll(Ticket.class));
-
-        } else {
-            TicketFilter filter = new TicketFilter();
-            filter.setLearnerId(authUser.getUser().getId());
-            model.addAttribute("entries", unitOfWork.getTicketService().find(filter));
-        }
-        return "tickets/index";
+        model.addAttribute("referer", referer);
+        model.addAttribute("entry", entry);
+        return "tickets/details";
     }
 
     @RequestMapping(value = "/tickets/status", method = RequestMethod.POST)

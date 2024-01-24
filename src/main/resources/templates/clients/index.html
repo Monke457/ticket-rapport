@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-<head th:replace="~{fragments/head :: head('Client')}"></head>
+<head th:replace="~{fragments/head :: head('Clients')}"></head>
 <body>
 <header th:replace="~{fragments/header :: header}"></header>
 
 <main class="container">
-    <h3 class="text-center my-4">Client</h3>
+    <h3 class="text-center my-4">Clients</h3>
     <a class="btn btn-sm btn-success" th:href="@{/clients/create}">New Client</a>
     <table class="table my-4">
         <tr>
-            <th>Name</th>
+            <th th:replace="~{fragments/table-header :: table-header('clients', 'name', 'Name')}"></th>
             <th></th>
         </tr>
         <tr th:each="entry: ${entries}">

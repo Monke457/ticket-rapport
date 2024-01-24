@@ -11,7 +11,7 @@
     </div>
     <table class="table my-4">
         <tr>
-            <th>Description</th>
+            <th th:replace="~{fragments/table-header :: table-header('checklists/items', 'description', 'Description')}"></th>
             <th></th>
         </tr>
         <tr th:each="entry: ${entries}">

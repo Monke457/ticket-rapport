@@ -32,7 +32,7 @@ public class ChecklistTemplate implements DBEntity {
             joinColumns = { @JoinColumn(name = "template_id") },
             inverseJoinColumns = { @JoinColumn(name = "item_id") }
     )
-    @OrderBy("id")
+    @OrderBy("description")
     private Set<ChecklistItemTemplate> items = new HashSet<>();
 
     public ChecklistTemplate(String description, Set<ChecklistItemTemplate> items) {

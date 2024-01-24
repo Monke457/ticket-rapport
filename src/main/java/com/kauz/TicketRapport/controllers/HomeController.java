@@ -1,6 +1,7 @@
 package com.kauz.TicketRapport.controllers;
 
 import com.kauz.TicketRapport.models.Client;
+import com.kauz.TicketRapport.models.Ticket;
 import com.kauz.TicketRapport.models.filters.TicketFilter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,8 +25,8 @@ public class HomeController extends BaseController {
             completedFilter.setStatus("Completed");
             openFilter.setStatus("In Progress");
 
-            model.addAttribute("completed", unitOfWork.getTicketService().find(completedFilter).toList());
-            model.addAttribute("open", unitOfWork.getTicketService().find(openFilter).toList());
+            model.addAttribute("completed", unitOfWork.getTicketService().find(Ticket.class, completedFilter).toList());
+            model.addAttribute("open", unitOfWork.getTicketService().find(Ticket.class, openFilter).toList());
         }
 
         if (Objects.equals(authUser.getUser().getRole().getDescription(), "LEARNER")) {
@@ -40,9 +41,9 @@ public class HomeController extends BaseController {
             closedFilter.setStatus("Closed");
             closedFilter.setLearnerId(authUser.getUser().getId());
 
-            model.addAttribute("userTicketsOpen", unitOfWork.getTicketService().find(openFilter).toList());
-            model.addAttribute("userTicketsCompleted", unitOfWork.getTicketService().find(completedFilter).toList());
-            model.addAttribute("userTicketsClosed", unitOfWork.getTicketService().find(closedFilter).toList());
+            model.addAttribute("userTicketsOpen", unitOfWork.getTicketService().find(Ticket.class, openFilter).toList());
+            model.addAttribute("userTicketsCompleted", unitOfWork.getTicketService().find(Ticket.class, completedFilter).toList());
+            model.addAttribute("userTicketsClosed", unitOfWork.getTicketService().find(Ticket.class, closedFilter).toList());
         }
 
         model.addAttribute("filter", new TicketFilter());

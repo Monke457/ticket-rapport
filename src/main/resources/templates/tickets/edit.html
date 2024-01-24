@@ -9,7 +9,7 @@
         <div class="d-flex justify-content-between align-items-center my-4">
             <span></span>
             <h3>Edit Ticket</h3>
-            <a class="btn btn-sm btn-secondary" th:href="@{/tickets}">Back</a>
+            <a class="btn btn-sm btn-secondary" th:onclick="history.back()">Back</a>
         </div>
         <form th:action="@{edit(id=${entry.id})}" th:object="${entry}" method="post">
             <div th:replace="~{fragments/forms/ticket-form :: ticket-form('edit')}"></div>
