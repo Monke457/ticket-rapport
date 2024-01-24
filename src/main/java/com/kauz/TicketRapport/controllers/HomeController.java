@@ -14,41 +14,42 @@ import java.util.Objects;
  */
 @Controller
 public class HomeController extends BaseController {
+
+    /**
+     * The get handler for the home page.
+     * If the user is an admin, will add all the tickets marked either "completed" or "in progress" to the model.
+     * If the user is a learner, will add the current user's assigned tickets in lists according to ticket status.
+     *
+     * @param model the model containing all the relevant data needed to populate the view.
+     * @return a reference to the index Thymeleaf template.
+     */
     @GetMapping("/")
     public String getIndex(Model model) {
         super.addBaseAttributes(model);
 
-        if (Objects.equals(authUser.getUser().getRole().getDescription(), "ADMIN")) {
-            TicketFilter completedFilter = new TicketFilter();
-            TicketFilter openFilter = new TicketFilter();
+        TicketFilter filter = new TicketFilter();
+        if (authUser.getUser().isAdmin()) {
+            filter.setStatus("Completed");
+            model.addAttribute("completed", unitOfWork.getTicketService().find(Ticket.class, filter).toList());
 
-            completedFilter.setStatus("Completed");
-            openFilter.setStatus("In Progress");
-
-            model.addAttribute("completed", unitOfWork.getTicketService().find(Ticket.class, completedFilter).toList());
-            model.addAttribute("open", unitOfWork.getTicketService().find(Ticket.class, openFilter).toList());
+            filter.setStatus("In Progress");
+            model.addAttribute("open", unitOfWork.getTicketService().find(Ticket.class, filter).toList());
         }
 
-        if (Objects.equals(authUser.getUser().getRole().getDescription(), "LEARNER")) {
-            TicketFilter openFilter = new TicketFilter();
-            TicketFilter completedFilter = new TicketFilter();
-            TicketFilter closedFilter = new TicketFilter();
+        if (!authUser.getUser().isAdmin()) {
+            filter.setLearnerId(authUser.getUser().getId());
+            filter.setStatus("In Progress");
+            model.addAttribute("userTicketsOpen", unitOfWork.getTicketService().find(Ticket.class, filter).toList());
 
-            openFilter.setStatus("In Progress");
-            openFilter.setLearnerId(authUser.getUser().getId());
-            completedFilter.setStatus("Completed");
-            completedFilter.setLearnerId(authUser.getUser().getId());
-            closedFilter.setStatus("Closed");
-            closedFilter.setLearnerId(authUser.getUser().getId());
+            filter.setStatus("Completed");
+            model.addAttribute("userTicketsCompleted", unitOfWork.getTicketService().find(Ticket.class, filter).toList());
 
-            model.addAttribute("userTicketsOpen", unitOfWork.getTicketService().find(Ticket.class, openFilter).toList());
-            model.addAttribute("userTicketsCompleted", unitOfWork.getTicketService().find(Ticket.class, completedFilter).toList());
-            model.addAttribute("userTicketsClosed", unitOfWork.getTicketService().find(Ticket.class, closedFilter).toList());
+            filter.setStatus("Closed");
+            model.addAttribute("userTicketsClosed", unitOfWork.getTicketService().find(Ticket.class, filter).toList());
         }
 
         model.addAttribute("filter", new TicketFilter());
         model.addAttribute("clients", unitOfWork.getClientService().getAll(Client.class).toList());
-
         return "index";
     }
 }

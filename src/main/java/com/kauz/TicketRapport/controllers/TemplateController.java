@@ -1,26 +1,35 @@
 package com.kauz.TicketRapport.controllers;
 
-import com.kauz.TicketRapport.models.Ticket;
+import com.kauz.TicketRapport.models.ChecklistItem;
 import com.kauz.TicketRapport.models.filters.Filter;
 import com.kauz.TicketRapport.models.templates.ChecklistItemTemplate;
 import com.kauz.TicketRapport.models.templates.ChecklistTemplate;
+import com.kauz.TicketRapport.services.ChecklistItemTemplateService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * A controller for handling all requests pertaining to checklist templates.
  */
 @Controller
 public class TemplateController extends BaseController {
+
+    /**
+     * Get handler for the checklist templates page.
+     *
+     * @param id the id of a checklist template, if present will display details for the template, otherwise will display a list of all templates.
+     * @param search string to search for checklist tempaltes.
+     * @param sort sort order for the list.
+     * @param page current page in the list.
+     * @param asc whether the sort order is ascending.
+     * @param model the model containing data for the endpoint.
+     * @return a reference to a checklist Thymeleaf template.
+     */
     @GetMapping("/checklists")
     public String getIndex(@RequestParam(required = false) UUID id,
                            @RequestParam(defaultValue = "") String search,
@@ -42,6 +51,17 @@ public class TemplateController extends BaseController {
         return "checklists/details";
     }
 
+    /**
+     * Get handler for the checklist item templates page.
+     * returns a list of all templates.
+     *
+     * @param search string to search for item templates.
+     * @param sort sort order for the list.
+     * @param page the current page in the list.
+     * @param asc whether the sort order is ascending.
+     * @param model the model containing data for the endpoint.
+     * @return a reference to the checklist items Thymeleaf template.
+     */
     @GetMapping("/checklists/items")
     public String getItems(@RequestParam(defaultValue = "") String search,
                            @RequestParam(defaultValue = "description") String sort,
@@ -57,6 +77,12 @@ public class TemplateController extends BaseController {
         return "checklists/items/index";
     }
 
+    /**
+     * Get handler for the form to create a new checklist template.
+     *
+     * @param model the model containing data for the endpoint.
+     * @return a reference to the checklist create template.
+     */
     @GetMapping("/checklists/create")
     public String create(Model model) {
         super.addBaseAttributes(model);
@@ -65,6 +91,18 @@ public class TemplateController extends BaseController {
         return "checklists/create";
     }
 
+    /**
+     * Post handler for creating a new checklist template.
+     * Checks if the data is valid and saves a new checklist template to the database.
+     * Creates or updates the item templates that are contained in the checklist.
+     *
+     * @param itemIds a comma separated string of ids of the item templates in the new checklist template.
+     * @param descriptions a comma separated string of descriptions for the item templates in the new checklist template.
+     * @param entry the checklist template to save.
+     * @param result information about the data binding.
+     * @param model the model containing data for the endpoint.
+     * @return a reference to a checklist Thymeleaf template.
+     */
     @RequestMapping(value = "/checklists/create", method = RequestMethod.POST)
     public String create(@RequestParam(required = false) String itemIds,
                          @RequestParam(required = false, value = "list_desc") String descriptions,
@@ -82,6 +120,13 @@ public class TemplateController extends BaseController {
         return "redirect:/checklists";
     }
 
+    /**
+     * Get handler for the form to edit a checklist template.
+     *
+     * @param id the id of the checklist template.
+     * @param model the model containing data for the endpoint.
+     * @return a reference to the checklist template edit form.
+     */
     @GetMapping("/checklists/edit")
     public String edit(@RequestParam UUID id, Model model) {
         super.addBaseAttributes(model);
@@ -90,6 +135,19 @@ public class TemplateController extends BaseController {
         return "checklists/edit";
     }
 
+    /**
+     * Post handler for editing a checklist template.
+     * Checks that the data is valid and updated the checklist template in the database.
+     * Also updates the checklist item templates connected to the checklist.
+     *
+     * @param id the id of the checklist template to update.
+     * @param itemIds a comma separated string of ids of the item templates in the checklist.
+     * @param descriptions a comma separated string of descriptions for the item templates in the checklist.
+     * @param entry the checklist template entry to update with the new data.
+     * @param result information about the data binding.
+     * @param model the model containing data for the endpoint.
+     * @return a reference to a checklist Thymeleaf template.
+     */
     @RequestMapping(value = "/checklists/edit", method = RequestMethod.POST)
     public String edit(@RequestParam UUID id,
                        @RequestParam(required = false) String itemIds,
@@ -109,6 +167,15 @@ public class TemplateController extends BaseController {
         return "redirect:/checklists";
     }
 
+    /**
+     * A method to update the relational checklist item templates in a new or updated checklist template database entry.
+     * Replaces the checklist item templates set with a new one populated with entries from the database.
+     * Creates new checklist item templates based on the descriptions.
+     *
+     * @param entry the checklist template entry to update.
+     * @param itemIds comma separated string of ids for the persisted checklist item templates.
+     * @param descriptions comma separated string of descriptions for the new checklist item templates.
+     */
     private void updateItems(ChecklistTemplate entry, String itemIds, String descriptions) {
         Set<ChecklistItemTemplate> itemTemplates = new HashSet<>();
         if (itemIds != null && !itemIds.isBlank()) {
@@ -124,6 +191,13 @@ public class TemplateController extends BaseController {
         entry.setItems(itemTemplates);
     }
 
+    /**
+     * Get handler for the form to edit a checklist item template.
+     *
+     * @param id the id of the checklist item template entry.
+     * @param model the model containing data for the endpoint.
+     * @return a reference to the checklist item template edit form.
+     */
     @GetMapping("/checklists/items/edit")
     public String editItems(@RequestParam UUID id, Model model) {
         super.addBaseAttributes(model);
@@ -131,6 +205,16 @@ public class TemplateController extends BaseController {
         return "checklists/items/edit";
     }
 
+    /**
+     * Post handler for editing a checklist item template.
+     * Checks that the data is valid and updates the entry.
+     *
+     * @param id the id of the checklist item template.
+     * @param entry the checklist item template to update.
+     * @param result information about the data binding.
+     * @param model the model containing data for the endpoint.
+     * @return a reference to a checklist item Thymeleaf template.
+     */
     @RequestMapping(value = "/checklists/items/edit", method = RequestMethod.POST)
     public String editItems(@RequestParam UUID id, @ModelAttribute ChecklistItemTemplate entry, BindingResult result, Model model) {
         if (result.hasErrors()) {
@@ -142,6 +226,13 @@ public class TemplateController extends BaseController {
         return "redirect:/checklists/items";
     }
 
+    /**
+     * Get handler for the form to delete a checklist template.
+     *
+     * @param id the id of the checklist template to delete.
+     * @param model the model containing data for the endpoint.
+     * @return a reference to a checklist delete form.
+     */
     @GetMapping("/checklists/delete")
     public String delete(@RequestParam UUID id, Model model) {
         super.addBaseAttributes(model);
@@ -149,14 +240,33 @@ public class TemplateController extends BaseController {
         return "checklists/delete";
     }
 
+    /**
+     * Post handler for deleting a checklist template.
+     * Checks that the data is valid and removes the entry from the database.
+     *
+     * @param id the id of the checklist template to delete.
+     * @param entry the checklist template database entry.
+     * @param result information about the data binding.
+     * @return a reference to a checklist Thymeleaf template.
+     */
     @RequestMapping(value = "/checklists/delete", method = RequestMethod.POST)
     public String delete(@RequestParam UUID id, @ModelAttribute ChecklistTemplate entry, BindingResult result) {
         if (!result.hasErrors()) {
-            unitOfWork.getChecklistTemplateService().delete(ChecklistTemplate.class, entry);
+            ChecklistTemplate template = unitOfWork.getChecklistTemplateService().find(ChecklistTemplate.class, id);
+            // remove relations first
+            template.getItems().clear();
+            unitOfWork.getChecklistTemplateService().delete(ChecklistTemplate.class, template);
         }
         return "redirect:/checklists";
     }
 
+    /**
+     * Get handler for the form to delete a checklist item template.
+     *
+     * @param id the id of the checklist item template.
+     * @param model the model containing data for the endpoint.
+     * @return a reference to a checklist item delete form.
+     */
     @GetMapping("/checklists/items/delete")
     public String deleteItem(@RequestParam UUID id, Model model) {
         super.addBaseAttributes(model);
@@ -164,6 +274,16 @@ public class TemplateController extends BaseController {
         return "checklists/items/delete";
     }
 
+    /**
+     * Post handler for deleting a checklist item template.
+     * Updates the parent entries to remove the relationships from the entry marked for deletion.
+     * Checks that the data is valid and removes the checklist item template from the database.
+     *
+     * @param id the id of the checklist item template to delete.
+     * @param entry the checklist item template database entry.
+     * @param result information about the data binding.
+     * @return a reference to a checklist item Thymeleaf template.
+     */
     @RequestMapping(value = "/checklists/items/delete", method = RequestMethod.POST)
     public String deleteItem(@RequestParam UUID id, @ModelAttribute ChecklistItemTemplate entry, BindingResult result) {
         if (!result.hasErrors()) {

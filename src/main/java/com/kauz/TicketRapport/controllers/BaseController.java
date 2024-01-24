@@ -16,6 +16,12 @@ public abstract class BaseController {
     @Autowired
     protected AuthUser authUser;
 
+    /**
+     * Adds the universally required attribute of the authenticated user to the model.
+     * All controller handlers that lead to an endpoint in the app must call this method.
+     * 
+     * @param model the model to add the attributes to.
+     */
     protected void addBaseAttributes(Model model) {
         model.addAttribute("authUser", authUser.getUser());
     }
