@@ -64,6 +64,21 @@ public class DBService<T extends DBEntity> {
         return em.createQuery(cq).getResultStream();
     }
 
+    @Transactional
+    public Stream<T> find(Class<T> type, Filter filter, int pageSize) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<T> cq = cb.createQuery(type);
+        Root<T> root = cq.from(type);
+
+        addFilter(cb, cq, root, filter);
+        sortQuery(cb, cq, root, filter.getSort(), filter.isAsc());
+
+        return em.createQuery(cq)
+                .setFirstResult((filter.getPage() - 1) * pageSize)
+                .setMaxResults(pageSize)
+                .getResultStream();
+    }
+
     protected void addFilter(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root, Filter filter) {
     }
 
@@ -86,6 +101,17 @@ public class DBService<T extends DBEntity> {
             }
             cq.orderBy(orders);
         }
+    }
+
+    @Transactional
+    public long getPages(Class<T> type, Filter filter, int pageSize) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<T> cq = cb.createQuery(type);
+        Root<T> root = cq.from(type);
+
+        addFilter(cb, cq, root, filter);
+
+        return (long) Math.ceil((double)em.createQuery(cq).getResultStream().count() / pageSize);
     }
 
     @Transactional

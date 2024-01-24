@@ -32,15 +32,17 @@
             <td th:text="${entry.client.name}"></td>
             <td th:unless="${entry.status == null}" th:text="${entry.status.description}"></td>
             <td th:if="${entry.status == null}">No Status</td>
-            <td class="text-end pb-2">
+            <td class="pb-2 d-flex flex-wrap justify-content-end gap-1">
                 <a class="btn btn-sm btn-primary" th:href="@{/tickets(id=${entry.id})}">View</a>
-                <div th:if="${authUser.role.description == 'ADMIN'}">
+                <div th:if="${authUser.role.description == 'ADMIN'}" class="d-flex flex-wrap justify-content-end gap-1">
                     <a class="btn btn-sm btn-warning" th:href="@{/tickets/edit(id=${entry.id})}">Edit</a>
                     <a class="btn btn-sm btn-danger" th:href="@{/tickets/delete(id=${entry.id})}">Delete</a>
                 </div>
             </td>
         </tr>
     </table>
+
+    <div th:replace="~{fragments/pagination :: pagination(tickets)}"></div>
 </main>
 
 <footer th:replace="~{fragments/footer :: footer}"></footer>

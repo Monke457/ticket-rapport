@@ -1,6 +1,7 @@
 package com.kauz.TicketRapport.controllers;
 
 import com.kauz.TicketRapport.models.Role;
+import com.kauz.TicketRapport.models.Ticket;
 import com.kauz.TicketRapport.models.User;
 import com.kauz.TicketRapport.models.filters.UserFilter;
 import com.kauz.TicketRapport.models.helpers.UserFormData;
@@ -34,8 +35,10 @@ public class UserController extends BaseController {
 
         if (id == null) {
             UserFilter filter = new UserFilter(search, sort, page, asc, roleId, role);
-            model.addAttribute("entries", unitOfWork.getUserService().find(User.class, filter));
+            int pageSize = 10;
+            model.addAttribute("entries", unitOfWork.getUserService().find(User.class, filter, pageSize));
             model.addAttribute("filter", filter);
+            model.addAttribute("totalPages", unitOfWork.getUserService().getPages(User.class, filter, pageSize));
             return "users/index";
         }
 

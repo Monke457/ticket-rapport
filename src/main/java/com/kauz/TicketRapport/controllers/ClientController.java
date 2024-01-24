@@ -1,6 +1,7 @@
 package com.kauz.TicketRapport.controllers;
 
 import com.kauz.TicketRapport.models.Client;
+import com.kauz.TicketRapport.models.Ticket;
 import com.kauz.TicketRapport.models.filters.Filter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,8 +26,10 @@ public class ClientController extends BaseController {
 
         if (id == null) {
             Filter filter = new Filter(search, sort, page, asc);
-            model.addAttribute("entries", unitOfWork.getClientService().find(Client.class, filter));
+            int pageSize = 10;
+            model.addAttribute("entries", unitOfWork.getClientService().find(Client.class, filter, pageSize));
             model.addAttribute("filter", filter);
+            model.addAttribute("totalPages", unitOfWork.getClientService().getPages(Client.class, filter, pageSize));
             return "clients/index";
         }
 

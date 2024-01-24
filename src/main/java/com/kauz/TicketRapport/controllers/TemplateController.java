@@ -1,5 +1,6 @@
 package com.kauz.TicketRapport.controllers;
 
+import com.kauz.TicketRapport.models.Ticket;
 import com.kauz.TicketRapport.models.filters.Filter;
 import com.kauz.TicketRapport.models.templates.ChecklistItemTemplate;
 import com.kauz.TicketRapport.models.templates.ChecklistTemplate;
@@ -31,8 +32,10 @@ public class TemplateController extends BaseController {
 
         if (id == null) {
             Filter filter = new Filter(search, sort, page, asc);
-            model.addAttribute("entries", unitOfWork.getChecklistTemplateService().find(ChecklistTemplate.class, filter));
+            int pageSize = 10;
+            model.addAttribute("entries", unitOfWork.getChecklistTemplateService().find(ChecklistTemplate.class, filter, pageSize));
             model.addAttribute("filter", filter);
+            model.addAttribute("totalPages", unitOfWork.getChecklistTemplateService().getPages(ChecklistTemplate.class, filter, pageSize));
             return "checklists/index";
         }
         model.addAttribute("entry", unitOfWork.getChecklistTemplateService().find(ChecklistTemplate.class, id));
@@ -47,8 +50,10 @@ public class TemplateController extends BaseController {
                            Model model) {
         super.addBaseAttributes(model);
         Filter filter = new Filter(search, sort, page, asc);
-        model.addAttribute("entries", unitOfWork.getChecklistItemTemplateService().find(ChecklistItemTemplate.class, filter));
+        int pageSize = 10;
+        model.addAttribute("entries", unitOfWork.getChecklistItemTemplateService().find(ChecklistItemTemplate.class, filter, pageSize));
         model.addAttribute("filter", filter);
+        model.addAttribute("totalPages", unitOfWork.getChecklistItemTemplateService().getPages(ChecklistItemTemplate.class, filter, pageSize));
         return "checklists/items/index";
     }
 

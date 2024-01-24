@@ -16,12 +16,14 @@
         </tr>
         <tr th:each="entry: ${entries}">
             <td th:text="${entry.description}"></td>
-            <td class="text-end pb-2">
+            <td class="d-flex pb-2 flex-wrap justify-content-end gap-1">
                 <a class="btn btn-sm btn-warning" th:href="@{/checklists/items/edit(id=${entry.id})}">Edit</a>
                 <a class="btn btn-sm btn-danger" th:href="@{/checklists/items/delete(id=${entry.id})}">Delete</a>
             </td>
         </tr>
     </table>
+
+    <div th:replace="~{fragments/pagination :: pagination('checklists/items')}"></div>
 </main>
 
 <footer th:replace="~{fragments/footer :: footer}"></footer>

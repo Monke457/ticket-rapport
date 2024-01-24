@@ -1,4 +1,4 @@
 <th th:fragment="table-header(controller, sort, field)" xmlns:th="http://www.w3.org/1999/xhtml">
-    <a th:href="@{'/' + ${controller}(sort=${sort}, asc=${filter.sort != sort || !filter.asc})}" th:text="${field}">
+    <a th:href="@{'/' + ${controller} + ${filter.toQueryString(sort)}}" th:text="${field}">
     </a>
 </th>

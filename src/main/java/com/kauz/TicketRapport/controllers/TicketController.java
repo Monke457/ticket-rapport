@@ -38,11 +38,13 @@ public class TicketController extends BaseController {
 
         if (id == null) {
             TicketFilter filter = new TicketFilter(search, sort, page, asc, clientId, status);
+            int pageSize = 10;
             if (!authUser.getUser().isAdmin()) {
                 filter.setLearnerId(authUser.getUser().getId());
             }
-            model.addAttribute("entries", unitOfWork.getTicketService().find(Ticket.class, filter));
+            model.addAttribute("entries", unitOfWork.getTicketService().find(Ticket.class, filter, pageSize));
             model.addAttribute("filter", filter);
+            model.addAttribute("totalPages", unitOfWork.getTicketService().getPages(Ticket.class, filter, pageSize));
             return "tickets/index";
         }
 

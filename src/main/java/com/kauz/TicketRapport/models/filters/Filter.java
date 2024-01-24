@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Objects;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,4 +18,18 @@ public class Filter {
     private String sort;
     private int page;
     private boolean asc;
+
+    public String toQueryString(Integer newPage) {
+        return "?search" + search
+                + "&sort=" + sort
+                + "&page=" + newPage
+                + "&asc=" + asc;
+    }
+
+    public String toQueryString(String newSort) {
+        return "?search" + search
+                + "&sort=" + newSort
+                + "&page=" + page
+                + "&asc=" + (!newSort.equals(sort) || !asc);
+    }
 }
