@@ -12,19 +12,34 @@ import java.util.UUID;
 public class TicketFilter extends Filter {
     private UUID learnerId;
     private UUID clientId;
+    private UUID statusId;
 
     // multiple statuses separated by commas
     private String status;
 
-    public TicketFilter(String search, String sort, int page, boolean asc, UUID clientId, String status) {
+    public TicketFilter(String search, String sort, int page, boolean asc, UUID clientId, UUID statusId) {
         super(search, sort, page, asc);
         this.clientId = clientId;
-        this.status = status;
+        this.statusId = statusId;
     }
 
     public TicketFilter(String search, UUID clientId, String status) {
         super(search);
         this.clientId = clientId;
         this.status = status;
+    }
+
+    @Override
+    public String toQueryString(Integer newPage) {
+        return super.toQueryString(newPage)
+                + "&clientId=" + (clientId == null ? "" : clientId)
+                + "&statusId=" + (statusId == null ? "" : statusId);
+    }
+
+    @Override
+    public String toQueryString(String newSort) {
+        return super.toQueryString(newSort)
+                + "&clientId=" + (clientId == null ? "" : clientId)
+                + "&statusId=" + (statusId == null ? "" : statusId);
     }
 }

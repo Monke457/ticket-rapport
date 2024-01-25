@@ -30,19 +30,21 @@ public class TicketController extends BaseController {
                            @RequestParam(required = false) String referer,
                            @RequestParam(defaultValue = "") String search,
                            @RequestParam(defaultValue = "") UUID clientId,
-                           @RequestParam(defaultValue = "") String status,
+                           @RequestParam(defaultValue = "") UUID statusId,
                            @RequestParam(defaultValue = "title") String sort,
                            @RequestParam(defaultValue = "1") int page,
                            @RequestParam(defaultValue = "true") boolean asc) {
         super.addBaseAttributes(model);
 
         if (id == null) {
-            TicketFilter filter = new TicketFilter(search, sort, page, asc, clientId, status);
+            TicketFilter filter = new TicketFilter(search, sort, page, asc, clientId, statusId);
             int pageSize = 10;
             if (!authUser.getUser().isAdmin()) {
                 filter.setLearnerId(authUser.getUser().getId());
             }
             model.addAttribute("entries", unitOfWork.getTicketService().find(Ticket.class, filter, pageSize));
+            model.addAttribute("clients", unitOfWork.getClientService().getAll(Client.class));
+            model.addAttribute("statuses", unitOfWork.getStatusService().getAll(Status.class));
             model.addAttribute("filter", filter);
             model.addAttribute("totalPages", unitOfWork.getTicketService().getPages(Ticket.class, filter, pageSize));
             return "tickets/index";

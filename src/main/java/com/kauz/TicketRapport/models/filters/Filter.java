@@ -23,15 +23,21 @@ public class Filter {
         this.search = search;
     }
 
+    public String toQueryString() {
+        return "sort=" + sort
+                + "&page=" + page
+                + "&asc=" + asc;
+    }
+
     public String toQueryString(Integer newPage) {
-        return "?search" + search
+        return "?search=" + search
                 + "&sort=" + sort
                 + "&page=" + newPage
                 + "&asc=" + asc;
     }
 
     public String toQueryString(String newSort) {
-        return "?search" + search
+        return "?search=" + search
                 + "&sort=" + newSort
                 + "&page=" + page
                 + "&asc=" + (!newSort.equals(sort) || !asc);

@@ -9,6 +9,16 @@
     <div class="text-end">
         <a class="btn btn-sm btn-primary" th:href="@{/checklists}">Checklist Templates</a>
     </div>
+
+    <form class="my-4" th:object="${filter}" th:action="@{/checklists/items}" method="get">
+        <div class="row align-items-center">
+            <div th:replace="~{fragments/forms/filter-fields :: filter-fields}"></div>
+            <div class="col">
+                <button class="btn btn-sm btn-primary" type="submit">Go</button>
+            </div>
+        </div>
+    </form>
+
     <table class="table my-4">
         <tr>
             <th th:replace="~{fragments/table-header :: table-header('checklists/items', 'description', 'Description')}"></th>

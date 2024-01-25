@@ -13,7 +13,7 @@ public class ClientService extends DBService<Client> {
     @Override
     protected void addFilter(CriteriaBuilder cb, CriteriaQuery<Client> cq, Root<Client> root, Filter filter) {
         if (filter.getSearch() != null && !filter.getSearch().isBlank()) {
-            cq.where(cb.like(root.get("name"), filter.getSearch()));
+            cq.where(cb.like(root.get("name"), "%" + filter.getSearch() + "%"));
         }
     }
 }

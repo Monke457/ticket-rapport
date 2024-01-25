@@ -9,6 +9,28 @@
     <div th:if="${authUser.role.description == 'ADMIN'}">
         <a class="btn btn-sm btn-success" th:href="@{/tickets/create}">New Ticket</a>
     </div>
+
+    <form class="my-4" th:object="${filter}" th:action="@{tickets}" method="get">
+        <div class="row align-items-center">
+            <div th:replace="~{fragments/forms/filter-fields :: filter-fields}"></div>
+            <div class="col">
+                <select class="form-select" th:field="*{clientId}">
+                    <option value="">All Clients</option>
+                    <option th:each="client: ${clients}" th:value="${client.id}" th:text="${client.name}"></option>
+                </select>
+            </div>
+            <div class="col">
+                <select class="form-select" th:field="*{statusId}">
+                    <option value="">Any Status</option>
+                    <option th:each="status: ${statuses}" th:value="${status.id}" th:text="${status.description}"></option>
+                </select>
+            </div>
+            <div class="col">
+                <button class="btn btn-sm btn-primary" type="submit">Go</button>
+            </div>
+        </div>
+    </form>
+
     <table class="table my-4">
         <tr>
             <th th:replace="~{fragments/table-header :: table-header('tickets', 'title', 'Title')}"></th>

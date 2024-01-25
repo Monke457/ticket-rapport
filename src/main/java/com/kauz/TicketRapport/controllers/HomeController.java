@@ -59,7 +59,7 @@ public class HomeController extends BaseController {
         if (!authUser.getUser().isAdmin()) {
             filter.setLearnerId(authUser.getUser().getId());
         }
-        model.addAttribute("tickets", unitOfWork.getTicketService().findBroadSearch(filter).toList());
+        model.addAttribute("tickets", unitOfWork.getTicketService().find(Ticket.class, filter).toList());
         return "fragments/ticket-cards :: ticket-cards";
 
     }

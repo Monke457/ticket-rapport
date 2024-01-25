@@ -7,6 +7,16 @@
 <main class="container">
     <h3 class="text-center my-4">Clients</h3>
     <a class="btn btn-sm btn-success" th:href="@{/clients/create}">New Client</a>
+
+    <form class="my-4" th:object="${filter}" th:action="@{/clients}" method="get">
+        <div class="row align-items-center">
+            <div th:replace="~{fragments/forms/filter-fields :: filter-fields}"></div>
+            <div class="col">
+                <button class="btn btn-sm btn-primary" type="submit">Go</button>
+            </div>
+        </div>
+    </form>
+
     <table class="table my-4">
         <tr>
             <th th:replace="~{fragments/table-header :: table-header('clients', 'name', 'Name')}"></th>

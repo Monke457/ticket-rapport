@@ -13,7 +13,7 @@ public class ChecklistTemplateService extends DBService<ChecklistTemplate> {
     @Override
     protected void addFilter(CriteriaBuilder cb, CriteriaQuery<ChecklistTemplate> cq, Root<ChecklistTemplate> root, Filter filter) {
         if (filter.getSearch() != null && !filter.getSearch().isBlank()) {
-            cq.where(cb.like(root.get("description"), "%" + filter + "%"));
+            cq.where(cb.like(root.get("description"), "%" + filter.getSearch() + "%"));
         }
     }
 }

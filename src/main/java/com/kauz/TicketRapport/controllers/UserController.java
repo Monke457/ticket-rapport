@@ -27,16 +27,16 @@ public class UserController extends BaseController {
                            @RequestParam(required = false) UUID id,
                            @RequestParam(defaultValue = "") String search,
                            @RequestParam(defaultValue = "") UUID roleId,
-                           @RequestParam(defaultValue = "") String role,
                            @RequestParam(defaultValue = "lastname") String sort,
                            @RequestParam(defaultValue = "1") int page,
                            @RequestParam(defaultValue = "true") boolean asc) {
         super.addBaseAttributes(model);
 
         if (id == null) {
-            UserFilter filter = new UserFilter(search, sort, page, asc, roleId, role);
+            UserFilter filter = new UserFilter(search, sort, page, asc, roleId);
             int pageSize = 10;
             model.addAttribute("entries", unitOfWork.getUserService().find(User.class, filter, pageSize));
+            model.addAttribute("roles", unitOfWork.getRoleService().getAll(Role.class));
             model.addAttribute("filter", filter);
             model.addAttribute("totalPages", unitOfWork.getUserService().getPages(User.class, filter, pageSize));
             return "users/index";

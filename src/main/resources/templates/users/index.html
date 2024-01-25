@@ -7,6 +7,22 @@
 <main class="container">
     <h3 class="text-center my-4">Users</h3>
     <a class="btn btn-sm btn-success" th:href="@{/users/create}">New User</a>
+
+    <form class="my-4" th:object="${filter}" th:action="@{/users}" method="get">
+        <div class="row align-items-center">
+            <div th:replace="~{fragments/forms/filter-fields :: filter-fields}"></div>
+            <div class="col">
+                <select class="form-select" th:field="*{roleId}">
+                    <option value="">All Roles</option>
+                    <option th:each="role: ${roles}" th:value="${role.id}" th:text="${role.description}"></option>
+                </select>
+            </div>
+            <div class="col">
+                <button class="btn btn-sm btn-primary" type="submit">Go</button>
+            </div>
+        </div>
+    </form>
+
     <table class="table my-4">
         <tr>
             <th th:replace="~{fragments/table-header :: table-header('users', 'firstname,lastname', 'Firstname')}"></th>
