@@ -6,13 +6,13 @@
 
 <main class="container">
     <h3 class="text-center my-4">Checklist Templates</h3>
-    <div class="d-flex justify-content-between">
+    <div class="d-flex justify-content-between gap-2">
         <a class="btn btn-sm btn-success" th:href="@{/checklists/create}">New Checklist Template</a>
         <a class="btn btn-sm btn-primary" th:href="@{/checklists/items}">Item Templates</a>
     </div>
 
     <form class="my-4" th:object="${filter}" th:action="@{/checklists}" method="get">
-        <div class="row align-items-center">
+        <div class="row align-items-center gap-1">
             <div th:replace="~{fragments/forms/filter-fields :: filter-fields}"></div>
             <div class="col">
                 <button class="btn btn-sm btn-primary" type="submit">Go</button>
@@ -20,21 +20,23 @@
         </div>
     </form>
 
-    <table class="table my-4">
+    <table class="table responsive my-4">
         <tr>
             <th th:replace="~{fragments/table-header :: table-header('checklists', 'description', 'Description')}"></th>
             <th>Items</th>
             <th></th>
         </tr>
         <tr th:each="entry: ${entries}">
-            <td th:text="${entry.description}"></td>
+            <td id="description" th:text="${entry.description}"></td>
             <td>
-                <div th:each="item: ${entry.items}" th:text="${item.description}"></div>
+                <li id="items" th:each="item: ${entry.items}" th:text="${item.description}"></li>
             </td>
-            <td class="d-flex pb-2 flex-wrap justify-content-end gap-1">
-                <a class="btn btn-sm btn-primary" th:href="@{/checklists(id=${entry.id})}">View</a>
-                <a class="btn btn-sm btn-warning" th:href="@{/checklists/edit(id=${entry.id})}">Edit</a>
-                <a class="btn btn-sm btn-danger" th:href="@{/checklists/delete(id=${entry.id})}">Delete</a>
+            <td>
+                <div class="table-links d-flex flex-wrap justify-content-end gap-1">
+                    <a class="btn btn-sm btn-primary" th:href="@{/checklists(id=${entry.id})}">View</a>
+                    <a class="btn btn-sm btn-warning" th:href="@{/checklists/edit(id=${entry.id})}">Edit</a>
+                    <a class="btn btn-sm btn-danger" th:href="@{/checklists/delete(id=${entry.id})}">Delete</a>
+                </div>
             </td>
         </tr>
     </table>
@@ -44,4 +46,13 @@
 
 <footer th:replace="~{fragments/footer :: footer}"></footer>
 </body>
+
+<style media="screen and (max-width: 720px)">
+    #description{
+        font-weight: bold;
+        font-size: large;
+        text-align: center;
+
+    }
+</style>
 </html>

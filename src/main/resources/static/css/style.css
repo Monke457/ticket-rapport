@@ -27,4 +27,55 @@ footer {
     .form-wrapper {
         width: 100%;
     }
+
+    table.responsive,
+    table.responsive tbody,
+    table.responsive tr,
+    table.responsive td {
+        display: block;
+        border: none;
+    }
+
+    table.responsive td {
+        padding-top: 1px;
+        padding-bottom: 1px;
+        background: transparent;
+    }
+
+    table.responsive th {
+     display: none;
+    }
+
+    table.responsive tr {
+        margin-bottom: 20px;
+        border: 1px solid lightgrey;
+        border-radius: 5px;
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+    }
+
+    table.responsive tr.table-head {
+        border:none;
+    }
+
+    footer div {
+        justify-content: center!important;
+    }
+
+    footer ul {
+        justify-content: center!important;
+    }
+
+    footer p {
+        text-align: center!important;
+    }
+
+    .table-links {
+        margin-top: 20px;
+        margin-bottom: 7px;
+        justify-content: center !important;
+    }
+
+    .card {
+        width: 100% !important;
+    }
 }

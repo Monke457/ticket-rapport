@@ -17,7 +17,7 @@
                 <hr>
                 <p class="card-text" th:text="${#strings.abbreviate(ticket.description, 100)}"></p>
             </div>
-            <div class="text-end card-link">
+            <div class="text-end card-link mt-2">
                 <a class="btn btn-sm btn-outline-light" th:href="@{tickets(id=${ticket.id}, referer='home')}">View</a>
             </div>
         </div>

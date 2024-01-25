@@ -9,9 +9,9 @@
     <a class="btn btn-sm btn-success" th:href="@{/users/create}">New User</a>
 
     <form class="my-4" th:object="${filter}" th:action="@{/users}" method="get">
-        <div class="row align-items-center">
+        <div class="row align-items-center gap-1">
             <div th:replace="~{fragments/forms/filter-fields :: filter-fields}"></div>
-            <div class="col">
+            <div class="col" style="min-width:200px;">
                 <select class="form-select" th:field="*{roleId}">
                     <option value="">All Roles</option>
                     <option th:each="role: ${roles}" th:value="${role.id}" th:text="${role.description}"></option>
@@ -23,7 +23,7 @@
         </div>
     </form>
 
-    <table class="table my-4">
+    <table class="table responsive my-4">
         <tr>
             <th th:replace="~{fragments/table-header :: table-header('users', 'firstname,lastname', 'Firstname')}"></th>
             <th th:replace="~{fragments/table-header :: table-header('users', 'lastname,firstname', 'Lastname')}"></th>
@@ -32,14 +32,17 @@
             <th></th>
         </tr>
         <tr th:each="entry: ${entries}">
-            <td th:text="${entry.firstname}"></td>
-            <td th:text="${entry.lastname}"></td>
-            <td th:text="${entry.email}"></td>
-            <td th:text="${entry.role.description}"></td>
-            <td class="d-flex pb-2 flex-wrap justify-content-end gap-1">
-                <a class="btn btn-sm btn-primary" th:href="@{/users(id=${entry.id})}">View</a>
-                <a class="btn btn-sm btn-warning" th:href="@{/users/edit(id=${entry.id})}">Edit</a>
-                <a class="btn btn-sm btn-danger" th:href="@{/users/delete(id=${entry.id})}">Delete</a>
+            <td id="firstname" th:text="${entry.firstname}"></td>
+            <td id="lastname" th:text="${entry.lastname}"></td>
+            <td id="fullname" class="d-none" th:text="${entry.fullName}"></td>
+            <td id="email" th:text="${entry.email}"></td>
+            <td id="role" th:text="${entry.role.description}"></td>
+            <td>
+                <div class="table-links d-flex flex-wrap justify-content-end gap-1">
+                    <a class="btn btn-sm btn-primary" th:href="@{/users(id=${entry.id})}">View</a>
+                    <a class="btn btn-sm btn-warning" th:href="@{/users/edit(id=${entry.id})}">Edit</a>
+                    <a class="btn btn-sm btn-danger" th:href="@{/users/delete(id=${entry.id})}">Delete</a>
+                </div>
             </td>
         </tr>
     </table>
@@ -49,4 +52,29 @@
 
 <footer th:replace="~{fragments/footer :: footer}"></footer>
 </body>
+
+<style media="screen and (max-width: 720px)">
+    #firstname {
+       display:none;
+    }
+
+    #lastname {
+        display:none
+    }
+
+    #fullname {
+        display:block !important;
+        font-weight: bold;
+        font-size: large;
+        text-align: center;
+    }
+
+    #email::before {
+        content: "Email: ";
+    }
+
+    #role::before {
+        content: "Role: ";
+    }
+</style>
 </html>

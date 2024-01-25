@@ -23,12 +23,12 @@
     </div>
 
     <form class="my-4" th:object="${filter}" onkeydown="if(event.keyCode === 13) { getFilteredTickets(); return false; }">
-        <div class="row align-items-center">
+        <div class="row align-items-center gap-1">
             <input id="status" type="hidden" th:field="*{status}">
-            <div class="col">
+            <div class="col" style="min-width:200px;">
                 <input id="search" class="form-control" th:field="*{search}" placeholder="Search">
             </div>
-            <div class="col">
+            <div class="col" style="min-width:200px;">
                 <select id="client" class="form-select" th:field="*{clientId}">
                     <option value="">All Clients</option>
                     <option th:each="client: ${clients}" th:value="${client.id}" th:text="${client.name}"></option>
