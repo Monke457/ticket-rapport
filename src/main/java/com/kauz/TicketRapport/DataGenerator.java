@@ -86,12 +86,17 @@ public class DataGenerator {
             unitOfWork.getChecklistTemplateService().create(Set.of(template1, template2));
 
             // create checklist item templates
-            ChecklistItemTemplate itemT1 = new ChecklistItemTemplate("The workplace is clean and tidy", Set.of(template1, template2));
-            ChecklistItemTemplate itemT2 = new ChecklistItemTemplate("The hardware has been cleaned", Set.of(template1, template2));
-            ChecklistItemTemplate itemT3 = new ChecklistItemTemplate("Updates have been carried out", Set.of(template1, template2));
-            ChecklistItemTemplate itemT4 = new ChecklistItemTemplate("Required tools were provided at the designated location", Set.of(template1));
-            ChecklistItemTemplate itemT5 = new ChecklistItemTemplate("Customer's hardware labeled and returned", Set.of(template1));
+            ChecklistItemTemplate itemT1 = new ChecklistItemTemplate("The workplace is clean and tidy", new HashSet<>());
+            ChecklistItemTemplate itemT2 = new ChecklistItemTemplate("The hardware has been cleaned", new HashSet<>());
+            ChecklistItemTemplate itemT3 = new ChecklistItemTemplate("Updates have been carried out", new HashSet<>());
+            ChecklistItemTemplate itemT4 = new ChecklistItemTemplate("Required tools were provided at the designated location", new HashSet<>());
+            ChecklistItemTemplate itemT5 = new ChecklistItemTemplate("Customer's hardware labeled and returned", new HashSet<>());
             unitOfWork.getChecklistItemTemplateService().create(Set.of(itemT1, itemT2, itemT3, itemT4, itemT5));
+
+            // add item templates to checklist templates
+            template1.setItems(Set.of(itemT1, itemT2, itemT3, itemT4, itemT5));
+            template2.setItems(Set.of(itemT1, itemT2, itemT3));
+            unitOfWork.getChecklistTemplateService().update(Set.of(template1, template2));
         };
     }
 }
