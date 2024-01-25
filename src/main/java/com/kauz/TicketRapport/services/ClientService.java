@@ -7,6 +7,9 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
 
+/**
+ * A repository specifically for querying client data.
+ */
 @Repository
 public class ClientService extends DBService<Client> {
 

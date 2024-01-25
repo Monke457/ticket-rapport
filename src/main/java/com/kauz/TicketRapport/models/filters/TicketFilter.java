@@ -6,6 +6,12 @@ import lombok.Setter;
 
 import java.util.UUID;
 
+/**
+ * A filter class specifically for the ticket entity.
+ * Inherits all the general filter, sorting and pagination attributes from the parent filter class.
+ * may also have a learner id, client id, status id and a status,
+ * represented by a comma separated string of any number of status descriptions.
+ */
 @Getter
 @Setter
 @NoArgsConstructor

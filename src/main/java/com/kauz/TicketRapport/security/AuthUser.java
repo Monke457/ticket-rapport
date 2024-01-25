@@ -14,6 +14,10 @@ public class AuthUser {
     @Autowired
     private UnitOfWork unitOfWork;
 
+    /**
+     * Retrieves user information from the current session context.
+     * @return a user object representing the current session user.
+     */
     public User getUser() {
         return unitOfWork.getUserService().findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
     }

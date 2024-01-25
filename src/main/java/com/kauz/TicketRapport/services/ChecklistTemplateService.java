@@ -7,6 +7,9 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
 
+/**
+ * A repository specifically for querying checklist template data.
+ */
 @Repository
 public class ChecklistTemplateService extends DBService<ChecklistTemplate> {
 

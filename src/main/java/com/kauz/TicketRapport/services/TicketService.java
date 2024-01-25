@@ -5,12 +5,10 @@ import com.kauz.TicketRapport.models.Ticket;
 import com.kauz.TicketRapport.models.filters.Filter;
 import com.kauz.TicketRapport.models.filters.TicketFilter;
 import jakarta.persistence.criteria.*;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * A repository specifically for querying ticket data.

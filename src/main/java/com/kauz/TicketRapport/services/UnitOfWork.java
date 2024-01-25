@@ -1,8 +1,6 @@
 package com.kauz.TicketRapport.services;
 
-import com.kauz.TicketRapport.models.Client;
 import com.kauz.TicketRapport.models.Role;
-import com.kauz.TicketRapport.models.templates.ChecklistTemplate;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -8,7 +8,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -50,6 +49,16 @@ public class HomeController extends BaseController {
         return "index";
     }
 
+    /**
+     * A get handler for retrieving tickets according to set of filters.
+     * Searches all tickets if the current user is logged in as an admin, otherwise only searches the tickets assigned tot he current user.
+     *
+     * @param search the string use when searching through tickets.
+     * @param clientId the id of the client attached to the tickets.
+     * @param status the status of the tickets.
+     * @param model the model containing all the filtered tickets to populate the returned fragment.
+     * @return a reference to a Thymeleaf fragment for displaying tickets as cards.
+     */
     @GetMapping("/filter")
     public String filter(@RequestParam(defaultValue = "") String search,
                          @RequestParam(defaultValue = "") UUID clientId,

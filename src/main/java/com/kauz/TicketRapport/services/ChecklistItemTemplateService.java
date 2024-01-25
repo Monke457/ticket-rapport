@@ -11,9 +11,19 @@ import java.util.Collection;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+/**
+ * A repository specifically for querying checklist item template data.
+ */
 @Repository
 public class ChecklistItemTemplateService extends DBService<ChecklistItemTemplate> {
 
+    /**
+     * A query to fetch all checklist item templates of a specific checklist template.
+     * Creates a select query.
+     *
+     * @param id the id of the checklist template which the checklist item templates are attached to.
+     * @return a stream of checklist item templates.
+     */
     @Transactional
     public Stream<ChecklistItemTemplate> findByTemplate(UUID id) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -27,6 +37,13 @@ public class ChecklistItemTemplateService extends DBService<ChecklistItemTemplat
         return em.createQuery(cq).getResultStream();
     }
 
+    /**
+     * A query to fetch checklist item templates by unique ids.
+     * Creates a select query.
+     *
+     * @param ids a collection of unique UUID identifiers.
+     * @return a stream of checklist item templates.
+     */
     @Transactional
     public Stream<ChecklistItemTemplate> find(Collection<UUID> ids) {
         CriteriaBuilder cb = em.getCriteriaBuilder();

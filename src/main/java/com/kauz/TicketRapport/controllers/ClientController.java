@@ -1,7 +1,6 @@
 package com.kauz.TicketRapport.controllers;
 
 import com.kauz.TicketRapport.models.Client;
-import com.kauz.TicketRapport.models.Ticket;
 import com.kauz.TicketRapport.models.filters.Filter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

@@ -7,6 +7,11 @@ import lombok.Setter;
 
 import java.util.UUID;
 
+/**
+ * A filter class specifically for the user entity.
+ * Inherits all the general filter, sorting and pagination attributes from the parent filter class.
+ * May also has a role id and role description as a string.
+ */
 @Getter
 @Setter
 @NoArgsConstructor

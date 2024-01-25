@@ -1,7 +1,6 @@
 package com.kauz.TicketRapport.controllers;
 
 import com.kauz.TicketRapport.models.Role;
-import com.kauz.TicketRapport.models.Ticket;
 import com.kauz.TicketRapport.models.User;
 import com.kauz.TicketRapport.models.filters.UserFilter;
 import com.kauz.TicketRapport.models.helpers.UserFormData;
@@ -22,6 +21,19 @@ public class UserController extends BaseController {
     @Autowired
     private PasswordEncoder encoder;
 
+    /**
+     * A get handler for the users list page. Should only be available to admins.
+     * Fetches a filtered and sorted list of all user entries to display.
+     *
+     * @param model the model containing the relevant view data.
+     * @param id the id of a user to display, if present will display details for that user, otherwise displays a list of users.
+     * @param search the search string to filter users by.
+     * @param roleId the id of the role to filter users by.
+     * @param sort a comma separated string of sort orders.
+     * @param page the current page in the list.
+     * @param asc whether the sort order is ascending.
+     * @return a reference to a user Thymeleaf template.
+     */
     @GetMapping("/users")
     public String getIndex(Model model,
                            @RequestParam(required = false) UUID id,
@@ -46,6 +58,12 @@ public class UserController extends BaseController {
         return "users/details";
     }
 
+    /**
+     * A get handler for the form to create a new user.
+     *
+     * @param model the model containing the relevant view data.
+     * @return a reference to the create user Thymeleaf template.
+     */
     @GetMapping("/users/create")
     public String create(Model model) {
         super.addBaseAttributes(model);
@@ -54,6 +72,15 @@ public class UserController extends BaseController {
         return "users/create";
     }
 
+    /**
+     * A post handler for creating a new user.
+     * Checks that the data is valid and saves a new user entry in the database.
+     *
+     * @param entry a UserFormData object containing new user data.
+     * @param result information about the data binding.
+     * @param model the model containing the relevant view data.
+     * @return a reference to a Thymeleaf template.
+     */
     @RequestMapping(value = "/users/create", method = RequestMethod.POST)
     public String create(@ModelAttribute UserFormData entry,
                          BindingResult result, Model model) {
@@ -74,6 +101,14 @@ public class UserController extends BaseController {
         return "redirect:/users";
     }
 
+    /**
+     * Password validation method.
+     * Checks that the given passwords are the same, not blank and at least 5 characters long.
+     *
+     * @param pass the password string.
+     * @param confirm the confirmed password string, should be the same as pass.
+     * @return true if the password is valid, false if the password is invalid.
+     */
     private boolean validatePassword(String pass, String confirm) {
         // @TODO: add validation error messages
         if (pass.isBlank()) return false;
@@ -82,6 +117,13 @@ public class UserController extends BaseController {
         return pass.length() >= 5;
     }
 
+    /**
+     * A get handler for the form to edit a user entry.
+     *
+     * @param model the model containing the relevant view data.
+     * @param id the id of the user to update.
+     * @return a reference to the user edit Thymeleaf template.
+     */
     @GetMapping("/users/edit")
     public String edit(Model model, @RequestParam UUID id) {
         super.addBaseAttributes(model);
@@ -91,6 +133,16 @@ public class UserController extends BaseController {
         return "users/edit";
     }
 
+    /**
+     * A post handler for editing a user entry.
+     * Checks that the data is valid and updates the database entry.
+     *
+     * @param id the id of the user to update.
+     * @param entry the new user data.
+     * @param result information about the data binding.
+     * @param model the model containing the relevant view data.
+     * @return a reference to a Thymeleaf template.
+     */
     @RequestMapping(value = "/users/edit", method = RequestMethod.POST)
     public String edit(@RequestParam UUID id, @ModelAttribute User entry, BindingResult result, Model model) {
         if (result.hasErrors()) {
@@ -103,6 +155,13 @@ public class UserController extends BaseController {
         return "redirect:/users";
     }
 
+    /**
+     * A get handler for the form to delete a user.
+     *
+     * @param model the model containing the relevant view data.
+     * @param id the id of the user to delete.
+     * @return a reference to the user delete Thymeleaf template.
+     */
     @GetMapping("/users/delete")
     public String delete(Model model, @RequestParam UUID id) {
         super.addBaseAttributes(model);
@@ -110,6 +169,14 @@ public class UserController extends BaseController {
         return "users/delete";
     }
 
+    /**
+     * A post handler for deleting a user.
+     * Checks that the data is valid and removes the user from the database.
+     * @param id the id of the user to delete.
+     * @param entry the user entry to delete.
+     * @param result information about the data binding.
+     * @return a reference to the user list Thymeleaf template.
+     */
     @RequestMapping(value = "/users/delete", method = RequestMethod.POST)
     public String delete(@RequestParam UUID id, @ModelAttribute User entry, BindingResult result) {
         if (!result.hasErrors()) {

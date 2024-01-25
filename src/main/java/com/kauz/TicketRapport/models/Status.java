@@ -25,7 +25,8 @@ public class Status implements DBEntity {
     @Id
     @GeneratedValue
     private UUID id;
-    @Column(nullable = false)
+
+    @Column(nullable = false, unique = true)
     private String description;
 
     public Status(String description) {

@@ -1,16 +1,17 @@
 package com.kauz.TicketRapport.controllers;
 
-import com.kauz.TicketRapport.models.ChecklistItem;
 import com.kauz.TicketRapport.models.filters.Filter;
 import com.kauz.TicketRapport.models.templates.ChecklistItemTemplate;
 import com.kauz.TicketRapport.models.templates.ChecklistTemplate;
-import com.kauz.TicketRapport.services.ChecklistItemTemplateService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -210,7 +211,7 @@ public class TemplateController extends BaseController {
      * Checks that the data is valid and updates the entry.
      *
      * @param id the id of the checklist item template.
-     * @param entry the checklist item template to update.
+     * @param entry the new checklist item template data.
      * @param result information about the data binding.
      * @param model the model containing data for the endpoint.
      * @return a reference to a checklist item Thymeleaf template.

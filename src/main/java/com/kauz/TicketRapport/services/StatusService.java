@@ -13,6 +13,14 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public class StatusService extends DBService<Status> {
+
+    /**
+     * A query to fetch a single status by the unique description.
+     * Creates a select query.
+     *
+     * @param value the description of the status to find.
+     * @return a single status object.
+     */
     @Transactional
     public Status find(String value) {
         CriteriaBuilder cb = em.getCriteriaBuilder();

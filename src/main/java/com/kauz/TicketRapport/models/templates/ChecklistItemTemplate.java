@@ -1,7 +1,10 @@
 package com.kauz.TicketRapport.models.templates;
 
 import com.kauz.TicketRapport.models.helpers.DBEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

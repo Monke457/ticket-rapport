@@ -46,6 +46,6 @@ public class User implements DBEntity {
     }
 
     public boolean isAdmin() {
-        return Objects.equals(role.getDescription(), "ADMIN");
+        return role.getDescription().equals("ADMIN");
     }
 }
