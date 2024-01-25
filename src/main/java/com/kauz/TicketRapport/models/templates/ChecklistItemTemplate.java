@@ -1,10 +1,8 @@
 package com.kauz.TicketRapport.models.templates;
 
 import com.kauz.TicketRapport.models.helpers.DBEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,6 +25,9 @@ public class ChecklistItemTemplate implements DBEntity {
     @Id
     @GeneratedValue
     private UUID id;
+
+    @Column(nullable = false)
+    @NotBlank(message = "Please enter a description of the checklist item")
     private String description;
 
     @ManyToMany(mappedBy = "items")

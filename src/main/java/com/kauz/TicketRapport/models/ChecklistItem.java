@@ -2,6 +2,7 @@ package com.kauz.TicketRapport.models;
 
 import com.kauz.TicketRapport.models.helpers.DBEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,6 +23,9 @@ public class ChecklistItem implements DBEntity {
     @Id
     @GeneratedValue
     private UUID id;
+
+    @Column(nullable = false)
+    @NotBlank(message = "Please enter a description of the checklist item")
     private String description;
 
     @Column(nullable = false)

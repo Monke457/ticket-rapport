@@ -5,6 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,6 +27,7 @@ public class Client implements DBEntity {
     @GeneratedValue
     private UUID id;
     @Column(nullable = false)
+    @NotBlank(message = "Please enter a name")
     private String name;
 
     public Client(String name) {

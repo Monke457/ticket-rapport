@@ -1,13 +1,12 @@
 package com.kauz.TicketRapport.models;
 
 import com.kauz.TicketRapport.models.helpers.DBEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import java.util.UUID;
 
@@ -27,6 +26,7 @@ public class Status implements DBEntity {
     private UUID id;
 
     @Column(nullable = false, unique = true)
+    @NotBlank(message = "Please enter a description of the status")
     private String description;
 
     public Status(String description) {

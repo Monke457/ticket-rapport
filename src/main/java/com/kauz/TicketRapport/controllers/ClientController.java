@@ -2,6 +2,7 @@ package com.kauz.TicketRapport.controllers;
 
 import com.kauz.TicketRapport.models.Client;
 import com.kauz.TicketRapport.models.filters.Filter;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -71,7 +72,7 @@ public class ClientController extends BaseController {
      * @return a reference to a client template.
      */
     @RequestMapping(value = "/clients/create", method = RequestMethod.POST)
-    public String create(@ModelAttribute Client entry, BindingResult result, Model model) {
+    public String create(@Valid @ModelAttribute("entry") Client entry, BindingResult result, Model model) {
         if (result.hasErrors()) {
             super.addBaseAttributes(model);
             model.addAttribute("entry", entry);
@@ -107,7 +108,7 @@ public class ClientController extends BaseController {
      * @return a reference to a client template.
      */
     @RequestMapping(value = "/clients/edit", method = RequestMethod.POST)
-    public String edit(@RequestParam UUID id, @ModelAttribute Client entry, BindingResult result, Model model) {
+    public String edit(@RequestParam UUID id, @Valid @ModelAttribute("entry") Client entry, BindingResult result, Model model) {
         if (result.hasErrors()) {
             addBaseAttributes(model);
             model.addAttribute("entry", entry);

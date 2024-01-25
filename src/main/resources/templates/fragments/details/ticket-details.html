@@ -58,10 +58,12 @@
         <div class="mb-3">
             <div class="form-label" th:for="*{protocol}">Protocol</div>
             <textarea class="form-control mb-2" th:field="*{protocol}"></textarea>
+            <div th:replace="~{fragments/forms/error-alert :: error-alert('protocol')}"></div>
         </div>
         <div class="mb-3">
             <div class="form-label" th:for="*{solution}">Solution</div>
             <textarea class="form-control" th:field="*{solution}"></textarea>
+            <div th:replace="~{fragments/forms/error-alert :: error-alert('solution')}"></div>
         </div>
         <div class="mb-3">
             <label class="form-label">Work Time</label>
@@ -69,10 +71,12 @@
                 <div>
                     <label class="form-label" th:for="*{workHours}">Hours</label>
                     <input class="form-control" type="number" min="0" max="99" th:field="*{workHours}">
+                    <div th:replace="~{fragments/forms/error-alert :: error-alert('workHours')}"></div>
                 </div>
                 <div>
                     <label class="form-label" th:for="*{workMinutes}">Minutes</label>
                     <input class="form-control" type="number" min="0" max="59" th:field="*{workMinutes}">
+                    <div th:replace="~{fragments/forms/error-alert :: error-alert('workMinutes')}"></div>
                 </div>
             </div>
         </div>

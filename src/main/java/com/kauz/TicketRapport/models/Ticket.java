@@ -2,6 +2,8 @@ package com.kauz.TicketRapport.models;
 
 import com.kauz.TicketRapport.models.helpers.DBEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,6 +29,7 @@ public class Ticket implements DBEntity {
     @GeneratedValue
     private UUID id;
     @Column(nullable = false)
+    @NotBlank(message = "Please enter a title")
     private String title;
     private String description;
     private String protocol;
@@ -39,6 +42,7 @@ public class Ticket implements DBEntity {
 
     @ManyToOne
     @JoinColumn(nullable = false)
+    @NotNull(message = "Please select a client")
     private Client client;
 
     @ManyToOne

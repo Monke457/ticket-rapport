@@ -12,14 +12,19 @@
             <a class="btn btn-sm btn-secondary" th:href="@{/users}">Back</a>
         </div>
         <form th:action="@{create}" th:object="${entry}" method="post">
-            <div th:replace="~{fragments/forms/user-form :: user-form}"></div>
+            <div th:replace="~{fragments/forms/user-form :: user-form(false)}"></div>
             <div class="mb-3">
                 <label class="form-label" th:for="*{password}">Password</label>
                 <input class="form-control" type="password" th:field="*{password}">
+                <div th:replace="~{fragments/forms/error-alert :: error-alert('password')}"></div>
             </div>
             <div class="mb-3">
                 <label class="form-label" th:for="*{confirmPassword}">Confirm Password</label>
                 <input class="form-control" type="password" th:field="*{confirmPassword}">
+                <div class="alert alert-warning mt-1" th:if="${#fields.hasErrors('confirmPassword') || passError != null}">
+                    <div th:each="err : ${#fields.errors('confirmPassword')}" th:text="${err}"></div>
+                    <div th:if="${passError != null}" th:text="${passError}"></div>
+                </div>
             </div>
             <button type="submit" class="btn btn-primary float-end">Submit</button>
         </form>

@@ -4,6 +4,7 @@ import com.kauz.TicketRapport.models.Role;
 import com.kauz.TicketRapport.models.User;
 import com.kauz.TicketRapport.models.filters.UserFilter;
 import com.kauz.TicketRapport.models.helpers.UserFormData;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -62,7 +63,7 @@ public class UserController extends BaseController {
      * A get handler for the form to create a new user.
      *
      * @param model the model containing the relevant view data.
-     * @return a reference to the create user Thymeleaf template.
+     * @return a reference to the user create Thymeleaf template.
      */
     @GetMapping("/users/create")
     public String create(Model model) {
@@ -82,39 +83,35 @@ public class UserController extends BaseController {
      * @return a reference to a Thymeleaf template.
      */
     @RequestMapping(value = "/users/create", method = RequestMethod.POST)
-    public String create(@ModelAttribute UserFormData entry,
+    public String create(@Valid @ModelAttribute("entry") UserFormData entry,
                          BindingResult result, Model model) {
-        boolean passError = !validatePassword(entry.getPassword(),
-                entry.getConfirmPassword());
+        String passError = validatePassword(entry.getPassword(), entry.getConfirmPassword());
 
-        if (result.hasErrors() || passError) {
+        if (result.hasErrors() || passError != null) {
             addBaseAttributes(model);
             model.addAttribute("entry", entry);
-            model.addAttribute("roles",
-                    unitOfWork.getRoleService().getAll(Role.class));
+            model.addAttribute("roles", unitOfWork.getRoleService().getAll(Role.class));
+            model.addAttribute("passError", passError);
             return "users/create";
         }
 
-        unitOfWork.getUserService().create(new User(entry.getFirstname(),
-                entry.getLastname(), entry.getEmail(),
-                encoder.encode(entry.getPassword()), entry.getRole()));
+        User user = new User(entry.getFirstname(), entry.getLastname(), entry.getEmail(), encoder.encode(entry.getPassword()), entry.getRole());
+
+        unitOfWork.getUserService().create(user);
         return "redirect:/users";
     }
 
     /**
      * Password validation method.
-     * Checks that the given passwords are the same, not blank and at least 5 characters long.
+     * Checks that the given passwords are the same.
      *
      * @param pass the password string.
      * @param confirm the confirmed password string, should be the same as pass.
-     * @return true if the password is valid, false if the password is invalid.
+     * @return an error message if the password is invalid, otherwise null.
      */
-    private boolean validatePassword(String pass, String confirm) {
-        // @TODO: add validation error messages
-        if (pass.isBlank()) return false;
-        if (confirm.isBlank()) return false;
-        if (!pass.equals(confirm)) return false;
-        return pass.length() >= 5;
+    private String validatePassword(String pass, String confirm) {
+        if (!pass.equals(confirm)) return "The passwords do not match";
+        return null;
     }
 
     /**
@@ -144,7 +141,7 @@ public class UserController extends BaseController {
      * @return a reference to a Thymeleaf template.
      */
     @RequestMapping(value = "/users/edit", method = RequestMethod.POST)
-    public String edit(@RequestParam UUID id, @ModelAttribute User entry, BindingResult result, Model model) {
+    public String edit(@RequestParam UUID id, @Valid @ModelAttribute("entry") User entry, BindingResult result, Model model) {
         if (result.hasErrors()) {
             addBaseAttributes(model);
             model.addAttribute("entry", entry);

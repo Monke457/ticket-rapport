@@ -2,6 +2,9 @@ package com.kauz.TicketRapport.models;
 
 import com.kauz.TicketRapport.models.helpers.DBEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,10 +32,13 @@ public class User implements DBEntity {
     private String lastname;
 
     @Column(unique = true)
+    @Email(message = "Please enter a valid email address")
+    @NotBlank(message = "Please enter a valid email address")
     private String email;
     private String password;
 
     @ManyToOne
+    @NotNull(message = "Please select a role")
     private Role role;
 
     @Formula(value = " concat(firstname, ' ', lastname) ")

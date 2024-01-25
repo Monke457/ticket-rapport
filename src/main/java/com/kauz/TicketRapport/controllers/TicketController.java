@@ -7,9 +7,11 @@ import com.kauz.TicketRapport.models.Ticket;
 import com.kauz.TicketRapport.models.filters.TicketFilter;
 import com.kauz.TicketRapport.models.templates.ChecklistItemTemplate;
 import com.kauz.TicketRapport.models.templates.ChecklistTemplate;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
@@ -69,8 +71,8 @@ public class TicketController extends BaseController {
 
         Ticket entry = unitOfWork.getTicketService().find(Ticket.class, id);
 
-        if (entry.getAssignedUser().getId() != authUser.getUser().getId()) {
-            if (!authUser.getUser().isAdmin()) {
+        if (!authUser.getUser().isAdmin()) {
+            if (entry.getAssignedUser() == null || entry.getAssignedUser().getId() != authUser.getUser().getId()) {
                 return "redirect:/tickets";
             }
         }
@@ -123,7 +125,7 @@ public class TicketController extends BaseController {
     @RequestMapping(value = "/tickets/update", method = RequestMethod.POST)
     public String update(@RequestParam UUID id,
                          @RequestParam(required = false) String referer,
-                         @ModelAttribute Ticket entry,
+                         @Valid @ModelAttribute("entry") Ticket entry,
                          BindingResult result,
                          @RequestParam String action,
                          @RequestParam(required = false) String checklistItems) {
@@ -179,9 +181,9 @@ public class TicketController extends BaseController {
      * Checks that the data is valid and saves a new ticket in the database.
      * Also creates new checklist items and templates if necessary.
      *
-     * @param checkboxes a comma separated string of values for the checklist items (checked or not).
-     * @param descriptions a comma separated string of descriptions for the checklist items.
-     * @param ids a comma separated list of ids for the checklist items.
+     * @param checkboxes a string of values for the checklist items (checked or not) separated by ';;'.
+     * @param descriptions a string of descriptions for the checklist items separated by ';;'.
+     * @param ids a list of ids for the checklist items separated by ';;'.
      * @param saveTemplate a boolean check for if a template of the checklist should be saved.
      * @param templateName a string representing the name of the checklist template should it be saved.
      * @param entry the ticket entry to persist.
@@ -195,7 +197,7 @@ public class TicketController extends BaseController {
                          @RequestParam String ids,
                          @RequestParam(required = false) String saveTemplate,
                          @RequestParam(required = false) String templateName,
-                         @ModelAttribute Ticket entry,
+                         @Valid @ModelAttribute("entry") Ticket entry,
                          BindingResult result, Model model) {
 
         if (result.hasErrors()) {
@@ -211,6 +213,11 @@ public class TicketController extends BaseController {
         updateChecklist(entry, checkboxes, descriptions, ids, saveTemplate != null, templateName);
 
         entry.setStatus(unitOfWork.getStatusService().find("In Progress"));
+
+        // bug fix
+        if (entry.getAssignedUser().getId() == null) {
+            entry.setAssignedUser(null);
+        }
         unitOfWork.getTicketService().create(entry);
         return "redirect:/tickets";
     }
@@ -254,9 +261,9 @@ public class TicketController extends BaseController {
      * Also updates the checklist items and if necessary creates new checklist item entries.
      *
      * @param id the id of the ticket to update.
-     * @param checkboxes a comma separated list of the values of the checklist items (checked or not).
-     * @param descriptions a comma separated list of descriptions of the checklist items.
-     * @param ids a comma separated list of the ids of the checklist items.
+     * @param checkboxes a string of values for the checklist items (checked or not) separated by ';;'.
+     * @param descriptions a string of descriptions for the checklist items separated by ';;'.
+     * @param ids a list of ids for the checklist items separated by ';;'.
      * @param entry the new ticket data.
      * @param result information about the data binding.
      * @param model the model containing the relevant view data.
@@ -267,7 +274,7 @@ public class TicketController extends BaseController {
                        @RequestParam String checkboxes,
                        @RequestParam String descriptions,
                        @RequestParam String ids,
-                       @ModelAttribute Ticket entry, BindingResult result, Model model) {
+                       @Valid @ModelAttribute("entry") Ticket entry, BindingResult result, Model model) {
         if (!authUser.getUser().isAdmin()) return "redirect:/tickets";
         if (result.hasErrors()) {
             super.addBaseAttributes(model);
@@ -279,7 +286,10 @@ public class TicketController extends BaseController {
         }
 
         updateChecklist(entry, checkboxes, descriptions, ids);
-
+        // bug fix
+        if (entry.getAssignedUser().getId() == null) {
+            entry.setAssignedUser(null);
+        }
         unitOfWork.getTicketService().update(entry);
         return "redirect:/tickets";
     }
@@ -292,9 +302,9 @@ public class TicketController extends BaseController {
      * Updates the ticket checklist items and optionally saves the new checklist as a template.
      *
      * @param entry the ticket to update.
-     * @param checkboxes a comma separated list of the values of the checklist items (checked or not).
-     * @param descriptions a comma separated list of descriptions of the checklist items.
-     * @param ids a comma separated list of the ids of the checklist items.
+     * @param checkboxes a string of values for the checklist items (checked or not) separated by ';;'.
+     * @param descriptions a string of descriptions for the checklist items separated by ';;'.
+     * @param ids a list of ids for the checklist items separated by ';;'.
      * @param saveTemplate a boolean check for if a template of the checklist should be saved.
      * @param templateName a string representing the name of the checklist template should it be saved.
      */

@@ -3,6 +3,7 @@ package com.kauz.TicketRapport.controllers;
 import com.kauz.TicketRapport.models.filters.Filter;
 import com.kauz.TicketRapport.models.templates.ChecklistItemTemplate;
 import com.kauz.TicketRapport.models.templates.ChecklistTemplate;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,7 +25,7 @@ public class TemplateController extends BaseController {
      * Get handler for the checklist templates page.
      *
      * @param id the id of a checklist template, if present will display details for the template, otherwise will display a list of all templates.
-     * @param search string to search for checklist tempaltes.
+     * @param search string to search for checklist templates.
      * @param sort sort order for the list.
      * @param page current page in the list.
      * @param asc whether the sort order is ascending.
@@ -107,7 +108,7 @@ public class TemplateController extends BaseController {
     @RequestMapping(value = "/checklists/create", method = RequestMethod.POST)
     public String create(@RequestParam(required = false) String itemIds,
                          @RequestParam(required = false, value = "list_desc") String descriptions,
-                         @ModelAttribute ChecklistTemplate entry, BindingResult result, Model model) {
+                         @Valid @ModelAttribute("entry") ChecklistTemplate entry, BindingResult result, Model model) {
         if (result.hasErrors()) {
             super.addBaseAttributes(model);
             model.addAttribute("entry", entry);
@@ -153,12 +154,12 @@ public class TemplateController extends BaseController {
     public String edit(@RequestParam UUID id,
                        @RequestParam(required = false) String itemIds,
                        @RequestParam(required = false, value = "list_desc") String descriptions,
-                       @ModelAttribute ChecklistTemplate entry,
+                       @Valid @ModelAttribute("entry") ChecklistTemplate entry,
                        BindingResult result, Model model) {
         if (result.hasErrors()) {
             super.addBaseAttributes(model);
             model.addAttribute("entry", entry);
-            model.addAttribute("items", unitOfWork.getChecklistItemTemplateService().getAll(ChecklistItemTemplate.class));
+            model.addAttribute("itemTemplates", unitOfWork.getChecklistItemTemplateService().getAll(ChecklistItemTemplate.class));
             return "checklists/edit";
         }
 
@@ -217,7 +218,7 @@ public class TemplateController extends BaseController {
      * @return a reference to a checklist item Thymeleaf template.
      */
     @RequestMapping(value = "/checklists/items/edit", method = RequestMethod.POST)
-    public String editItems(@RequestParam UUID id, @ModelAttribute ChecklistItemTemplate entry, BindingResult result, Model model) {
+    public String editItems(@RequestParam UUID id, @Valid @ModelAttribute("entry") ChecklistItemTemplate entry, BindingResult result, Model model) {
         if (result.hasErrors()) {
             super.addBaseAttributes(model);
             model.addAttribute("entry", entry);
@@ -288,7 +289,7 @@ public class TemplateController extends BaseController {
     @RequestMapping(value = "/checklists/items/delete", method = RequestMethod.POST)
     public String deleteItem(@RequestParam UUID id, @ModelAttribute ChecklistItemTemplate entry, BindingResult result) {
         if (!result.hasErrors()) {
-            ChecklistItemTemplate itemTemplate = unitOfWork.getChecklistItemTemplateService().find(ChecklistItemTemplate.class, entry.getId());
+            ChecklistItemTemplate itemTemplate = unitOfWork.getChecklistItemTemplateService().find(ChecklistItemTemplate.class, id);
             // remove relations first
             Set<ChecklistTemplate> templates = itemTemplate.getTemplates();
             for (ChecklistTemplate template : templates) {

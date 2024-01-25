@@ -8,7 +8,8 @@
                 <h5 class="card-title" th:text="${ticket.title}"></h5>
                 <div class="card-subtitle mb-1">
                     <span>Learner: </span>
-                    <span th:text="${ticket.assignedUser.fullName}"></span>
+                    <span th:unless="${ticket.assignedUser == null}" th:text="${ticket.assignedUser.fullName}"></span>
+                    <span th:if="${ticket.assignedUser == null}">None</span>
                 </div>
                 <div class="card-subtitle mb-1">
                     <span>Client: </span>

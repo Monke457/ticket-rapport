@@ -1,0 +1,4 @@
+<div class="alert alert-warning mt-1" th:fragment="error-alert(field)" th:if="${#fields.hasErrors(field)}"
+     xmlns:th="http://www.w3.org/1999/xhtml">
+    <div th:each="err : ${#fields.errors(field)}" th:text="${err}"></div>
+</div>
