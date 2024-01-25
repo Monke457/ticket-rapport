@@ -21,4 +21,10 @@ public class TicketFilter extends Filter {
         this.clientId = clientId;
         this.status = status;
     }
+
+    public TicketFilter(String search, UUID clientId, String status) {
+        super(search);
+        this.clientId = clientId;
+        this.status = status;
+    }
 }

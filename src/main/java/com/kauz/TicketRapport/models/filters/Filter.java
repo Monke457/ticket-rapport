@@ -19,6 +19,10 @@ public class Filter {
     private int page;
     private boolean asc;
 
+    public Filter(String search) {
+        this.search = search;
+    }
+
     public String toQueryString(Integer newPage) {
         return "?search" + search
                 + "&sort=" + sort

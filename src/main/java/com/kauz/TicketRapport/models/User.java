@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Formula;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -34,7 +35,7 @@ public class User implements DBEntity {
     @ManyToOne
     private Role role;
 
-    @Transient
+    @Formula(value = " concat(firstname, ' ', lastname) ")
     private String fullName;
     public User(String firstname, String lastname, String email, String password, Role role) {
         this.firstname = firstname;
@@ -42,10 +43,6 @@ public class User implements DBEntity {
         this.email = email;
         this.password = password;
         this.role = role;
-    }
-
-    public String getFullName() {
-        return firstname + ' ' + lastname;
     }
 
     public boolean isAdmin() {

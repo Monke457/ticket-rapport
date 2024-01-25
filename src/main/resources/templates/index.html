@@ -5,33 +5,61 @@
 <header th:replace="~{fragments/header :: header}"></header>
 
 <main class="container">
-    <div th:if="${authUser.role.description == 'ADMIN'}">
+    <div th:if="${authUser.isAdmin}">
         <h3 class="my-4">Completed Tickets</h3>
-        <div class="alert alert-warning" th:if="${#arrays.length(completed) == 0}">No completed tickets found</div>
         <div th:replace="~{fragments/ticket-cards :: ticket-cards(${completed})}"></div>
         <hr class="my-5">
         <h3 class="my-4">Tickets In Progress</h3>
-        <form th:replace="~{fragments/forms/ticket-filter :: ticket-filter}"></form>
-        <div class="alert alert-warning" th:if="${#arrays.length(open) == 0}">No open tickets found</div>
-        <div th:replace="~{fragments/ticket-cards :: ticket-cards(${open})}"></div>
     </div>
 
-    <div th:if="${authUser.role.description == 'LEARNER'}">
+    <div th:if="${!authUser.isAdmin}">
         <h3 class="my-4">Your Tasks</h3>
-        <div class="alert alert-success" th:if="${#arrays.length(userTicketsOpen) == 0}">You have completed all your tasks!</div>
         <div th:replace="~{fragments/ticket-cards :: ticket-cards(${userTicketsOpen})}"></div>
         <hr class="my-5">
         <h3 class="my-4">Completed Tasks</h3>
-        <div class="alert alert-warning" th:if="${#arrays.length(userTicketsCompleted) == 0}">No completed tasks found</div>
         <div th:replace="~{fragments/ticket-cards :: ticket-cards(${userTicketsCompleted})}"></div>
         <hr class="my-5">
         <h3 class="my-4">Closed Tickets</h3>
-        <form th:replace="~{fragments/forms/ticket-filter :: ticket-filter}"></form>
-        <div class="alert alert-warning" th:if="${#arrays.length(userTicketsClosed) == 0}">No closed tickets found</div>
-        <div th:replace="~{fragments/ticket-cards :: ticket-cards(${userTicketsClosed})}"></div>
+    </div>
+
+    <form class="my-4" th:object="${filter}" onkeydown="if(event.keyCode === 13) { getFilteredTickets(); return false; }">
+        <div class="row align-items-center">
+            <input id="status" type="hidden" th:field="*{status}">
+            <div class="col">
+                <input id="search" class="form-control" th:field="*{search}" placeholder="Search">
+            </div>
+            <div class="col">
+                <select id="client" class="form-select" th:field="*{clientId}">
+                    <option value="">All Clients</option>
+                    <option th:each="client: ${clients}" th:value="${client.id}" th:text="${client.name}"></option>
+                </select>
+            </div>
+            <div class="col">
+                <button class="btn btn-sm btn-primary" type="button" th:onclick="getFilteredTickets()">Go</button>
+            </div>
+        </div>
+    </form>
+    <div id="filtered">
     </div>
 </main>
 
 <footer th:replace="~{fragments/footer :: footer}"></footer>
 </body>
+
+<script th:inline="javascript">
+    async function getFilteredTickets() {
+        var search = document.getElementById('search');
+        var client = document.getElementById('client');
+        var status = document.getElementById('status');
+
+        await fetch(`filter?search=${search.value}&clientId=${client.value}&status=${status.value}`).then(function (response) {
+            return response.text();
+        }).then(function (html) {
+            document.getElementById('filtered').innerHTML = html;
+        }).catch(function (err) {
+            console.warn('Something went wrong.', err);
+        });
+    }
+    getFilteredTickets();
+</script>
 </html>
