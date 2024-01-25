@@ -32,9 +32,7 @@ public class TicketService extends DBService<Ticket> {
     protected void addFilter(CriteriaBuilder cb, CriteriaQuery<Ticket> cq, Root<Ticket> root, Filter filter) {
         List<Predicate> predicates = getPredicates(cb, root, (TicketFilter) filter);
         if (filter.getSearch() != null && !filter.getSearch().isBlank()) {
-            predicates.add(cb.or(
-                    cb.like(root.join("assignedUser").get("firstname"), "%" + filter.getSearch() + "%"),
-                    cb.like(root.join("assignedUser").get("lastname"), "%" + filter.getSearch() + "%")));
+            predicates.add(cb.like(root.join("assignedUser").get("fullName"), "%" + filter.getSearch() + "%"));
         }
         cq.where(cb.and(predicates.toArray(new Predicate[]{})));
     }
@@ -44,8 +42,6 @@ public class TicketService extends DBService<Ticket> {
         if (filter.getSearch() != null && !filter.getSearch().isBlank()) {
             predicates.add(cb.or(
                     cb.like(root.join("assignedUser").get("fullName"), "%" + filter.getSearch() + "%"),
-                    //cb.like(root.join("assignedUser").get("firstname"), "%" + filter.getSearch() + "%"),
-                    //cb.like(root.join("assignedUser").get("lastname"), "%" + filter.getSearch() + "%"),
                     cb.like(root.get("title"), "%" + filter.getSearch() + "%"),
                     cb.like(root.get("description"), "%" + filter.getSearch() + "%")));
         }

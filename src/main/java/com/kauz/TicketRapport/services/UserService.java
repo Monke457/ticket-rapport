@@ -48,8 +48,7 @@ public class UserService extends DBService<User> {
 
         if (f.getSearch() != null && !f.getSearch().isBlank()) {
             predicates.add(cb.or(
-                    cb.like(root.get("firstname"), "%" + f.getSearch() + "%"),
-                    cb.like(root.get("lastname"), "%" + f.getSearch() + "%"),
+                    cb.like(root.join("assignedUser").get("fullName"), "%" + filter.getSearch() + "%"),
                     cb.like(root.get("email"), "%" + f.getSearch() + "%")
             ));
         }

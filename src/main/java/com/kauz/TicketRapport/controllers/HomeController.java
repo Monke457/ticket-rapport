@@ -55,7 +55,6 @@ public class HomeController extends BaseController {
                          @RequestParam(defaultValue = "") UUID clientId,
                          @RequestParam(defaultValue = "") String status,
                          Model model) {
-
         TicketFilter filter = new TicketFilter(search, clientId, status);
         if (!authUser.getUser().isAdmin()) {
             filter.setLearnerId(authUser.getUser().getId());
