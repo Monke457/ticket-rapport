@@ -59,7 +59,7 @@ public class DataGenerator {
                     "Researched current web design trends. Looked for inspiration. used draw.io to create a mock up.", "Minimalist with large banner.",
                     1, 45, learnerUser2, client2, complete, new HashSet<>());
             Ticket ticket5 = new Ticket("App Translation", "Add German translation to on-boarding app.",
-                    "", "", 0, 0, learnerUser2, client1, open, new HashSet<>());
+                    "", "", 0, 0, learnerUser2, client2, open, new HashSet<>());
             Set<Ticket> tickets = Set.of(ticket1, ticket2, ticket3, ticket4, ticket5);
             unitOfWork.getTicketService().create(tickets);
 
@@ -80,18 +80,18 @@ public class DataGenerator {
             }
             unitOfWork.getChecklistItemService().create(checklistItems);
 
-            // create checklist item templates
-            ChecklistItemTemplate itemT1 = new ChecklistItemTemplate("The workplace is clean and tidy", new HashSet<>());
-            ChecklistItemTemplate itemT2 = new ChecklistItemTemplate("The hardware has been cleaned", new HashSet<>());
-            ChecklistItemTemplate itemT3 = new ChecklistItemTemplate("Updates have been carried out", new HashSet<>());
-            ChecklistItemTemplate itemT4 = new ChecklistItemTemplate("Required tools were provided at the designated location", new HashSet<>());
-            ChecklistItemTemplate itemT5 = new ChecklistItemTemplate("Customer's hardware labeled and returned", new HashSet<>());
-            unitOfWork.getChecklistItemTemplateService().create(Set.of(itemT1, itemT2, itemT3, itemT4, itemT5));
-
             // create checklist templates
-            ChecklistTemplate template1 = new ChecklistTemplate("Full Check", Set.of(itemT1, itemT2, itemT3, itemT4, itemT5));
-            ChecklistTemplate template2 = new ChecklistTemplate("Software Only", Set.of(itemT1, itemT2, itemT3));
+            ChecklistTemplate template1 = new ChecklistTemplate("Full Check", new HashSet<>());
+            ChecklistTemplate template2 = new ChecklistTemplate("Software Only", new HashSet<>());
             unitOfWork.getChecklistTemplateService().create(Set.of(template1, template2));
+
+            // create checklist item templates
+            ChecklistItemTemplate itemT1 = new ChecklistItemTemplate("The workplace is clean and tidy", Set.of(template1, template2));
+            ChecklistItemTemplate itemT2 = new ChecklistItemTemplate("The hardware has been cleaned", Set.of(template1, template2));
+            ChecklistItemTemplate itemT3 = new ChecklistItemTemplate("Updates have been carried out", Set.of(template1, template2));
+            ChecklistItemTemplate itemT4 = new ChecklistItemTemplate("Required tools were provided at the designated location", Set.of(template1));
+            ChecklistItemTemplate itemT5 = new ChecklistItemTemplate("Customer's hardware labeled and returned", Set.of(template1));
+            unitOfWork.getChecklistItemTemplateService().create(Set.of(itemT1, itemT2, itemT3, itemT4, itemT5));
         };
     }
 }
