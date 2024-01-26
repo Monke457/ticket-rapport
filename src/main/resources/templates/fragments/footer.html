@@ -6,16 +6,26 @@
 
         <ul class="nav col-md-5" style="justify-content:flex-end"  th:if="${authUser.role.description == 'ADMIN'}">
             <li class="nav-item">
-                <a class="nav-link px-2 text-muted" href="/tickets">Tickets</a>
+                <a class="nav-link px-2 text-muted" th:href="@{archive}">Archive</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link px-2 text-muted" href="/clients">Clients</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link px-2 text-muted" href="/checklists">Checklist Templates</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link px-2 text-muted" href="/users">Users</a>
+            <li class="nav-item dropdown">
+                <a class="nav-link px-2 text-muted dropdown-toggle" style="cursor:pointer;" data-bs-toggle="dropdown" aria-expanded="false">
+                    Administration
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a class="dropdown-item" th:href="@{tickets}">Tickets</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" th:href="@{clients}">Clients</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" th:href="@{checklists}">Checklist Templates</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" th:href="@{users}">Users</a>
+                    </li>
+                </ul>
             </li>
         </ul>
     </div>
