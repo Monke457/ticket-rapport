@@ -49,7 +49,8 @@ public class HomeController extends BaseController {
             model.addAttribute("open", openTickets);
 
             filter.setStatus("Closed");
-            model.addAttribute("closed", unitOfWork.getTicketService().find(Ticket.class, filter));
+            model.addAttribute("closed", unitOfWork.getTicketService().find(Ticket.class, filter).toList());
+            model.addAttribute("clients", unitOfWork.getClientService().getAll(Client.class));
         }
 
         model.addAttribute("filter", filter);
@@ -66,5 +67,18 @@ public class HomeController extends BaseController {
         model.addAttribute("clients", unitOfWork.getClientService().getAll(Client.class));
         model.addAttribute("filter", filter);
         return "archive";
+    }
+
+    @GetMapping("/filter")
+    public String filter(@RequestParam(defaultValue = "") String search,
+                         @RequestParam(defaultValue = "") UUID clientId,
+                         Model model) {
+        super.addBaseAttributes(model);
+        TicketFilter filter = new TicketFilter(search, clientId, "Closed");
+        filter.setLearnerId(authUser.getUser().getId());
+        model.addAttribute("tickets", unitOfWork.getTicketService().find(Ticket.class, filter).toList());
+        model.addAttribute("referer", "home");
+        return "fragments/ticket-cards :: ticket-cards";
+
     }
 }

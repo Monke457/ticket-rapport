@@ -70,4 +70,23 @@ public class Ticket implements DBEntity {
     public String getWorktime() {
         return workHours + "h " + workMinutes + "m";
     }
+
+    public String getCardStyle() {
+        return "background-color:" + getBackgroundColor() + ";";
+    }
+
+    private String getBackgroundColor() {
+        if (status.getDescription().equals("In Progress")) {
+            return assignedUser == null ? "#dc3545" : "lightblue";
+        }
+        if (status.getDescription().equals("Completed")) return "#ed6c00";
+        if (status.getDescription().equals("Closed")) return "#ade3ad";
+        // no status no colour
+        return "";
+    }
+
+    public boolean lightStyling() {
+        if (status.getDescription().equals("Completed")) return true;
+        return status.getDescription().equals("In Progress") && assignedUser == null;
+    }
 }

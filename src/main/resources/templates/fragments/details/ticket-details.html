@@ -53,8 +53,7 @@
     </div>
 
     <form th:unless="${delete == 'true' || authUser.role.description == 'ADMIN' || entry.status.description != 'In Progress'}"
-          th:action="@{/tickets/update(id=${entry.id})}" th:object="${entry}" method="post">
-        <input type="hidden" name="referer" th:value="${referer}">
+          th:action="@{/tickets/details/update(id=${entry.id})}" th:object="${entry}" method="post">
         <div class="mb-3">
             <div class="form-label" th:for="*{protocol}">Protocol</div>
             <textarea class="form-control mb-2" th:field="*{protocol}"></textarea>

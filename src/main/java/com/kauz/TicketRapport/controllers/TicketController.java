@@ -33,8 +33,6 @@ public class TicketController extends BaseController {
      * otherwise display only the tickets that are assigned to the current user.
      *
      * @param model the model containing the relevant view data.
-     * @param id the id of the ticket to fetch, if present will display the ticket details, otherwise displays a list of tickets.
-     * @param referer a string representing the page the user came from / to return to.
      * @param search the string to filter the tickets by.
      * @param clientId the client id to filter the tickets by.
      * @param statusId the status id to filter the tickets by.
@@ -45,8 +43,6 @@ public class TicketController extends BaseController {
      */
     @GetMapping("/tickets")
     public String getIndex(Model model,
-                           @RequestParam(required = false) UUID id,
-                           @RequestParam(required = false) String referer,
                            @RequestParam(defaultValue = "") String search,
                            @RequestParam(defaultValue = "") UUID clientId,
                            @RequestParam(defaultValue = "") UUID statusId,
@@ -55,28 +51,24 @@ public class TicketController extends BaseController {
                            @RequestParam(defaultValue = "true") boolean asc) {
         super.addBaseAttributes(model);
 
-        if (id == null) {
-            TicketFilter filter = new TicketFilter(search, sort, page, asc, clientId, statusId);
-            int pageSize = 10;
-            if (!authUser.getUser().isAdmin()) {
-                filter.setLearnerId(authUser.getUser().getId());
-            }
-            model.addAttribute("entries", unitOfWork.getTicketService().find(Ticket.class, filter, pageSize));
-            model.addAttribute("clients", unitOfWork.getClientService().getAll(Client.class));
-            model.addAttribute("statuses", unitOfWork.getStatusService().getAll(Status.class));
-            model.addAttribute("filter", filter);
-            model.addAttribute("totalPages", unitOfWork.getTicketService().getPages(Ticket.class, filter, pageSize));
-            return "tickets/index";
-        }
-
-        Ticket entry = unitOfWork.getTicketService().find(Ticket.class, id);
-
+        TicketFilter filter = new TicketFilter(search, sort, page, asc, clientId, statusId);
+        int pageSize = 10;
         if (!authUser.getUser().isAdmin()) {
-            if (entry.getAssignedUser() == null || entry.getAssignedUser().getId() != authUser.getUser().getId()) {
-                return "redirect:/tickets";
-            }
+            filter.setLearnerId(authUser.getUser().getId());
         }
+        model.addAttribute("entries", unitOfWork.getTicketService().find(Ticket.class, filter, pageSize));
+        model.addAttribute("clients", unitOfWork.getClientService().getAll(Client.class));
+        model.addAttribute("statuses", unitOfWork.getStatusService().getAll(Status.class));
+        model.addAttribute("filter", filter);
+        model.addAttribute("totalPages", unitOfWork.getTicketService().getPages(Ticket.class, filter, pageSize));
+        return "tickets/index";
 
+    }
+
+    @GetMapping("/tickets/details")
+    public String getDetails(@RequestParam UUID id, @RequestParam(required = false) String referer, Model model) {
+        super.addBaseAttributes(model);
+        Ticket entry = unitOfWork.getTicketService().find(Ticket.class, id);
         model.addAttribute("referer", referer);
         model.addAttribute("entry", entry);
         return "tickets/details";
@@ -115,48 +107,40 @@ public class TicketController extends BaseController {
      * Optionally also sets the ticket status to complete.
      *
      * @param id the id of the ticket to update.
-     * @param referer a string representing the page the user came from / to return to.
      * @param entry the ticket entry to update.
      * @param result information about the data binding.
      * @param action the type of update to do (whether to mark the ticket as completed).
      * @param checklistItems a comma separated string of ids for the checklist items that are marked as completed.
      * @return a reference to a Thymeleaf template.
      */
-    @RequestMapping(value = "/tickets/update", method = RequestMethod.POST)
+    @RequestMapping(value = "/tickets/details/update", method = RequestMethod.POST)
     public String update(@RequestParam UUID id,
-                         @RequestParam(required = false) String referer,
-                         @Valid @ModelAttribute("entry") Ticket entry,
+                         @ModelAttribute Ticket entry,
                          BindingResult result,
                          @RequestParam String action,
                          @RequestParam(required = false) String checklistItems) {
 
         Ticket ticket = unitOfWork.getTicketService().find(Ticket.class, id);
 
-        if (!result.hasErrors()) {
-            if (ticket.getAssignedUser().getId() != authUser.getUser().getId()) {
-                if(Objects.equals(referer, "home")) return "redirect:/";
-                return "redirect:/tickets";
-            }
-            if (checklistItems == null) checklistItems = "";
+        if (ticket.getAssignedUser().getId() != authUser.getUser().getId()) return "redirect:/";
 
-            ticket.setProtocol(entry.getProtocol());
-            ticket.setSolution(entry.getSolution());
-            ticket.setWorkHours(entry.getWorkHours());
-            ticket.setWorkMinutes(entry.getWorkMinutes());
-            for (ChecklistItem item : ticket.getChecklist()) {
-                item.setCompleted(checklistItems.contains(item.getId().toString()));
-            }
-            if (Objects.equals(action, "complete")) {
-                ticket.setStatus(unitOfWork.getStatusService().find("Completed"));
-            }
-            unitOfWork.getTicketService().update(ticket);
+        if (checklistItems == null) checklistItems = "";
 
-            if (Objects.equals(action, "exit")) {
-                if(Objects.equals(referer, "home")) return "redirect:/";
-                return "redirect:/tickets";
-            }
+        ticket.setProtocol(entry.getProtocol());
+        ticket.setSolution(entry.getSolution());
+        ticket.setWorkHours(entry.getWorkHours());
+        ticket.setWorkMinutes(entry.getWorkMinutes());
+        for (ChecklistItem item : ticket.getChecklist()) {
+            item.setCompleted(checklistItems.contains(item.getId().toString()));
         }
-        return "redirect:/tickets?id=" + id + "&referer=" + referer;
+        if (action.equals("complete")) {
+            ticket.setStatus(unitOfWork.getStatusService().find("Completed"));
+        }
+        unitOfWork.getTicketService().update(ticket);
+
+        if (action.equals("exit")) return "redirect:/";
+
+        return "redirect:/tickets/details?id=" + id;
     }
 
     /**

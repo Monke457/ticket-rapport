@@ -27,8 +27,8 @@ public class SecurityConfig implements WebMvcConfigurer {
         http
                 .csrf(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/tickets/update").hasRole("LEARNER")
-                        .requestMatchers("/tickets/*").hasRole("ADMIN")
+                        .requestMatchers("/tickets/details*").authenticated()
+                        .requestMatchers("/tickets*").hasRole("ADMIN")
                         .requestMatchers("/clients*").hasRole("ADMIN")
                         .requestMatchers("/users*").hasRole("ADMIN")
                         .anyRequest().authenticated())
