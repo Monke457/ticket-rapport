@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments/head :: head('Archive')}"></head>
+<body>
+<header th:replace="~{fragments/header :: header}"></header>
+
+<main class="container">
+    <div th:if="${authUser.isAdmin}">
+        <h3 class="my-4">Closed Tickets</h3>
+    </div>
+
+    <form class="my-4" th:object="${filter}" th:action="@{archive}" method="get">
+        <div class="row align-items-center gap-1">
+            <div class="col" style="min-width:200px;">
+                <input id="search" class="form-control" th:field="*{search}" placeholder="Search">
+            </div>
+            <div class="col" style="min-width:200px;">
+                <select id="client" class="form-select" th:field="*{clientId}">
+                    <option value="">All Clients</option>
+                    <option th:each="client: ${clients}" th:value="${client.id}" th:text="${client.name}"></option>
+                </select>
+            </div>
+            <div class="col">
+                <button class="btn btn-sm btn-primary">Go</button>
+            </div>
+        </div>
+    </form>
+
+    <div th:replace="~{fragments/ticket-cards :: ticket-cards(${tickets}, 'archive')}"></div>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

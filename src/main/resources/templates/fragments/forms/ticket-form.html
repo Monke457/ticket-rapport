@@ -12,7 +12,7 @@
     <div class="mb-3">
         <label class="form-label" th:for="*{assignedUser}">Assigned Learner</label>
         <select class="mb-3 form-select" th:field="*{assignedUser.id}">
-            <option th:if="*{assignedUser.id == null || assignedUser.id == ''}" value="">Select Learner</option>
+            <option value="">Select Learner</option>
             <option th:each="user: ${users}" th:value="${user.id}" th:text="${user.fullName}"></option>
         </select>
     </div>

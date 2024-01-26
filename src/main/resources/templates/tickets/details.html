@@ -9,8 +9,7 @@
         <div class="d-flex justify-content-between align-items-center my-4">
             <span></span>
             <h3>Ticket Details</h3>
-            <a class="btn btn-sm btn-secondary" th:if="${referer == 'home'}" th:href="@{/}">Back</a>
-            <a class="btn btn-sm btn-secondary" th:if="${authUser.isAdmin && referer != 'home'}" th:onclick="history.back()">Back</a>
+            <a class="btn btn-sm btn-secondary" th:if="${authUser.isAdmin}" th:onclick="history.back()">Back</a>
             <a class="btn btn-sm btn-secondary" th:unless="${authUser.isAdmin || referer == 'home'}" th:href="@{/tickets}">Back</a>
         </div>
         <div th:replace="~{fragments/details/ticket-details :: ticket-details('false')}"></div>

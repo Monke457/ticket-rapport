@@ -95,7 +95,7 @@ public class TicketController extends BaseController {
     public String status(@RequestParam UUID id, @RequestParam String action, @RequestParam(required = false) String referer) {
         String returnString = referer.equals("home") ? "redirect:/" : "redirect:/tickets";
 
-        if (authUser.getUser().isAdmin()) return returnString;
+        if (!authUser.getUser().isAdmin()) return returnString;
 
         Ticket ticket = unitOfWork.getTicketService().find(Ticket.class, id);
         if (Objects.equals(action, "close")) {
@@ -245,13 +245,14 @@ public class TicketController extends BaseController {
      * @return a reference to the ticket edit Thymeleaf template.
      */
     @GetMapping("/tickets/edit")
-    public String edit(Model model, @RequestParam UUID id) {
+    public String edit(Model model, @RequestParam UUID id, @RequestParam(required = false) String referer) {
         super.addBaseAttributes(model);
         Ticket ticket = unitOfWork.getTicketService().find(Ticket.class, id);
         model.addAttribute("entry", ticket);
         model.addAttribute("users", unitOfWork.getUserService().getLearners());
         model.addAttribute("clients", unitOfWork.getClientService().getAll(Client.class));
         model.addAttribute("statuses", unitOfWork.getStatusService().getAll(Status.class));
+        model.addAttribute("referer", referer);
         return "tickets/edit";
     }
 
@@ -274,6 +275,7 @@ public class TicketController extends BaseController {
                        @RequestParam String checkboxes,
                        @RequestParam String descriptions,
                        @RequestParam String ids,
+                       @RequestParam String referer,
                        @Valid @ModelAttribute("entry") Ticket entry, BindingResult result, Model model) {
         if (!authUser.getUser().isAdmin()) return "redirect:/tickets";
         if (result.hasErrors()) {
@@ -291,6 +293,8 @@ public class TicketController extends BaseController {
             entry.setAssignedUser(null);
         }
         unitOfWork.getTicketService().update(entry);
+
+        if (referer.equals("home")) return "redirect:/";
         return "redirect:/tickets";
     }
 
