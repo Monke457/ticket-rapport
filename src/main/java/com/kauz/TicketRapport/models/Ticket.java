@@ -71,10 +71,26 @@ public class Ticket implements DBEntity {
         return workHours + "h " + workMinutes + "m";
     }
 
+    /**
+     * A method for getting the styling info for a ticket card.
+     *
+     * @return a string of style attributes.
+     */
     public String getCardStyle() {
-        return "border-left: 20px solid " + getBackgroundColor() + ";";
+        // no status no style
+        if (status.getDescription().isBlank()) return "";
+        return "border-left: 15px solid " + getBackgroundColor() + ";";
     }
 
+    /**
+     * Returns a css colour code based on status.
+     * <br>In progress unassigned: red
+     * <br>In Progress assigned: light blue
+     * <br>Completed: orange
+     * <br>Closed: light green
+     *
+     * @return a colour code for css styling.
+     */
     private String getBackgroundColor() {
         if (status.getDescription().equals("In Progress")) {
             return assignedUser == null ? "#dc3545" : "lightblue";

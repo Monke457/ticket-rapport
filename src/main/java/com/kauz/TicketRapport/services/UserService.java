@@ -19,6 +19,13 @@ import java.util.stream.Stream;
 @Repository
 public class UserService extends DBService<User> {
 
+    /**
+     * A query for fetching a single user database entity based on a unique email.
+     * Creates a select query.
+     *
+     * @param email the email of the user to find.
+     * @return A single user object.
+     */
     @Transactional
     public User findByEmail(String email) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -33,6 +40,12 @@ public class UserService extends DBService<User> {
         return query.getSingleResult();
     }
 
+    /**
+     * A query for fetching all learners from the database.
+     * Creates a select query.
+     *
+     * @return all users with a role of LEARNER.
+     */
     @Transactional
     public Stream<User> getLearners() {
         UserFilter filter = new UserFilter();

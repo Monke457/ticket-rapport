@@ -20,7 +20,7 @@ public class HomeController extends BaseController {
 
     /**
      * The get handler for the home page.
-     * If the user is an admin, will add all the tickets marked either "completed" or "in progress" to the model.
+     * If the user is an admin, will add all open tickets to the model.
      * If the user is a learner, will add the current user's assigned tickets in lists according to ticket status.
      *
      * @param model the model containing all the relevant data needed to populate the view.
@@ -57,6 +57,16 @@ public class HomeController extends BaseController {
         return "index";
     }
 
+    /**
+     * A get handler for the archive page.
+     * Shows a list of all closed tickets. handled on a separate page for performance reasons.
+     * Filters the tickets according to the given conditions.
+     *
+     * @param model the model containing all the relevant data needed to populate the view.
+     * @param search the string to search for tickets.
+     * @param clientId the id the client assigned to a ticket.
+     * @return a reference to the archive Thymeleaf template.
+     */
     @GetMapping("/archive")
     public String getArchive(Model model,
                              @RequestParam(defaultValue = "") String search,
@@ -69,6 +79,15 @@ public class HomeController extends BaseController {
         return "archive";
     }
 
+    /**
+     * A get handler for filtered tickets. Returns a fragment for displaying tickets as cards.
+     * Fetches a list of tickets according to the conditions in the filter.
+     *
+     * @param search a string with which to search the tickets.
+     * @param clientId the id of the client assigned to the tickets.
+     * @param model the model containing the relevant fragment data.
+     * @return a reference to a Thymeleaf fragment for displaying tickets.
+     */
     @GetMapping("/filter")
     public String filter(@RequestParam(defaultValue = "") String search,
                          @RequestParam(defaultValue = "") UUID clientId,

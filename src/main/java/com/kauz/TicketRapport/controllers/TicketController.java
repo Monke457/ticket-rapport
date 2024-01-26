@@ -27,10 +27,8 @@ import java.util.stream.Collectors;
 public class TicketController extends BaseController {
 
     /**
-     * Get handler for the ticket list page.
+     * Get handler for the ticket list page. Should only be accessible by admins
      * Fetches a list of filtered and sorted ticket entries to display.
-     * If the user is an admin, displays all tickets,
-     * otherwise display only the tickets that are assigned to the current user.
      *
      * @param model the model containing the relevant view data.
      * @param search the string to filter the tickets by.
@@ -39,7 +37,7 @@ public class TicketController extends BaseController {
      * @param sort a comma separated string containing the sort order.
      * @param page the current page as an integer.
      * @param asc whether the sort order is ascending.
-     * @return a reference to a tickets Thymeleaf template.
+     * @return a reference to the tickets list Thymeleaf template.
      */
     @GetMapping("/tickets")
     public String getIndex(Model model,
@@ -62,11 +60,23 @@ public class TicketController extends BaseController {
         model.addAttribute("filter", filter);
         model.addAttribute("totalPages", unitOfWork.getTicketService().getPages(Ticket.class, filter, pageSize));
         return "tickets/index";
-
     }
 
+    /**
+     * A get handler for the ticket details page.
+     * Should be accessible by admins or the authenticated user assigned to the ticket.
+     *
+     * @param id the id of the ticket.
+     * @param referer the view from which the user came.
+     * @param model a model containing all the relevant view data.
+     * @return a reference to the ticket details Thymeleaf template.
+     */
     @GetMapping("/tickets/details")
     public String getDetails(@RequestParam UUID id, @RequestParam(required = false) String referer, Model model) {
+        if (authUser.getUser().getId() != id && !authUser.getUser().isAdmin()) {
+            return referer.equals("home") ? "redirect:/" : "redirect:/tickets";
+        }
+
         super.addBaseAttributes(model);
         Ticket entry = unitOfWork.getTicketService().find(Ticket.class, id);
         model.addAttribute("referer", referer);
