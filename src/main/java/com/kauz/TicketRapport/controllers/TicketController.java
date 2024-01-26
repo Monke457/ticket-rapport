@@ -72,12 +72,12 @@ public class TicketController extends BaseController {
      */
     @GetMapping("/tickets/details")
     public String getDetails(@RequestParam UUID id, @RequestParam(required = false) String referer, Model model) {
-        if (authUser.getUser().getId() != id && !authUser.getUser().isAdmin()) {
+        Ticket entry = DBServices.getTicketService().find(Ticket.class, id);
+        if (authUser.getUser().getId() != entry.getAssignedUser().getId() && !authUser.getUser().isAdmin()) {
             return referer.equals("home") ? "redirect:/" : "redirect:/tickets";
         }
 
         super.addBaseAttributes(model);
-        Ticket entry = DBServices.getTicketService().find(Ticket.class, id);
         model.addAttribute("referer", referer);
         model.addAttribute("entry", entry);
         return "tickets/details";
