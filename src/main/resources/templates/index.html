@@ -9,9 +9,11 @@
         <h3 class="my-4">Unassigned Tickets</h3>
         <div th:replace="~{fragments/ticket-cards :: ticket-cards(${unassigned}, 'home')}"></div>
         <hr class="my-5">
+
         <h3 class="my-4">Tickets In Progress</h3>
         <div th:replace="~{fragments/ticket-cards :: ticket-cards(${open}, 'home')}"></div>
         <hr class="my-5">
+
         <h3 class="my-4">Completed Tickets</h3>
         <div th:replace="~{fragments/ticket-cards :: ticket-cards(${completed}, 'home')}"></div>
     </div>
@@ -20,14 +22,12 @@
         <h3 class="my-4">Your Tasks</h3>
         <div th:replace="~{fragments/ticket-cards :: ticket-cards(${open}, 'home')}"></div>
         <hr class="my-5">
+
         <h3 class="my-4">Completed Tasks</h3>
         <div th:replace="~{fragments/ticket-cards :: ticket-cards(${completed}, 'home')}"></div>
         <hr class="my-5">
-        <h3 class="my-4">Closed Tickets</h3>
-        <!--
-        <div th:replace="~{fragments/ticket-cards :: ticket-cards(${closed}, 'home')}"></div>
-        -->
 
+        <h3 class="my-4">Closed Tickets</h3>
         <form class="my-4" th:object="${filter}" onkeydown="if(event.keyCode === 13) { getFilteredTickets(); return false; }">
             <div class="row align-items-center gap-1">
                 <div class="col" style="min-width:200px;">

@@ -72,7 +72,7 @@ public class Ticket implements DBEntity {
     }
 
     public String getCardStyle() {
-        return "background-color:" + getBackgroundColor() + ";";
+        return "border-left: 20px solid " + getBackgroundColor() + ";";
     }
 
     private String getBackgroundColor() {
@@ -83,10 +83,5 @@ public class Ticket implements DBEntity {
         if (status.getDescription().equals("Closed")) return "#ade3ad";
         // no status no colour
         return "";
-    }
-
-    public boolean lightStyling() {
-        if (status.getDescription().equals("Completed")) return true;
-        return status.getDescription().equals("In Progress") && assignedUser == null;
     }
 }
