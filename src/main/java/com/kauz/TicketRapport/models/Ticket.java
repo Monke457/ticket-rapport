@@ -43,7 +43,6 @@ public class Ticket implements DBEntity {
     @ManyToOne
     private Client client;
 
-
     @ManyToOne
     private Status status;
 

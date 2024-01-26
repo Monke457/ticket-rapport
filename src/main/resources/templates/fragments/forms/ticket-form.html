@@ -22,7 +22,7 @@
             <option th:if="*{client.id == null || client.id == ''}" value="null">Select Client</option>
             <option th:each="client: ${clients}" th:value="${client.id}" th:text="${client.name}"></option>
         </select>
-        <div class="alert alert-warning mt-1" th:if="${#fields.hasErrors('client.id')}">Please client a role</div>
+        <div class="alert alert-warning mt-1" th:if="${#fields.hasErrors('client.id')}">Please select a client</div>
     </div>
     <div class="mb-3" th:classappend="${type == 'create'} ? 'd-none' : ''">
         <label class="form-label" th:for="*{status}">Status</label>

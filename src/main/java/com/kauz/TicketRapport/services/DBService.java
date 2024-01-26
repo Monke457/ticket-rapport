@@ -141,6 +141,7 @@ public class DBService<T extends DBEntity> {
         if (sort != null && !sort.isBlank()) {
             String[] orderStrings = sort.split(",");
             List<Order> orders = new ArrayList<>();
+
             for (String order : orderStrings) {
                 if (order.contains(".")) {
                     String join = order.substring(0, order.indexOf("."));
@@ -151,7 +152,10 @@ public class DBService<T extends DBEntity> {
                             : cb.desc(root.join(join, JoinType.LEFT).get(field))
                     );
                 } else {
-                    orders.add(asc ? cb.asc(root.get(order)) : cb.desc(root.get(order)));
+                    orders.add(asc
+                            ? cb.asc(root.get(order))
+                            : cb.desc(root.get(order))
+                    );
                 }
             }
             cq.orderBy(orders);
