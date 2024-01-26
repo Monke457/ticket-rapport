@@ -1,5 +1,5 @@
 <div th:fragment="ticket-cards(tickets, referer)" class="d-flex flex-wrap gap-4" xmlns:th="http://www.w3.org/1999/xhtml">
-    <div class="alert alert-warning w-100" th:if="${#arrays.length(tickets) == 0}">No tickets found</div>
+    <div class="alert alert-warning w-100 mb-0" th:if="${#arrays.length(tickets) == 0}">No tickets found</div>
     <div th:unless="${#arrays.length(tickets) == 0}" th:each="ticket: ${tickets}"
          class="card bg-gradient bg-light" style="width: 300px;" th:styleappend="${ticket.getCardStyle()}">
         <div class="card-body d-flex flex-column justify-content-between">
@@ -17,7 +17,8 @@
                 </div>
                 <div class="card-subtitle mb-1">
                     <span>Client: </span>
-                    <span th:text="${ticket.client.name}"></span>
+                    <span th:unless="${ticket.client == null}" th:text="${ticket.client.name}"></span>
+                    <span th:if="${ticket.client == null}">None</span>
                 </div>
                 <hr>
                 <p class="card-text" th:text="${#strings.abbreviate(ticket.description, 100)}"></p>

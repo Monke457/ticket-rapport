@@ -1,7 +1,7 @@
 package com.kauz.TicketRapport.security;
 
 import com.kauz.TicketRapport.models.User;
-import com.kauz.TicketRapport.services.UnitOfWork;
+import com.kauz.TicketRapport.services.DBServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -12,13 +12,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class AuthUser {
     @Autowired
-    private UnitOfWork unitOfWork;
+    private DBServices DBServices;
 
     /**
      * Retrieves user information from the current session context.
      * @return a user object representing the current session user.
      */
     public User getUser() {
-        return unitOfWork.getUserService().findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        return DBServices.getUserService().findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
     }
 }

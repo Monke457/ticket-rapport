@@ -48,12 +48,13 @@
             <td id="description" th:text="${#strings.abbreviate(entry.description, 100)}"></td>
             <td id="worktime" th:text="${entry.worktime}"></td>
             <div th:if="${authUser.role.description == 'ADMIN'}">
-                <td th:if="${entry.assignedUser == null}">No Role</td>
+                <td th:if="${entry.assignedUser == null}">No assigned learner</td>
                 <td id="user" th:unless="${entry.assignedUser == null}" th:text="${entry.assignedUser.fullName}"></td>
             </div>
-            <td id="client" th:text="${entry.client.name}"></td>
+            <td id="client" th:unless="${entry.client == null}" th:text="${entry.client.name}"></td>
+            <td th:if="${entry.client == null}">No client</td>
             <td id="status" th:unless="${entry.status == null}" th:text="${entry.status.description}"></td>
-            <td th:if="${entry.status == null}">No Status</td>
+            <td th:if="${entry.status == null}">No status</td>
             <td>
                 <div class="table-links d-flex flex-wrap justify-content-end gap-1">
                     <a class="btn btn-sm btn-primary" th:href="@{/tickets/details(id=${entry.id})}">View</a>

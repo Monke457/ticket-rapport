@@ -1,9 +1,12 @@
 package com.kauz.TicketRapport.controllers;
 
 import com.kauz.TicketRapport.models.Role;
+import com.kauz.TicketRapport.models.Ticket;
 import com.kauz.TicketRapport.models.User;
+import com.kauz.TicketRapport.models.filters.TicketFilter;
 import com.kauz.TicketRapport.models.filters.UserFilter;
 import com.kauz.TicketRapport.models.helpers.UserFormData;
+import com.kauz.TicketRapport.services.DBServices;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -48,14 +52,14 @@ public class UserController extends BaseController {
         if (id == null) {
             UserFilter filter = new UserFilter(search, sort, page, asc, roleId);
             int pageSize = 10;
-            model.addAttribute("entries", unitOfWork.getUserService().find(User.class, filter, pageSize));
-            model.addAttribute("roles", unitOfWork.getRoleService().getAll(Role.class));
+            model.addAttribute("entries", DBServices.getUserService().find(User.class, filter, pageSize));
+            model.addAttribute("roles", DBServices.getRoleService().getAll(Role.class));
             model.addAttribute("filter", filter);
-            model.addAttribute("totalPages", unitOfWork.getUserService().getPages(User.class, filter, pageSize));
+            model.addAttribute("totalPages", DBServices.getUserService().getPages(User.class, filter, pageSize));
             return "users/index";
         }
 
-        model.addAttribute("entry", unitOfWork.getUserService().find(User.class, id));
+        model.addAttribute("entry", DBServices.getUserService().find(User.class, id));
         return "users/details";
     }
 
@@ -69,7 +73,7 @@ public class UserController extends BaseController {
     public String create(Model model) {
         super.addBaseAttributes(model);
         model.addAttribute("entry", new UserFormData());
-        model.addAttribute("roles", unitOfWork.getRoleService().getAll(Role.class));
+        model.addAttribute("roles", DBServices.getRoleService().getAll(Role.class));
         return "users/create";
     }
 
@@ -90,14 +94,14 @@ public class UserController extends BaseController {
         if (result.hasErrors() || passError != null) {
             addBaseAttributes(model);
             model.addAttribute("entry", entry);
-            model.addAttribute("roles", unitOfWork.getRoleService().getAll(Role.class));
+            model.addAttribute("roles", DBServices.getRoleService().getAll(Role.class));
             model.addAttribute("passError", passError);
             return "users/create";
         }
 
         User user = new User(entry.getFirstname(), entry.getLastname(), entry.getEmail(), encoder.encode(entry.getPassword()), entry.getRole());
 
-        unitOfWork.getUserService().create(user);
+        DBServices.getUserService().create(user);
         return "redirect:/users";
     }
 
@@ -124,9 +128,9 @@ public class UserController extends BaseController {
     @GetMapping("/users/edit")
     public String edit(Model model, @RequestParam UUID id) {
         super.addBaseAttributes(model);
-        User user = unitOfWork.getUserService().find(User.class, id);
+        User user = DBServices.getUserService().find(User.class, id);
         model.addAttribute("entry", user);
-        model.addAttribute("roles", unitOfWork.getRoleService().getAll(Role.class));
+        model.addAttribute("roles", DBServices.getRoleService().getAll(Role.class));
         return "users/edit";
     }
 
@@ -145,10 +149,10 @@ public class UserController extends BaseController {
         if (result.hasErrors()) {
             addBaseAttributes(model);
             model.addAttribute("entry", entry);
-            model.addAttribute("roles", unitOfWork.getRoleService().getAll(Role.class));
+            model.addAttribute("roles", DBServices.getRoleService().getAll(Role.class));
             return "users/edit";
         }
-        unitOfWork.getUserService().update(entry);
+        DBServices.getUserService().update(entry);
         return "redirect:/users";
     }
 
@@ -162,13 +166,14 @@ public class UserController extends BaseController {
     @GetMapping("/users/delete")
     public String delete(Model model, @RequestParam UUID id) {
         super.addBaseAttributes(model);
-        model.addAttribute("entry", unitOfWork.getUserService().find(User.class, id));
+        model.addAttribute("entry", DBServices.getUserService().find(User.class, id));
         return "users/delete";
     }
 
     /**
      * A post handler for deleting a user.
-     * Checks that the data is valid and removes the user from the database.
+     * First removes the user from and tickets.
+     *
      * @param id the id of the user to delete.
      * @param entry the user entry to delete.
      * @param result information about the data binding.
@@ -177,7 +182,15 @@ public class UserController extends BaseController {
     @RequestMapping(value = "/users/delete", method = RequestMethod.POST)
     public String delete(@RequestParam UUID id, @ModelAttribute User entry, BindingResult result) {
         if (!result.hasErrors()) {
-            unitOfWork.getUserService().delete(User.class, entry);
+            // remove user from tickets first
+            TicketFilter filter = new TicketFilter();
+            filter.setLearnerId(id);
+            List<Ticket> userTickets = DBServices.getTicketService().find(Ticket.class, filter).toList();
+            for (Ticket ticket : userTickets) {
+                ticket.setAssignedUser(null);
+            }
+            DBServices.getTicketService().update(userTickets);
+            DBServices.getUserService().delete(User.class, entry);
         }
         return "redirect:/users";
     }

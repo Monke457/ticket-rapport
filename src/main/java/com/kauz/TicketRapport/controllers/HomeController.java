@@ -8,7 +8,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,10 +35,10 @@ public class HomeController extends BaseController {
         }
 
         filter.setStatus("Completed");
-        model.addAttribute("completed", unitOfWork.getTicketService().find(Ticket.class, filter).toList());
+        model.addAttribute("completed", DBServices.getTicketService().find(Ticket.class, filter).toList());
 
         filter.setStatus("In Progress");
-        List<Ticket> openTickets = unitOfWork.getTicketService().find(Ticket.class, filter).toList();
+        List<Ticket> openTickets = DBServices.getTicketService().find(Ticket.class, filter).toList();
 
         if (authUser.getUser().isAdmin()) {
             model.addAttribute("open", openTickets.stream().filter(t -> t.getAssignedUser() != null).toList());
@@ -49,8 +48,8 @@ public class HomeController extends BaseController {
             model.addAttribute("open", openTickets);
 
             filter.setStatus("Closed");
-            model.addAttribute("closed", unitOfWork.getTicketService().find(Ticket.class, filter).toList());
-            model.addAttribute("clients", unitOfWork.getClientService().getAll(Client.class));
+            model.addAttribute("closed", DBServices.getTicketService().find(Ticket.class, filter).toList());
+            model.addAttribute("clients", DBServices.getClientService().getAll(Client.class));
         }
 
         model.addAttribute("filter", filter);
@@ -73,8 +72,8 @@ public class HomeController extends BaseController {
                              @RequestParam(defaultValue = "") UUID clientId) {
         super.addBaseAttributes(model);
         TicketFilter filter = new TicketFilter(search, clientId, "Closed");
-        model.addAttribute("tickets", unitOfWork.getTicketService().find(Ticket.class, filter).toList());
-        model.addAttribute("clients", unitOfWork.getClientService().getAll(Client.class));
+        model.addAttribute("tickets", DBServices.getTicketService().find(Ticket.class, filter).toList());
+        model.addAttribute("clients", DBServices.getClientService().getAll(Client.class));
         model.addAttribute("filter", filter);
         return "archive";
     }
@@ -95,7 +94,7 @@ public class HomeController extends BaseController {
         super.addBaseAttributes(model);
         TicketFilter filter = new TicketFilter(search, clientId, "Closed");
         filter.setLearnerId(authUser.getUser().getId());
-        model.addAttribute("tickets", unitOfWork.getTicketService().find(Ticket.class, filter).toList());
+        model.addAttribute("tickets", DBServices.getTicketService().find(Ticket.class, filter).toList());
         model.addAttribute("referer", "home");
         return "fragments/ticket-cards :: ticket-cards";
 

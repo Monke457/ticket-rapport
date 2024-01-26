@@ -1,13 +1,16 @@
 package com.kauz.TicketRapport.controllers;
 
 import com.kauz.TicketRapport.models.Client;
+import com.kauz.TicketRapport.models.Ticket;
 import com.kauz.TicketRapport.models.filters.Filter;
+import com.kauz.TicketRapport.models.filters.TicketFilter;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -39,13 +42,13 @@ public class ClientController extends BaseController {
         if (id == null) {
             Filter filter = new Filter(search, sort, page, asc);
             int pageSize = 10;
-            model.addAttribute("entries", unitOfWork.getClientService().find(Client.class, filter, pageSize));
+            model.addAttribute("entries", DBServices.getClientService().find(Client.class, filter, pageSize));
             model.addAttribute("filter", filter);
-            model.addAttribute("totalPages", unitOfWork.getClientService().getPages(Client.class, filter, pageSize));
+            model.addAttribute("totalPages", DBServices.getClientService().getPages(Client.class, filter, pageSize));
             return "clients/index";
         }
 
-        model.addAttribute("entry", unitOfWork.getClientService().find(Client.class, id));
+        model.addAttribute("entry", DBServices.getClientService().find(Client.class, id));
         return "clients/details";
     }
 
@@ -78,7 +81,7 @@ public class ClientController extends BaseController {
             model.addAttribute("entry", entry);
             return "clients/create";
         }
-        unitOfWork.getClientService().create(entry);
+        DBServices.getClientService().create(entry);
         return "redirect:/clients";
     }
 
@@ -92,7 +95,7 @@ public class ClientController extends BaseController {
     @GetMapping("/clients/edit")
     public String edit(Model model, @RequestParam UUID id) {
         super.addBaseAttributes(model);
-        Client client = unitOfWork.getClientService().find(Client.class, id);
+        Client client = DBServices.getClientService().find(Client.class, id);
         model.addAttribute("entry", client);
         return "clients/edit";
     }
@@ -114,7 +117,7 @@ public class ClientController extends BaseController {
             model.addAttribute("entry", entry);
             return "clients/edit";
         }
-        unitOfWork.getClientService().update(entry);
+        DBServices.getClientService().update(entry);
         return "redirect:/clients";
     }
 
@@ -128,13 +131,13 @@ public class ClientController extends BaseController {
     @GetMapping("/clients/delete")
     public String delete(Model model, @RequestParam UUID id) {
         super.addBaseAttributes(model);
-        model.addAttribute("entry", unitOfWork.getClientService().find(Client.class, id));
+        model.addAttribute("entry", DBServices.getClientService().find(Client.class, id));
         return "clients/delete";
     }
 
     /**
      * The post handler to delete a client from the database.
-     * Checks that the data is valid and removes the client from the database.
+     * First removes the client from any tickets.
      *
      * @param id the id of the client.
      * @param entry the client entry to remove.
@@ -143,9 +146,15 @@ public class ClientController extends BaseController {
      */
     @RequestMapping(value = "/clients/delete", method = RequestMethod.POST)
     public String delete(@RequestParam UUID id, @ModelAttribute Client entry, BindingResult result) {
-        if (!result.hasErrors()) {
-            unitOfWork.getClientService().delete(Client.class, entry);
+        // remove client from tickets first
+        TicketFilter filter = new TicketFilter();
+        filter.setClientId(id);
+        List<Ticket> clientTickets = DBServices.getTicketService().find(Ticket.class, filter).toList();
+        for (Ticket ticket : clientTickets) {
+            ticket.setClient(null);
         }
+        DBServices.getTicketService().update(clientTickets);
+        DBServices.getClientService().delete(Client.class, entry);
         return "redirect:/clients";
     }
 }

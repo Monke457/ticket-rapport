@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 @Getter
 @Setter
 @Repository
-public class UnitOfWork {
+public class DBServices {
     @Autowired
     private UserService userService;
     @Autowired

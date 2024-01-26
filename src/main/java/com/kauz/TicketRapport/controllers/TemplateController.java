@@ -44,12 +44,12 @@ public class TemplateController extends BaseController {
         if (id == null) {
             Filter filter = new Filter(search, sort, page, asc);
             int pageSize = 10;
-            model.addAttribute("entries", unitOfWork.getChecklistTemplateService().find(ChecklistTemplate.class, filter, pageSize));
+            model.addAttribute("entries", DBServices.getChecklistTemplateService().find(ChecklistTemplate.class, filter, pageSize));
             model.addAttribute("filter", filter);
-            model.addAttribute("totalPages", unitOfWork.getChecklistTemplateService().getPages(ChecklistTemplate.class, filter, pageSize));
+            model.addAttribute("totalPages", DBServices.getChecklistTemplateService().getPages(ChecklistTemplate.class, filter, pageSize));
             return "checklists/index";
         }
-        model.addAttribute("entry", unitOfWork.getChecklistTemplateService().find(ChecklistTemplate.class, id));
+        model.addAttribute("entry", DBServices.getChecklistTemplateService().find(ChecklistTemplate.class, id));
         return "checklists/details";
     }
 
@@ -73,9 +73,9 @@ public class TemplateController extends BaseController {
         super.addBaseAttributes(model);
         Filter filter = new Filter(search, sort, page, asc);
         int pageSize = 10;
-        model.addAttribute("entries", unitOfWork.getChecklistItemTemplateService().find(ChecklistItemTemplate.class, filter, pageSize));
+        model.addAttribute("entries", DBServices.getChecklistItemTemplateService().find(ChecklistItemTemplate.class, filter, pageSize));
         model.addAttribute("filter", filter);
-        model.addAttribute("totalPages", unitOfWork.getChecklistItemTemplateService().getPages(ChecklistItemTemplate.class, filter, pageSize));
+        model.addAttribute("totalPages", DBServices.getChecklistItemTemplateService().getPages(ChecklistItemTemplate.class, filter, pageSize));
         return "checklists/items/index";
     }
 
@@ -89,7 +89,7 @@ public class TemplateController extends BaseController {
     public String create(Model model) {
         super.addBaseAttributes(model);
         model.addAttribute("entry", new ChecklistTemplate());
-        model.addAttribute("itemTemplates", unitOfWork.getChecklistItemTemplateService().getAll(ChecklistItemTemplate.class));
+        model.addAttribute("itemTemplates", DBServices.getChecklistItemTemplateService().getAll(ChecklistItemTemplate.class));
         return "checklists/create";
     }
 
@@ -112,13 +112,13 @@ public class TemplateController extends BaseController {
         if (result.hasErrors()) {
             super.addBaseAttributes(model);
             model.addAttribute("entry", entry);
-            model.addAttribute("itemTemplates", unitOfWork.getChecklistItemTemplateService().getAll(ChecklistItemTemplate.class));
+            model.addAttribute("itemTemplates", DBServices.getChecklistItemTemplateService().getAll(ChecklistItemTemplate.class));
             return "checklists/create";
         }
 
         updateItems(entry, itemIds, descriptions);
 
-        unitOfWork.getChecklistTemplateService().create(entry);
+        DBServices.getChecklistTemplateService().create(entry);
         return "redirect:/checklists";
     }
 
@@ -132,8 +132,8 @@ public class TemplateController extends BaseController {
     @GetMapping("/checklists/edit")
     public String edit(@RequestParam UUID id, Model model) {
         super.addBaseAttributes(model);
-        model.addAttribute("entry", unitOfWork.getChecklistTemplateService().find(ChecklistTemplate.class, id));
-        model.addAttribute("itemTemplates", unitOfWork.getChecklistItemTemplateService().getAll(ChecklistItemTemplate.class));
+        model.addAttribute("entry", DBServices.getChecklistTemplateService().find(ChecklistTemplate.class, id));
+        model.addAttribute("itemTemplates", DBServices.getChecklistItemTemplateService().getAll(ChecklistItemTemplate.class));
         return "checklists/edit";
     }
 
@@ -159,13 +159,13 @@ public class TemplateController extends BaseController {
         if (result.hasErrors()) {
             super.addBaseAttributes(model);
             model.addAttribute("entry", entry);
-            model.addAttribute("itemTemplates", unitOfWork.getChecklistItemTemplateService().getAll(ChecklistItemTemplate.class));
+            model.addAttribute("itemTemplates", DBServices.getChecklistItemTemplateService().getAll(ChecklistItemTemplate.class));
             return "checklists/edit";
         }
 
         updateItems(entry, itemIds, descriptions);
 
-        unitOfWork.getChecklistTemplateService().update(entry);
+        DBServices.getChecklistTemplateService().update(entry);
         return "redirect:/checklists";
     }
 
@@ -182,7 +182,7 @@ public class TemplateController extends BaseController {
         Set<ChecklistItemTemplate> itemTemplates = new HashSet<>();
         if (itemIds != null && !itemIds.isBlank()) {
             Set<UUID> ids = Arrays.stream(itemIds.split(",")).map(UUID::fromString).collect(Collectors.toSet());
-            itemTemplates.addAll(unitOfWork.getChecklistItemTemplateService().find(ids).collect(Collectors.toSet()));
+            itemTemplates.addAll(DBServices.getChecklistItemTemplateService().find(ids).collect(Collectors.toSet()));
         }
         if (descriptions != null) {
             itemTemplates.addAll(Arrays
@@ -203,7 +203,7 @@ public class TemplateController extends BaseController {
     @GetMapping("/checklists/items/edit")
     public String editItems(@RequestParam UUID id, Model model) {
         super.addBaseAttributes(model);
-        model.addAttribute("entry", unitOfWork.getChecklistItemTemplateService().find(ChecklistItemTemplate.class, id));
+        model.addAttribute("entry", DBServices.getChecklistItemTemplateService().find(ChecklistItemTemplate.class, id));
         return "checklists/items/edit";
     }
 
@@ -224,7 +224,7 @@ public class TemplateController extends BaseController {
             model.addAttribute("entry", entry);
             return "checklists/items/edit";
         }
-        unitOfWork.getChecklistItemTemplateService().update(entry);
+        DBServices.getChecklistItemTemplateService().update(entry);
         return "redirect:/checklists/items";
     }
 
@@ -238,7 +238,7 @@ public class TemplateController extends BaseController {
     @GetMapping("/checklists/delete")
     public String delete(@RequestParam UUID id, Model model) {
         super.addBaseAttributes(model);
-        model.addAttribute("entry", unitOfWork.getChecklistTemplateService().find(ChecklistTemplate.class, id));
+        model.addAttribute("entry", DBServices.getChecklistTemplateService().find(ChecklistTemplate.class, id));
         return "checklists/delete";
     }
 
@@ -254,10 +254,10 @@ public class TemplateController extends BaseController {
     @RequestMapping(value = "/checklists/delete", method = RequestMethod.POST)
     public String delete(@RequestParam UUID id, @ModelAttribute ChecklistTemplate entry, BindingResult result) {
         if (!result.hasErrors()) {
-            ChecklistTemplate template = unitOfWork.getChecklistTemplateService().find(ChecklistTemplate.class, id);
+            ChecklistTemplate template = DBServices.getChecklistTemplateService().find(ChecklistTemplate.class, id);
             // remove relations first
             template.getItems().clear();
-            unitOfWork.getChecklistTemplateService().delete(ChecklistTemplate.class, template);
+            DBServices.getChecklistTemplateService().delete(ChecklistTemplate.class, template);
         }
         return "redirect:/checklists";
     }
@@ -272,7 +272,7 @@ public class TemplateController extends BaseController {
     @GetMapping("/checklists/items/delete")
     public String deleteItem(@RequestParam UUID id, Model model) {
         super.addBaseAttributes(model);
-        model.addAttribute("entry", unitOfWork.getChecklistItemTemplateService().find(ChecklistItemTemplate.class, id));
+        model.addAttribute("entry", DBServices.getChecklistItemTemplateService().find(ChecklistItemTemplate.class, id));
         return "checklists/items/delete";
     }
 
@@ -289,14 +289,14 @@ public class TemplateController extends BaseController {
     @RequestMapping(value = "/checklists/items/delete", method = RequestMethod.POST)
     public String deleteItem(@RequestParam UUID id, @ModelAttribute ChecklistItemTemplate entry, BindingResult result) {
         if (!result.hasErrors()) {
-            ChecklistItemTemplate itemTemplate = unitOfWork.getChecklistItemTemplateService().find(ChecklistItemTemplate.class, id);
+            ChecklistItemTemplate itemTemplate = DBServices.getChecklistItemTemplateService().find(ChecklistItemTemplate.class, id);
             // remove relations first
             Set<ChecklistTemplate> templates = itemTemplate.getTemplates();
             for (ChecklistTemplate template : templates) {
                 template.getItems().remove(itemTemplate);
             }
-            unitOfWork.getChecklistTemplateService().update(templates);
-            unitOfWork.getChecklistItemTemplateService().delete(ChecklistItemTemplate.class, itemTemplate);
+            DBServices.getChecklistTemplateService().update(templates);
+            DBServices.getChecklistItemTemplateService().delete(ChecklistItemTemplate.class, itemTemplate);
         }
         return "redirect:/checklists/items";
     }

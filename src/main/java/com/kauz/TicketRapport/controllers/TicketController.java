@@ -11,7 +11,6 @@ import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
@@ -54,11 +53,11 @@ public class TicketController extends BaseController {
         if (!authUser.getUser().isAdmin()) {
             filter.setLearnerId(authUser.getUser().getId());
         }
-        model.addAttribute("entries", unitOfWork.getTicketService().find(Ticket.class, filter, pageSize));
-        model.addAttribute("clients", unitOfWork.getClientService().getAll(Client.class));
-        model.addAttribute("statuses", unitOfWork.getStatusService().getAll(Status.class));
+        model.addAttribute("entries", DBServices.getTicketService().find(Ticket.class, filter, pageSize));
+        model.addAttribute("clients", DBServices.getClientService().getAll(Client.class));
+        model.addAttribute("statuses", DBServices.getStatusService().getAll(Status.class));
         model.addAttribute("filter", filter);
-        model.addAttribute("totalPages", unitOfWork.getTicketService().getPages(Ticket.class, filter, pageSize));
+        model.addAttribute("totalPages", DBServices.getTicketService().getPages(Ticket.class, filter, pageSize));
         return "tickets/index";
     }
 
@@ -78,7 +77,7 @@ public class TicketController extends BaseController {
         }
 
         super.addBaseAttributes(model);
-        Ticket entry = unitOfWork.getTicketService().find(Ticket.class, id);
+        Ticket entry = DBServices.getTicketService().find(Ticket.class, id);
         model.addAttribute("referer", referer);
         model.addAttribute("entry", entry);
         return "tickets/details";
@@ -99,13 +98,13 @@ public class TicketController extends BaseController {
 
         if (!authUser.getUser().isAdmin()) return returnString;
 
-        Ticket ticket = unitOfWork.getTicketService().find(Ticket.class, id);
+        Ticket ticket = DBServices.getTicketService().find(Ticket.class, id);
         if (Objects.equals(action, "close")) {
-            ticket.setStatus(unitOfWork.getStatusService().find("Closed"));
+            ticket.setStatus(DBServices.getStatusService().find("Closed"));
         } else {
-            ticket.setStatus(unitOfWork.getStatusService().find("In Progress"));
+            ticket.setStatus(DBServices.getStatusService().find("In Progress"));
         }
-        unitOfWork.getTicketService().update(ticket);
+        DBServices.getTicketService().update(ticket);
 
         return returnString;
     }
@@ -130,7 +129,7 @@ public class TicketController extends BaseController {
                          @RequestParam String action,
                          @RequestParam(required = false) String checklistItems) {
 
-        Ticket ticket = unitOfWork.getTicketService().find(Ticket.class, id);
+        Ticket ticket = DBServices.getTicketService().find(Ticket.class, id);
 
         if (ticket.getAssignedUser().getId() != authUser.getUser().getId()) return "redirect:/";
 
@@ -144,9 +143,9 @@ public class TicketController extends BaseController {
             item.setCompleted(checklistItems.contains(item.getId().toString()));
         }
         if (action.equals("complete")) {
-            ticket.setStatus(unitOfWork.getStatusService().find("Completed"));
+            ticket.setStatus(DBServices.getStatusService().find("Completed"));
         }
-        unitOfWork.getTicketService().update(ticket);
+        DBServices.getTicketService().update(ticket);
 
         if (action.equals("exit")) return "redirect:/";
 
@@ -163,10 +162,10 @@ public class TicketController extends BaseController {
     public String create(Model model) {
         super.addBaseAttributes(model);
         model.addAttribute("entry", new Ticket());
-        model.addAttribute("users", unitOfWork.getUserService().getLearners());
-        model.addAttribute("clients", unitOfWork.getClientService().getAll(Client.class));
-        model.addAttribute("statuses", unitOfWork.getStatusService().getAll(Status.class));
-        model.addAttribute("templates", unitOfWork.getChecklistTemplateService().getAll(ChecklistTemplate.class));
+        model.addAttribute("users", DBServices.getUserService().getLearners());
+        model.addAttribute("clients", DBServices.getClientService().getAll(Client.class));
+        model.addAttribute("statuses", DBServices.getStatusService().getAll(Status.class));
+        model.addAttribute("templates", DBServices.getChecklistTemplateService().getAll(ChecklistTemplate.class));
         return "tickets/create";
     }
 
@@ -197,22 +196,22 @@ public class TicketController extends BaseController {
         if (result.hasErrors()) {
             super.addBaseAttributes(model);
             model.addAttribute("entry", entry);
-            model.addAttribute("users", unitOfWork.getUserService().getLearners());
-            model.addAttribute("clients", unitOfWork.getClientService().getAll(Client.class));
-            model.addAttribute("statuses", unitOfWork.getStatusService().getAll(Status.class));
-            model.addAttribute("templates", unitOfWork.getChecklistTemplateService().getAll(ChecklistTemplate.class));
+            model.addAttribute("users", DBServices.getUserService().getLearners());
+            model.addAttribute("clients", DBServices.getClientService().getAll(Client.class));
+            model.addAttribute("statuses", DBServices.getStatusService().getAll(Status.class));
+            model.addAttribute("templates", DBServices.getChecklistTemplateService().getAll(ChecklistTemplate.class));
             return "tickets/create";
         }
 
         updateChecklist(entry, checkboxes, descriptions, ids, saveTemplate != null, templateName);
 
-        entry.setStatus(unitOfWork.getStatusService().find("In Progress"));
+        entry.setStatus(DBServices.getStatusService().find("In Progress"));
 
         // bug fix
         if (entry.getAssignedUser().getId() == null) {
             entry.setAssignedUser(null);
         }
-        unitOfWork.getTicketService().create(entry);
+        DBServices.getTicketService().create(entry);
         return "redirect:/tickets";
     }
 
@@ -227,7 +226,7 @@ public class TicketController extends BaseController {
      */
     @GetMapping("/tickets/getTemplate")
     public String checklistTemplate(@RequestParam("id") UUID id, Model model) {
-        model.addAttribute("items", unitOfWork.getChecklistItemTemplateService().findByTemplate(id));
+        model.addAttribute("items", DBServices.getChecklistItemTemplateService().findByTemplate(id));
         return "fragments/checklist :: checklist";
     }
 
@@ -241,11 +240,11 @@ public class TicketController extends BaseController {
     @GetMapping("/tickets/edit")
     public String edit(Model model, @RequestParam UUID id, @RequestParam(required = false) String referer) {
         super.addBaseAttributes(model);
-        Ticket ticket = unitOfWork.getTicketService().find(Ticket.class, id);
+        Ticket ticket = DBServices.getTicketService().find(Ticket.class, id);
         model.addAttribute("entry", ticket);
-        model.addAttribute("users", unitOfWork.getUserService().getLearners());
-        model.addAttribute("clients", unitOfWork.getClientService().getAll(Client.class));
-        model.addAttribute("statuses", unitOfWork.getStatusService().getAll(Status.class));
+        model.addAttribute("users", DBServices.getUserService().getLearners());
+        model.addAttribute("clients", DBServices.getClientService().getAll(Client.class));
+        model.addAttribute("statuses", DBServices.getStatusService().getAll(Status.class));
         model.addAttribute("referer", referer);
         return "tickets/edit";
     }
@@ -275,9 +274,9 @@ public class TicketController extends BaseController {
         if (result.hasErrors()) {
             super.addBaseAttributes(model);
             model.addAttribute("entry", entry);
-            model.addAttribute("users", unitOfWork.getUserService().getLearners());
-            model.addAttribute("clients", unitOfWork.getClientService().getAll(Client.class));
-            model.addAttribute("statuses", unitOfWork.getStatusService().getAll(Status.class));
+            model.addAttribute("users", DBServices.getUserService().getLearners());
+            model.addAttribute("clients", DBServices.getClientService().getAll(Client.class));
+            model.addAttribute("statuses", DBServices.getStatusService().getAll(Status.class));
             return "tickets/edit";
         }
 
@@ -286,7 +285,7 @@ public class TicketController extends BaseController {
         if (entry.getAssignedUser().getId() == null) {
             entry.setAssignedUser(null);
         }
-        unitOfWork.getTicketService().update(entry);
+        DBServices.getTicketService().update(entry);
 
         if (referer.equals("home")) return "redirect:/";
         return "redirect:/tickets";
@@ -311,12 +310,12 @@ public class TicketController extends BaseController {
         String[] descArray = descriptions.split(";;");
         String[] idArray = ids.split(";;");
 
-        Set<ChecklistItem> originalItems = unitOfWork.getChecklistItemService().findByTicket(entry.getId()).collect(Collectors.toSet());
+        Set<ChecklistItem> originalItems = DBServices.getChecklistItemService().findByTicket(entry.getId()).collect(Collectors.toSet());
         ChecklistTemplate template = new ChecklistTemplate();
         if (saveTemplate) {
             if (templateName == null) templateName = "New Template";
             template.setDescription(templateName);
-            unitOfWork.getChecklistTemplateService().create(template);
+            DBServices.getChecklistTemplateService().create(template);
         }
 
         entry.setChecklist(new HashSet<>());
@@ -326,7 +325,7 @@ public class TicketController extends BaseController {
 
             ChecklistItem item = null;
             if (idArray[i].length() > 3) {
-                item = unitOfWork.getChecklistItemService().find(ChecklistItem.class, UUID.fromString(idArray[i]));
+                item = DBServices.getChecklistItemService().find(ChecklistItem.class, UUID.fromString(idArray[i]));
             }
             if (item != null) originalItems.remove(item);
             if (item == null) item = new ChecklistItem();
@@ -338,7 +337,7 @@ public class TicketController extends BaseController {
             if (saveTemplate) {
                 ChecklistItemTemplate itemTemplate = null;
                 if (idArray[i].length() > 3) {
-                     itemTemplate = unitOfWork.getChecklistItemTemplateService().find(ChecklistItemTemplate.class, UUID.fromString(idArray[i]));
+                     itemTemplate = DBServices.getChecklistItemTemplateService().find(ChecklistItemTemplate.class, UUID.fromString(idArray[i]));
                 }
                 if (itemTemplate == null) {
                     itemTemplate = new ChecklistItemTemplate();
@@ -352,10 +351,10 @@ public class TicketController extends BaseController {
         }
 
         // delete removed items
-        unitOfWork.getChecklistItemService().delete(ChecklistItem.class, originalItems);
+        DBServices.getChecklistItemService().delete(ChecklistItem.class, originalItems);
 
         if (saveTemplate) {
-            unitOfWork.getChecklistTemplateService().update(template);
+            DBServices.getChecklistTemplateService().update(template);
         }
     }
 
@@ -369,7 +368,7 @@ public class TicketController extends BaseController {
     @GetMapping("/tickets/delete")
     public String delete(Model model, @RequestParam UUID id) {
         super.addBaseAttributes(model);
-        model.addAttribute("entry", unitOfWork.getTicketService().find(Ticket.class, id));
+        model.addAttribute("entry", DBServices.getTicketService().find(Ticket.class, id));
         return "tickets/delete";
     }
 
@@ -384,7 +383,7 @@ public class TicketController extends BaseController {
     @RequestMapping(value = "/tickets/delete", method = RequestMethod.POST)
     public String delete(@RequestParam UUID id, @ModelAttribute Ticket entry, BindingResult result) {
         if (!result.hasErrors() && authUser.getUser().isAdmin()) {
-            unitOfWork.getTicketService().delete(Ticket.class, entry);
+            DBServices.getTicketService().delete(Ticket.class, entry);
         }
         return "redirect:/tickets";
     }

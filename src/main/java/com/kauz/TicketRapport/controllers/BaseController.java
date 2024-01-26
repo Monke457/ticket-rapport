@@ -1,7 +1,7 @@
 package com.kauz.TicketRapport.controllers;
 
 import com.kauz.TicketRapport.security.AuthUser;
-import com.kauz.TicketRapport.services.UnitOfWork;
+import com.kauz.TicketRapport.services.DBServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 
@@ -12,7 +12,7 @@ import org.springframework.ui.Model;
  */
 public abstract class BaseController {
     @Autowired
-    protected UnitOfWork unitOfWork;
+    protected DBServices DBServices;
     @Autowired
     protected AuthUser authUser;
 

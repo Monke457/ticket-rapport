@@ -41,9 +41,8 @@ public class Ticket implements DBEntity {
     private User assignedUser;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
-    @NotNull(message = "Please select a client")
     private Client client;
+
 
     @ManyToOne
     private Status status;
