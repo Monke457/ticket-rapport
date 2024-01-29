@@ -10,21 +10,19 @@
         <a class="btn btn-sm btn-primary" th:href="@{/checklists}">Checklist Templates</a>
     </div>
 
-    <form class="my-4" th:object="${filter}" th:action="@{/checklists/items}" method="get">
-        <div class="row align-items-center gap-1">
-            <div th:replace="~{fragments/forms/filter-fields :: filter-fields}"></div>
-            <div class="col">
-                <button class="btn btn-sm btn-primary" type="submit">
-                    <img th:src="@{/img/search.svg}" style="filter:invert(1)" alt="search.svg" title="Search"/>
-                </button>
-            </div>
+    <form class="row row-cols-lg-auto g-1 align-items-center my-4" th:object="${filter}" th:action="@{/checklists/items}" method="get">
+        <div th:replace="~{fragments/forms/filter-fields :: filter-fields}"></div>
+        <div class="col-2">
+            <button class="btn btn-sm btn-primary" type="submit">
+                <img th:src="@{/img/search.svg}" style="filter:invert(1)" alt="search.svg" title="Search"/>
+            </button>
         </div>
     </form>
 
     <table class="table my-4">
         <tr>
             <th th:replace="~{fragments/table-header :: table-header('checklists/items', 'description', 'Description')}"></th>
-            <th></th>
+            <th style="min-width:140px;"></th>
         </tr>
         <tr th:each="entry: ${entries}">
             <td th:text="${entry.description}"></td>

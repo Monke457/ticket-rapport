@@ -10,26 +10,24 @@
         <a class="btn btn-sm btn-success" th:href="@{/tickets/create}">New Ticket</a>
     </div>
 
-    <form class="my-4" th:object="${filter}" th:action="@{tickets}" method="get">
-        <div class="row align-items-center gap-1">
-            <div th:replace="~{fragments/forms/filter-fields :: filter-fields}"></div>
-            <div class="col" style="min-width:200px;">
-                <select class="form-select" th:field="*{clientId}">
-                    <option value="">All Clients</option>
-                    <option th:each="client: ${clients}" th:value="${client.id}" th:text="${client.name}"></option>
-                </select>
-            </div>
-            <div class="col" style="min-width:200px;">
-                <select class="form-select" th:field="*{statusId}">
-                    <option value="">Any Status</option>
-                    <option th:each="status: ${statuses}" th:value="${status.id}" th:text="${status.description}"></option>
-                </select>
-            </div>
-            <div class="col">
-                <button class="btn btn-sm btn-primary" type="submit">
-                    <img th:src="@{/img/search.svg}" style="filter:invert(1)" alt="search.svg" title="Search"/>
-                </button>
-            </div>
+    <form class="row row-cols-lg-auto g-1 align-items-center my-4" th:object="${filter}" th:action="@{tickets}" method="get">
+        <div th:replace="~{fragments/forms/filter-fields :: filter-fields}"></div>
+        <div class="col" style="min-width:200px;">
+            <select class="form-select" th:field="*{clientId}">
+                <option value="">All Clients</option>
+                <option th:each="client: ${clients}" th:value="${client.id}" th:text="${client.name}"></option>
+            </select>
+        </div>
+        <div class="col" style="min-width:200px;">
+            <select class="form-select" th:field="*{statusId}">
+                <option value="">Any Status</option>
+                <option th:each="status: ${statuses}" th:value="${status.id}" th:text="${status.description}"></option>
+            </select>
+        </div>
+        <div class="col-2">
+            <button class="btn btn-sm btn-primary" type="submit">
+                <img th:src="@{/img/search.svg}" style="filter:invert(1)" alt="search.svg" title="Search"/>
+            </button>
         </div>
     </form>
 
@@ -43,7 +41,7 @@
             </div>
             <th th:replace="~{fragments/table-header :: table-header('tickets', 'client.name', 'Client')}"></th>
             <th th:replace="~{fragments/table-header :: table-header('tickets', 'status.description', 'Status')}"></th>
-            <th></th>
+            <th style="min-width:140px;"></th>
         </tr>
         <tr th:each="entry: ${entries}">
             <td id="title" th:text="${entry.title}"></td>

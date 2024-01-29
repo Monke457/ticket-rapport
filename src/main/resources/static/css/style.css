@@ -19,15 +19,13 @@ footer {
 
 /* Tablet */
 @media only screen and (max-width: 1024px) {
-
+    .form-wrapper {
+        width: 100%;
+    }
 }
 
 /* Mobile */
 @media only screen and (max-width: 720px) {
-    .form-wrapper {
-        width: 100%;
-    }
-
     table.responsive,
     table.responsive tbody,
     table.responsive tr,

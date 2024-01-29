@@ -28,22 +28,20 @@
         <hr class="mt-4">
 
         <h5 class="my-4">Closed Tickets</h5>
-        <form class="my-4" th:object="${filter}" onkeydown="if(event.keyCode === 13) { getFilteredTickets(); return false; }">
-            <div class="row align-items-center gap-1">
-                <div class="col" style="min-width:200px;">
-                    <input id="search" class="form-control" th:field="*{search}" placeholder="Search">
-                </div>
-                <div class="col" style="min-width:200px;">
-                    <select id="client" class="form-select" th:field="*{clientId}">
-                        <option value="">All Clients</option>
-                        <option th:each="client: ${clients}" th:value="${client.id}" th:text="${client.name}"></option>
-                    </select>
-                </div>
-                <div class="col">
-                    <button class="btn btn-sm btn-primary" type="button" th:onclick="getFilteredTickets()">
-                        <img th:src="@{/img/search.svg}" style="filter:invert(1)" alt="search.svg" title="Search"/>
-                    </button>
-                </div>
+        <form class="row row-cols-lg-auto g-1 align-items-center my-4" th:object="${filter}" onkeydown="if(event.keyCode === 13) { getFilteredTickets(); return false; }">
+            <div class="col" style="min-width:200px;">
+                <input id="search" class="form-control" th:field="*{search}" placeholder="Search">
+            </div>
+            <div class="col" style="min-width:200px;">
+                <select id="client" class="form-select" th:field="*{clientId}">
+                    <option value="">All Clients</option>
+                    <option th:each="client: ${clients}" th:value="${client.id}" th:text="${client.name}"></option>
+                </select>
+            </div>
+            <div class="col-2">
+                <button class="btn btn-sm btn-primary" type="button" th:onclick="getFilteredTickets()">
+                    <img th:src="@{/img/search.svg}" style="filter:invert(1)" alt="search.svg" title="Search"/>
+                </button>
             </div>
         </form>
         <div id="filtered">

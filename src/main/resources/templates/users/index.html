@@ -8,20 +8,18 @@
     <h5 class="mb-2">Users</h5>
     <a class="btn btn-sm btn-success" th:href="@{/users/create}">New User</a>
 
-    <form class="my-4" th:object="${filter}" th:action="@{/users}" method="get">
-        <div class="row align-items-center gap-1">
-            <div th:replace="~{fragments/forms/filter-fields :: filter-fields}"></div>
-            <div class="col" style="min-width:200px;">
-                <select class="form-select" th:field="*{roleId}">
-                    <option value="">All Roles</option>
-                    <option th:each="role: ${roles}" th:value="${role.id}" th:text="${role.description}"></option>
-                </select>
-            </div>
-            <div class="col">
-                <button class="btn btn-sm btn-primary" type="submit">
-                    <img th:src="@{/img/search.svg}" style="filter:invert(1)" alt="search.svg" title="Search"/>
-                </button>
-            </div>
+    <form class="row row-cols-lg-auto g-1 align-items-center my-4" th:object="${filter}" th:action="@{/users}" method="get">
+        <div th:replace="~{fragments/forms/filter-fields :: filter-fields}"></div>
+        <div class="col" style="min-width:200px;">
+            <select class="form-select" th:field="*{roleId}">
+                <option value="">All Roles</option>
+                <option th:each="role: ${roles}" th:value="${role.id}" th:text="${role.description}"></option>
+            </select>
+        </div>
+        <div class="col-2">
+            <button class="btn btn-sm btn-primary" type="submit">
+                <img th:src="@{/img/search.svg}" style="filter:invert(1)" alt="search.svg" title="Search"/>
+            </button>
         </div>
     </form>
 
@@ -31,7 +29,7 @@
             <th th:replace="~{fragments/table-header :: table-header('users', 'lastname,firstname', 'Lastname')}"></th>
             <th th:replace="~{fragments/table-header :: table-header('users', 'email', 'Email')}"></th>
             <th th:replace="~{fragments/table-header :: table-header('users', 'role', 'Role')}"></th>
-            <th></th>
+            <th style="min-width:140px;"></th>
         </tr>
         <tr th:each="entry: ${entries}">
             <td id="firstname" th:text="${entry.firstname}"></td>
