@@ -4,6 +4,7 @@ import com.kauz.TicketRapport.models.helpers.DBEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -30,9 +31,13 @@ public class Ticket implements DBEntity {
     private UUID id;
     @Column(nullable = false)
     @NotBlank(message = "Please enter a title")
+    @Size(max=50)
     private String title;
+    @Size(max=100)
     private String description;
+    @Size(max=1000)
     private String protocol;
+    @Size(max=1000)
     private String solution;
     private int workHours;
     private int workMinutes;

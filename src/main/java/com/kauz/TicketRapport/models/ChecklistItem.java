@@ -3,6 +3,7 @@ package com.kauz.TicketRapport.models;
 import com.kauz.TicketRapport.models.helpers.DBEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,6 +27,7 @@ public class ChecklistItem implements DBEntity {
 
     @Column(nullable = false)
     @NotBlank(message = "Please enter a description of the checklist item")
+    @Size(max=100)
     private String description;
 
     private int position;

@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,7 +28,6 @@ public class Role implements DBEntity {
     @GeneratedValue
     private UUID id;
     @Column(nullable = false)
-    @NotBlank(message = "Please enter a description of the role")
     private String description;
 
     public Role(String description) {

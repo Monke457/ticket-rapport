@@ -4,6 +4,7 @@ import com.kauz.TicketRapport.models.helpers.DBEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,6 +29,7 @@ public class ChecklistTemplate implements DBEntity {
 
     @Column(nullable = false)
     @NotBlank(message = "Please enter a description of the checklist")
+    @Size(max=50)
     private String description;
 
     @ManyToMany(cascade = CascadeType.ALL)
