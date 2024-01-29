@@ -1,7 +1,9 @@
 package com.kauz.TicketRapport.services;
 
+import com.kauz.TicketRapport.models.Client;
 import com.kauz.TicketRapport.models.Status;
 import com.kauz.TicketRapport.models.Ticket;
+import com.kauz.TicketRapport.models.User;
 import com.kauz.TicketRapport.models.filters.Filter;
 import com.kauz.TicketRapport.models.filters.TicketFilter;
 import jakarta.persistence.criteria.*;
@@ -20,18 +22,20 @@ public class TicketService extends DBService<Ticket> {
     protected void addFilter(CriteriaBuilder cb, CriteriaQuery<Ticket> cq, Root<Ticket> root, Filter filter) {
         TicketFilter f = (TicketFilter) filter;
         List<Predicate> predicates = new ArrayList<>();
-        Join<Ticket, Status> statusJoin = root.join("status");
+        Join<Ticket, Status> statusJoin = root.join("status", JoinType.LEFT);
+        Join<Ticket, User> userJoin = root.join("assignedUser", JoinType.LEFT);
         if (f.getSearch() != null && !f.getSearch().isBlank()) {
             predicates.add(cb.or(
-                    cb.like(root.join("assignedUser").get("fullName"), "%" + f.getSearch() + "%"),
+                    cb.like(userJoin.get("fullName"), "%" + f.getSearch() + "%"),
                     cb.like(root.get("title"), "%" + f.getSearch() + "%"),
                     cb.like(root.get("description"), "%" + f.getSearch() + "%")));
         }
         if (f.getLearnerId() != null) {
-            predicates.add(cb.equal(root.join("assignedUser").get("id"), f.getLearnerId()));
+            predicates.add(cb.equal(userJoin.get("id"), f.getLearnerId()));
         }
         if (f.getClientId() != null) {
-            predicates.add(cb.equal(root.join("client").get("id"), f.getClientId()));
+            Join<Ticket, Client> clientJoin = root.join("client", JoinType.LEFT);
+            predicates.add(cb.equal(clientJoin.get("id"), f.getClientId()));
         }
         if (f.getStatusId() != null) {
             predicates.add(cb.equal(statusJoin.get("id"), f.getStatusId()));
