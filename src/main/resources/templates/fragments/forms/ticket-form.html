@@ -76,6 +76,10 @@
         </div>
         <div id="checklist">
             <div class="d-flex justify-content-between align-items-center p-1 gap-2" th:each="item: ${entry.checklist}" id="${item.id}">
+                <div class="d-flex flex-column">
+                    <img th:src="@{/img/caret-up.svg}" alt="up" title="Up" th:onclick="moveUp(this.parentElement.parentElement)">
+                    <img th:src="@{/img/caret-down.svg}" alt="down" title="Down" th:onclick="moveDown(this.parentElement.parentElement)">
+                </div>
                 <div class="d-flex gap-2 align-items-center w-100">
                     <input class="form-check-input" th:name="checklistItems" type="checkbox" th:value="${item.id}" th:checked="${item.completed}" th:onchange="updateHiddenInputs()">
                     <input class="form-control" type="text" th:name="list_desc" th:value="${item.description}" th:onkeyup="updateHiddenInputs()">
@@ -179,6 +183,20 @@
 
         function remove(el) {
             el.parentElement.removeChild(el);
+            updateHiddenInputs();
+        }
+
+        function moveUp(el) {
+            var index = Array.prototype.indexOf.call(el.parentElement.children, el);
+            if (index == 0) return;
+            el.parentElement.insertBefore(el, el.parentElement.children[index-1]);
+            updateHiddenInputs();
+        }
+
+        function moveDown(el) {
+            var index = Array.prototype.indexOf.call(el.parentElement.children, el);
+            if (index == el.parentElement.children.length-2) return;
+            el.parentElement.insertBefore(el, el.parentElement.children[index+2]);
             updateHiddenInputs();
         }
     </script>

@@ -10,7 +10,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * This component generates data and stores it in the database for development, testing, and demonstration purposes
@@ -184,32 +186,41 @@ public class DataGenerator {
             DBServices.getChecklistItemTemplateService().create(Set.of(itemT1, itemT2, itemT3, itemT4, itemT5));
 
             // add item templates to checklist templates
-            template1.setItems(Set.of(itemT1, itemT2, itemT3, itemT4, itemT5, itemT6, itemT7, itemT8));
-            template2.setItems(Set.of(itemT9, itemT10, itemT11, itemT12, itemT13, itemT14, itemT15, itemT16, itemT17, itemT8));
-            template3.setItems(Set.of(itemT18, itemT19, itemT20, itemT21, itemT22, itemT23, itemT15, itemT24, itemT25));
-            template4.setItems(Set.of(itemT7, itemT26, itemT27, itemT28));
+            List<ChecklistItemTemplate> items1 = List.of(itemT1, itemT2, itemT3, itemT4, itemT5, itemT6, itemT7, itemT8);
+            List<ChecklistItemTemplate> items2 = List.of(itemT9, itemT10, itemT11, itemT12, itemT13, itemT14, itemT15, itemT16, itemT17, itemT8);
+            List<ChecklistItemTemplate> items3 = List.of(itemT18, itemT19, itemT20, itemT21, itemT22, itemT23, itemT15, itemT24, itemT25);
+            List<ChecklistItemTemplate> items4 = List.of(itemT7, itemT26, itemT27, itemT28);
+
+            template1.setItems(new HashSet<>(items1));
+            template2.setItems(new HashSet<>(items2));
+            template3.setItems(new HashSet<>(items3));
+            template4.setItems(new HashSet<>(items4));
             DBServices.getChecklistTemplateService().update(Set.of(template1, template2, template3, template4));
 
             // create checklist items
             Set<ChecklistItem> checklistItems = new HashSet<>();
+            int position;
             for (Ticket t : tickets) {
+                position = 1;
                 if (t.getClient() == client1) {
-                    for (ChecklistItemTemplate itemTemplate : template1.getItems()) {
-                        checklistItems.add(new ChecklistItem(itemTemplate.getDescription(), t.getStatus() != open, t));
+                    for (ChecklistItemTemplate itemTemplate : items1) {
+                        checklistItems.add(new ChecklistItem(itemTemplate.getDescription(), position++, t.getStatus() != open, t));
                     }
                 }
                 if (t.getClient() == client2) {
-                    for (ChecklistItemTemplate itemTemplate : template2.getItems()) {
-                        checklistItems.add(new ChecklistItem(itemTemplate.getDescription(), t.getStatus() != open, t));
+                    for (ChecklistItemTemplate itemTemplate : items2) {
+                        checklistItems.add(new ChecklistItem(itemTemplate.getDescription(), position++, t.getStatus() != open, t));
                     }
                 }
                 if (t.getClient() == client3) {
-                    for (ChecklistItemTemplate itemTemplate : template3.getItems()) {
-                        checklistItems.add(new ChecklistItem(itemTemplate.getDescription(), t.getStatus() != open, t));
+                    for (ChecklistItemTemplate itemTemplate : items3) {
+                        checklistItems.add(new ChecklistItem(itemTemplate.getDescription(), position++, t.getStatus() != open, t));
                     }
                 }
-                for (ChecklistItemTemplate itemTemplate : template4.getItems()) {
-                    checklistItems.add(new ChecklistItem(itemTemplate.getDescription(), t.getStatus() != open, t));
+                if (t.getClient() == client4) {
+                    for (ChecklistItemTemplate itemTemplate : items4) {
+                        checklistItems.add(new ChecklistItem(itemTemplate.getDescription(), position++, t.getStatus() != open, t));
+                    }
                 }
             }
             DBServices.getChecklistItemService().create(checklistItems);

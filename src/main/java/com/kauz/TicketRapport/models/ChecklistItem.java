@@ -28,6 +28,8 @@ public class ChecklistItem implements DBEntity {
     @NotBlank(message = "Please enter a description of the checklist item")
     private String description;
 
+    private int position;
+
     @Column(nullable = false)
     private boolean completed;
 
@@ -35,8 +37,9 @@ public class ChecklistItem implements DBEntity {
     @JoinColumn(nullable = false)
     private Ticket ticket;
 
-    public ChecklistItem(String description, boolean completed, Ticket ticket) {
+    public ChecklistItem(String description, int position, boolean completed, Ticket ticket) {
         this.description = description;
+        this.position = position;
         this.completed = completed;
         this.ticket = ticket;
     }

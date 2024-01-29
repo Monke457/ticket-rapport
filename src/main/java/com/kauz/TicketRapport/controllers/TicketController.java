@@ -73,8 +73,10 @@ public class TicketController extends BaseController {
     @GetMapping("/tickets/details")
     public String getDetails(@RequestParam UUID id, @RequestParam(required = false) String referer, Model model) {
         Ticket entry = DBServices.getTicketService().find(Ticket.class, id);
-        if (authUser.getUser().getId() != entry.getAssignedUser().getId() && !authUser.getUser().isAdmin()) {
-            return referer.equals("home") ? "redirect:/" : "redirect:/tickets";
+        if (!authUser.getUser().isAdmin()) {
+            if (entry.getAssignedUser() == null || authUser.getUser().getId() != entry.getAssignedUser().getId()) {
+                return referer.equals("home") ? "redirect:/" : "redirect:/tickets";
+            }
         }
 
         super.addBaseAttributes(model);
@@ -131,7 +133,9 @@ public class TicketController extends BaseController {
 
         Ticket ticket = DBServices.getTicketService().find(Ticket.class, id);
 
-        if (ticket.getAssignedUser().getId() != authUser.getUser().getId()) return "redirect:/";
+        if (ticket.getAssignedUser() == null || ticket.getAssignedUser().getId() != authUser.getUser().getId()) {
+            return "redirect:/";
+        }
 
         if (checklistItems == null) checklistItems = "";
 
@@ -148,6 +152,23 @@ public class TicketController extends BaseController {
         DBServices.getTicketService().update(ticket);
 
         if (action.equals("exit")) return "redirect:/";
+
+        return "redirect:/tickets/details?id=" + id;
+    }
+
+    @RequestMapping(value = "/tickets/details/reopen", method = RequestMethod.POST)
+    public String reopen(@RequestParam UUID id,
+                         @ModelAttribute Ticket entry,
+                         BindingResult result) {
+
+        Ticket ticket = DBServices.getTicketService().find(Ticket.class, id);
+
+        if (ticket.getAssignedUser() == null || ticket.getAssignedUser().getId() != authUser.getUser().getId()) {
+            return "redirect:/";
+        }
+
+        ticket.setStatus(DBServices.getStatusService().find("In Progress"));
+        DBServices.getTicketService().update(ticket);
 
         return "redirect:/tickets/details?id=" + id;
     }
@@ -320,6 +341,7 @@ public class TicketController extends BaseController {
 
         entry.setChecklist(new HashSet<>());
 
+        int position = 1;
         for (int i = 0; i < idArray.length; i++) {
             if (descArray[i].trim().isEmpty()) continue;
 
@@ -331,6 +353,7 @@ public class TicketController extends BaseController {
             if (item == null) item = new ChecklistItem();
 
             item.setDescription(descArray[i].trim());
+            item.setPosition(position++);
             item.setTicket(entry);
             item.setCompleted(Objects.equals(checkArray[i], "true"));
 

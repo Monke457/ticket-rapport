@@ -6,18 +6,22 @@
 
 <main class="container">
     <div class="form-wrapper">
-        <div class="d-flex justify-content-between align-items-center my-4">
+        <div class="d-flex justify-content-between align-items-center mb-2">
             <span></span>
-            <h3>Ticket Details</h3>
+            <h5>Ticket Details</h5>
             <a class="btn btn-sm btn-secondary" th:if="${authUser.isAdmin}" th:onclick="history.back()">Back</a>
             <a class="btn btn-sm btn-secondary" th:if="${!authUser.isAdmin}" th:href="@{/}">Back</a>
         </div>
         <div th:replace="~{fragments/details/ticket-details :: ticket-details('false')}"></div>
-        <form th:if="${authUser.role.description == 'ADMIN' && entry.status.description == 'Completed'}"
+        <form th:if="${authUser.isAdmin && entry.status.description == 'Completed'}"
               th:action="@{/tickets/status(id=${entry.id})}"  method="post" class="text-end">
             <input type="hidden" name="referer" th:value="${referer}">
             <button class="btn btn-success" name="action" value="close">Mark as closed</button>
             <button class="btn btn-danger" name="action" value="reopen">Reopen</button>
+        </form>
+        <form th:if="${!authUser.isAdmin && entry.status.description == 'Completed'}"
+              th:action="@{/tickets/details/reopen(id=${entry.id})}"  method="post" class="text-end">
+            <button class="btn btn-warning">Reopen</button>
         </form>
     </div>
 </main>

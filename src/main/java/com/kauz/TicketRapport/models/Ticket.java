@@ -47,6 +47,7 @@ public class Ticket implements DBEntity {
     private Status status;
 
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL)
+    @OrderBy("position")
     private Set<ChecklistItem> checklist = new HashSet<>();
 
     @Transient
@@ -77,7 +78,7 @@ public class Ticket implements DBEntity {
     public String getCardStyle() {
         // no status no style
         if (status.getDescription().isBlank()) return "";
-        return "border-left: 15px solid " + getBackgroundColor() + ";";
+        return "border-left: 12px solid " + getBackgroundColor() + ";";
     }
 
     /**

@@ -1,0 +1,12 @@
+<div th:fragment="table-buttons(root)" xmlns:th="http://www.w3.org/1999/xhtml"
+     class="table-links d-flex flex-wrap justify-content-end gap-1">
+    <a class="btn btn-sm btn-primary" th:href="@{'/' + ${root}(id=${entry.id})}">
+        <img th:src="@{/img/view.svg}" style="filter:invert(1)" alt="view.svg" title="View"/>
+    </a>
+    <a class="btn btn-sm btn-warning" th:href="@{'/' + ${root} + '/edit'(id=${entry.id})}">
+        <img th:src="@{/img/edit.svg}" alt="edit.svg" title="Edit"/>
+    </a>
+    <a class="btn btn-sm btn-danger" th:href="@{'/' + ${root} + '/delete'(id=${entry.id})}">
+        <img th:src="@{/img/trash.svg}" style="filter:invert(1)" alt="trash.svg" title="Delete"/>
+    </a>
+</div>

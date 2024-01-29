@@ -5,17 +5,19 @@
 <header th:replace="~{fragments/header :: header}"></header>
 
 <main class="container">
-    <h3 class="text-center my-4">Checklist Templates</h3>
-    <div class="d-flex justify-content-between gap-2">
-        <a class="btn btn-sm btn-success" th:href="@{/checklists/create}">New Checklist Template</a>
+    <div class="d-flex justify-content-between flex-wrap align-items-start gap-2 mb-2">
+        <h5>Checklist Templates</h5>
         <a class="btn btn-sm btn-primary" th:href="@{/checklists/items}">Item Templates</a>
     </div>
+    <a class="btn btn-sm btn-success" th:href="@{/checklists/create}">New Checklist Template</a>
 
     <form class="my-4" th:object="${filter}" th:action="@{/checklists}" method="get">
         <div class="row align-items-center gap-1">
             <div th:replace="~{fragments/forms/filter-fields :: filter-fields}"></div>
             <div class="col">
-                <button class="btn btn-sm btn-primary" type="submit">Go</button>
+                <button class="btn btn-sm btn-primary" type="submit">
+                    <img th:src="@{/img/search.svg}" style="filter:invert(1)" alt="search.svg" title="Search"/>
+                </button>
             </div>
         </div>
     </form>
@@ -32,11 +34,7 @@
                 <li id="items" th:each="item: ${entry.items}" th:text="${item.description}"></li>
             </td>
             <td>
-                <div class="table-links d-flex flex-wrap justify-content-end gap-1">
-                    <a class="btn btn-sm btn-primary" th:href="@{/checklists(id=${entry.id})}">View</a>
-                    <a class="btn btn-sm btn-warning" th:href="@{/checklists/edit(id=${entry.id})}">Edit</a>
-                    <a class="btn btn-sm btn-danger" th:href="@{/checklists/delete(id=${entry.id})}">Delete</a>
-                </div>
+                <div th:replace="~{fragments/table-buttons :: table-buttons(checklists)}"></div>
             </td>
         </tr>
     </table>

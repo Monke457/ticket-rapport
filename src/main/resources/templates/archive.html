@@ -5,9 +5,7 @@
 <header th:replace="~{fragments/header :: header}"></header>
 
 <main class="container">
-    <div th:if="${authUser.isAdmin}">
-        <h3 class="my-4">Closed Tickets</h3>
-    </div>
+    <h5>Closed Tickets</h5>
 
     <form class="my-4" th:object="${filter}" th:action="@{archive}" method="get">
         <div class="row align-items-center gap-1">
@@ -21,7 +19,9 @@
                 </select>
             </div>
             <div class="col">
-                <button class="btn btn-sm btn-primary">Go</button>
+                <button class="btn btn-sm btn-primary">
+                    <img th:src="@{/img/search.svg}" style="filter:invert(1)" alt="search.svg" title="Search"/>
+                </button>
             </div>
         </div>
     </form>

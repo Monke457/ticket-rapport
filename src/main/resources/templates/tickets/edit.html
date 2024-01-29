@@ -6,9 +6,9 @@
 
 <main class="container">
     <div class="form-wrapper">
-        <div class="d-flex justify-content-between align-items-center my-4">
+        <div class="d-flex justify-content-between align-items-center mb-2">
             <span></span>
-            <h3>Edit Ticket</h3>
+            <h5>Edit Ticket</h5>
             <a class="btn btn-sm btn-secondary" th:onclick="history.back()">Back</a>
         </div>
         <form th:action="@{edit(id=${entry.id})}" th:object="${entry}" method="post">

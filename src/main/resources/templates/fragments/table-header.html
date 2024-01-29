@@ -1,4 +1,9 @@
 <th th:fragment="table-header(controller, sort, field)" xmlns:th="http://www.w3.org/1999/xhtml">
-    <a th:href="@{'/' + ${controller} + ${filter.toQueryString(sort)}}" th:text="${field}">
+    <a class="text-decoration-none" th:href="@{'/' + ${controller} + ${filter.toQueryString(sort)}}">
+        <span th:text="${field}"></span>
+        <span th:classappend="${filter.sort == sort} ? '' : 'invisible'">
+            <img th:if="${filter.asc}" th:src="@{/img/caret-up.svg}" alt="up"/>
+            <img th:unless="${filter.asc}" th:src="@{/img/caret-down.svg}" alt="down"/>
+        </span>
     </a>
 </th>
