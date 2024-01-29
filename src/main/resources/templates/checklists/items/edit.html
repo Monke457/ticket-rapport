@@ -13,7 +13,7 @@
         </div>
         <form th:action="@{edit(id=${entry.id})}" th:object="${entry}" method="post">
             <div class="mb-3">
-                <label class="form-label" th:for="*{description}">Description</label>
+                <label class="form-label" th:for="*{description}">* Description</label>
                 <input class="form-control" th:field="*{description}">
                 <div th:replace="~{fragments/forms/error-alert :: error-alert('description')}"></div>
             </div>

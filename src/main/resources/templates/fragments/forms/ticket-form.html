@@ -1,6 +1,6 @@
 <div th:fragment="ticket-form(type)" xmlns:th="http://www.w3.org/1999/xhtml">
     <div class="mb-3">
-        <label class="form-label" th:for="*{title}">Title</label>
+        <label class="form-label" th:for="*{title}">* Title</label>
         <input class="form-control" th:field="*{title}">
         <div th:replace="~{fragments/forms/error-alert :: error-alert('title')}"></div>
     </div>
@@ -17,7 +17,7 @@
         </select>
     </div>
     <div class="mb-3">
-        <label class="form-label" th:for="*{client}">Client</label>
+        <label class="form-label" th:for="*{client}">* Client</label>
         <select class="mb-3 form-select" th:field="*{client.id}">
             <option th:if="*{client.id == null || client.id == ''}" value="null">Select Client</option>
             <option th:each="client: ${clients}" th:value="${client.id}" th:text="${client.name}"></option>
@@ -25,7 +25,7 @@
         <div class="alert alert-warning mt-1" th:if="${#fields.hasErrors('client.id')}">Please select a client</div>
     </div>
     <div class="mb-3" th:classappend="${type == 'create'} ? 'd-none' : ''">
-        <label class="form-label" th:for="*{status}">Status</label>
+        <label class="form-label" th:for="*{status}">* Status</label>
         <select class="mb-3 form-select" th:field="*{status.id}">
             <option th:each="status: ${statuses}" th:value="${status.id}" th:text="${status.description}"></option>
         </select>
