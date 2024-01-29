@@ -29,7 +29,7 @@
         </div>
     </div>
 
-    <div th:if="${delete == 'true' || authUser.role.description == 'ADMIN' || entry.status.description != 'In Progress'}">
+    <div th:if="${delete == 'true' || authUser.role.description == 'ADMIN' || status != 'In Progress'}">
         <div class="mb-3">
             <div class="form-label">Protocol</div>
             <div class="form-control bg-light" style="min-height:37px;" th:text="${entry.protocol}"></div>
@@ -52,8 +52,9 @@
         </div>
     </div>
 
-    <form th:unless="${delete == 'true' || authUser.role.description == 'ADMIN' || entry.status.description != 'In Progress'}"
+    <form th:unless="${delete == 'true' || authUser.isAdmin || status != 'In Progress'}"
           th:action="@{/tickets/details/update(id=${entry.id})}" th:object="${entry}" method="post">
+        <input type="hidden" th:name="status" th:value="${status}">
         <div class="mb-3">
             <div class="form-label" th:for="*{protocol}">Protocol</div>
             <textarea class="form-control mb-2" th:field="*{protocol}"></textarea>

@@ -11,12 +11,10 @@ import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -82,6 +80,7 @@ public class TicketController extends BaseController {
         super.addBaseAttributes(model);
         model.addAttribute("referer", referer);
         model.addAttribute("entry", entry);
+        model.addAttribute("status", entry.getStatus().getDescription());
         return "tickets/details";
     }
 
@@ -126,10 +125,28 @@ public class TicketController extends BaseController {
      */
     @RequestMapping(value = "/tickets/details/update", method = RequestMethod.POST)
     public String update(@RequestParam UUID id,
-                         @ModelAttribute Ticket entry,
-                         BindingResult result,
                          @RequestParam String action,
-                         @RequestParam(required = false) String checklistItems) {
+                         @RequestParam String status,
+                         @RequestParam(required = false) String checklistItems,
+                         @Valid @ModelAttribute("entry") Ticket entry,
+                         BindingResult result,
+                         Model model) {
+
+        if (result.hasErrors()) {
+            boolean error = false;
+            for (ObjectError err : result.getAllErrors()) {
+                if (err.getCodes() == null) continue;
+                if (err.getCodes()[1].contains("protocol")) error = true;
+                if (err.getCodes()[1].contains("solution")) error = true;
+                if (error) break;
+            }
+            if (error) {
+                super.addBaseAttributes(model);
+                model.addAttribute("entry", entry);
+                model.addAttribute("status", status);
+                return "tickets/details";
+            }
+        }
 
         Ticket ticket = DBServices.getTicketService().find(Ticket.class, id);
 

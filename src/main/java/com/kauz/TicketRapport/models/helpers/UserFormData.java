@@ -25,10 +25,11 @@ public class UserFormData {
     private String email;
 
     @NotBlank(message = "Please enter a password")
-    @Size(min = 5, message = "The password must be at least 5 characters long")
+    @Size(min = 5, max=50, message = "The password must be between 5 and 50 characters long")
     private String password;
 
     @NotBlank(message = "Please confirm the password")
+    @Size(min = 5, max=50, message = "The password must be between 5 and 50 characters long")
     private String confirmPassword;
 
     @NotNull(message = "Please select a role")

@@ -39,7 +39,7 @@ public class User implements DBEntity {
     @NotBlank(message = "Please enter a valid email address")
     @Size(max=30)
     private String email;
-    @Size(max=50)
+    @Size(max=100)
     private String password;
 
     @ManyToOne
