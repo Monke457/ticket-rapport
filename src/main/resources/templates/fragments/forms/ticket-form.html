@@ -139,13 +139,26 @@
 
         function add(el) {
             outerDiv = document.createElement('div');
-            innerDiv = document.createElement('div');
+            checkDiv = document.createElement('div');
+            caretDiv = document.createElement('div');
+            caretUp = document.createElement('img');
+            caretDown = document.createElement('img');
             checkInput = document.createElement('input');
             textInput = document.createElement('input');
             button = document.createElement('button');
 
             outerDiv.classList.add('d-flex', 'justify-content-between', 'align-items-center', 'p-1', 'gap-2');
-            innerDiv.classList.add('d-flex', 'gap-2', 'align-items-center', 'w-100');
+            caretDiv.classList.add('d-flex', 'flex-column');
+            checkDiv.classList.add('d-flex', 'gap-2', 'align-items-center', 'w-100');
+
+            caretUp.src = "/img/caret-up.svg";
+            caretUp.addEventListener('click', function() {
+               moveUp(this.parentElement.parentElement);
+            });
+            caretDown.src = "/img/caret-down.svg";
+            caretDown.addEventListener('click', function() {
+               moveDown(this.parentElement.parentElement);
+            });
 
             checkInput.classList.add('form-check-input');
             checkInput.type = 'checkbox';
@@ -172,9 +185,12 @@
             }, false);
             button.innerHTML = 'X';
 
-            innerDiv.appendChild(checkInput);
-            innerDiv.appendChild(textInput);
-            outerDiv.appendChild(innerDiv);
+            caretDiv.appendChild(caretUp);
+            caretDiv.appendChild(caretDown);
+            checkDiv.appendChild(checkInput);
+            checkDiv.appendChild(textInput);
+            outerDiv.appendChild(caretDiv);
+            outerDiv.appendChild(checkDiv);
             outerDiv.appendChild(button);
             el.insertBefore(outerDiv, el.lastElementChild);
 
