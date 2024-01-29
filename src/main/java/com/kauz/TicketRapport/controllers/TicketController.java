@@ -117,10 +117,12 @@ public class TicketController extends BaseController {
      * Optionally also sets the ticket status to complete.
      *
      * @param id the id of the ticket to update.
-     * @param entry the ticket entry to update.
-     * @param result information about the data binding.
+     * @param status status of the ticket as a string - hack for the status not being readable after failed update attempt.
      * @param action the type of update to do (whether to mark the ticket as completed).
      * @param checklistItems a comma separated string of ids for the checklist items that are marked as completed.
+     * @param entry the ticket entry to update.
+     * @param result information about the data binding.
+     * @param model a model containing all the relevant view data.
      * @return a reference to a Thymeleaf template.
      */
     @RequestMapping(value = "/tickets/details/update", method = RequestMethod.POST)
