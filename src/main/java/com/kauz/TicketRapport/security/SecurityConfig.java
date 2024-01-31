@@ -16,7 +16,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * Handles authorization logic.
  */
 @Configuration
-public class SecurityConfig implements WebMvcConfigurer {
+public class SecurityConfig {
     @Bean
     public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
