@@ -28,7 +28,7 @@ public class ChecklistTemplate implements DBEntity {
     private UUID id;
 
     @Column(nullable = false)
-    @NotBlank(message = "Please enter a description of the checklist")
+    @NotBlank(message = "Please enter a name for the checklist")
     @Size(max=50)
     private String description;
 

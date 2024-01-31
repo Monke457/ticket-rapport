@@ -257,8 +257,9 @@ public class TicketController extends BaseController {
 
     /**
      * A get handler to fetch checklist item templates from the database.
-     * Adds the template to the model and returns a fragment reference for displaying the data.
-     * For adding a checklist to a ticket from a template.
+     * Finds items by checklist id.
+     * Adds the item templates to the model and returns a fragment reference for displaying the data.
+     * For adding a checklist to a ticket form from a template.
      *
      * @param id the id of the template entry.
      * @param model the model containing the relevant view data (a stream of checklist item templates).
@@ -275,6 +276,7 @@ public class TicketController extends BaseController {
      *
      * @param model the model containing the relevant view data.
      * @param id the id of the ticket to edit.
+     * @param referer a string representing the page the user came from / to return to.
      * @return a reference to the ticket edit Thymeleaf template.
      */
     @GetMapping("/tickets/edit")
@@ -298,6 +300,7 @@ public class TicketController extends BaseController {
      * @param checkboxes a string of values for the checklist items (checked or not) separated by ';;'.
      * @param descriptions a string of descriptions for the checklist items separated by ';;'.
      * @param ids a list of ids for the checklist items separated by ';;'.
+     * @param referer a string representing the page the user came from / to return to.
      * @param entry the new ticket data.
      * @param result information about the data binding.
      * @param model the model containing the relevant view data.
@@ -353,7 +356,7 @@ public class TicketController extends BaseController {
         Set<ChecklistItem> originalItems = DBServices.getChecklistItemService().findByTicket(entry.getId()).collect(Collectors.toSet());
         ChecklistTemplate template = new ChecklistTemplate();
         if (saveTemplate) {
-            if (templateName == null) templateName = "New Template";
+            if (templateName.isBlank()) templateName = "New Template";
             template.setDescription(templateName);
             DBServices.getChecklistTemplateService().create(template);
         }
@@ -363,13 +366,16 @@ public class TicketController extends BaseController {
         int position = 1;
         for (int i = 0; i < idArray.length; i++) {
             if (descArray[i].trim().isEmpty()) continue;
-
             ChecklistItem item = null;
+
             if (idArray[i].length() > 3) {
                 item = DBServices.getChecklistItemService().find(ChecklistItem.class, UUID.fromString(idArray[i]));
             }
-            if (item != null) originalItems.remove(item);
-            if (item == null) item = new ChecklistItem();
+            if (item == null) {
+                item = new ChecklistItem();
+            } else {
+                originalItems.remove(item);
+            }
 
             item.setDescription(descArray[i].trim());
             item.setPosition(position++);
