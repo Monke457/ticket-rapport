@@ -1,5 +1,6 @@
-<nav class="divider" th:fragment="pagination(controller)" xmlns:th="http://www.w3.org/1999/xhtml">
-    <div th:if="${totalPages > 1}" class="mb-5">
+<div class="divider" th:fragment="pagination(controller)" xmlns:th="http://www.w3.org/1999/xhtml">
+    <div th:if="${controller == null}"></div>
+    <div th:if="${controller != null && totalPages > 1}" class="mb-5">
         <ul class="pagination justify-content-center">
             <li class="page-item" th:classappend="${filter.page <= 1 ? 'disabled' : ''}">
                 <a class="page-link" th:if="${filter.page > 1}"
@@ -23,4 +24,4 @@
             </li>
         </ul>
     </div>
-</nav>
+</div>

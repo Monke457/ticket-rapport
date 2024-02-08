@@ -1,10 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-<head th:replace="~{fragments/head :: head('Home')}"></head>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layout}" th:with="title='Home'">
 <body>
-<header th:replace="~{fragments/header :: header}"></header>
-
-<main class="container">
+<section layout:fragment="content">
     <div th:if="${authUser.isAdmin}">
         <h5 class="mb-4">Unassigned Tickets</h5>
         <div th:replace="~{fragments/ticket-cards :: ticket-cards(${unassigned}, 'home')}"></div>
@@ -46,26 +44,23 @@
         </form>
         <div id="filtered">
         </div>
-        <script th:inline="javascript">
-            // live filter
-            async function getFilteredTickets() {
-                var search = document.getElementById('search');
-                var client = document.getElementById('client');
-
-                await fetch(`filter?search=${search.value}&clientId=${client.value}`).then(function (response) {
-                    return response.text();
-                }).then(function (html) {
-                    document.getElementById('filtered').innerHTML = html;
-                }).catch(function (err) {
-                    console.warn('Something went wrong.', err);
-                });
-            }
-            getFilteredTickets();
-        </script>
     </div>
-</main>
-
-<div class="divider"></div>
-<footer th:replace="~{fragments/footer :: footer}"></footer>
+</section>
 </body>
+<script layout:fragment="scripts" th:inline="javascript" >
+    // live filter
+    async function getFilteredTickets() {
+        var search = document.getElementById('search');
+        var client = document.getElementById('client');
+
+        await fetch(`filter?search=${search.value}&clientId=${client.value}`).then(function (response) {
+            return response.text();
+        }).then(function (html) {
+            document.getElementById('filtered').innerHTML = html;
+        }).catch(function (err) {
+            console.warn('Something went wrong.', err);
+        });
+    }
+    getFilteredTickets();
+</script>
 </html>

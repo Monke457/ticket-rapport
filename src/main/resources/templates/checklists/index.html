@@ -1,10 +1,7 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-<head th:replace="~{fragments/head :: head('Checklist Templates')}"></head>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layout}" th:with="title='Checklist Templates'">
 <body>
-<header th:replace="~{fragments/header :: header}"></header>
-
-<main class="container">
+<section layout:fragment="content">
     <div class="d-flex justify-content-between flex-wrap align-items-start gap-2 mb-2">
         <h5>Checklist Templates</h5>
         <a class="btn btn-sm btn-primary" th:href="@{/checklists/items}">Item Templates</a>
@@ -36,18 +33,13 @@
             </td>
         </tr>
     </table>
-</main>
-
-<div th:replace="~{fragments/pagination :: pagination(checklists)}"></div>
-<footer th:replace="~{fragments/footer :: footer}"></footer>
+</section>
 </body>
-
-<style media="screen and (max-width: 720px)">
+<style layout:fragment="styles" media="screen and (max-width: 720px)">
     #description{
         font-weight: bold;
         font-size: large;
         text-align: center;
-
     }
 </style>
 </html>

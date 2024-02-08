@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-<head th:replace="~{fragments/head :: head('Archive')}"></head>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layout}"
+      th:with="title='Error'">
 <body>
-<header th:replace="~{fragments/header :: header}"></header>
-
-<main class="container">
+<section layout:fragment="content">
     <h5>Closed Tickets</h5>
 
     <form class="row row-cols-lg-auto g-1 align-items-center my-4" th:object="${filter}" th:action="@{archive}" method="get">
@@ -25,9 +25,6 @@
     </form>
 
     <div th:replace="~{fragments/ticket-cards :: ticket-cards(${tickets}, 'archive')}"></div>
-</main>
-
-<div class="divider"></div>
-<footer th:replace="~{fragments/footer :: footer}"></footer>
+</section>
 </body>
 </html>

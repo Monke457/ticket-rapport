@@ -1,10 +1,7 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-<head th:replace="~{fragments/head :: head('Tickets')}"></head>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layout}" th:with="title='Tickets'">
 <body>
-<header th:replace="~{fragments/header :: header}"></header>
-
-<main class="container">
+<section layout:fragment="content">
     <h5 class="mb-2">Tickets</h5>
     <div th:if="${authUser.role.description == 'ADMIN'}">
         <a class="btn btn-sm btn-success" th:href="@{/tickets/create}">New Ticket</a>
@@ -72,32 +69,24 @@
             </td>
         </tr>
     </table>
-</main>
-
-<div th:replace="~{fragments/pagination :: pagination(tickets)}"></div>
-<footer th:replace="~{fragments/footer :: footer}"></footer>
+</section>
 </body>
-
-<style media="screen and (max-width: 720px)">
+<style layout:fragment="styles" media="screen and (max-width: 720px)">
     #title {
         font-weight: bold;
         font-size: large;
         text-align: center;
     }
-
     #worktime::before {
         content: "\AWork Time: ";
         white-space: pre;
     }
-
     #user::before {
         content: "Learner: ";
     }
-
     #client::before {
         content: "Client: ";
     }
-
     #status::before {
         content: "Status: ";
     }
