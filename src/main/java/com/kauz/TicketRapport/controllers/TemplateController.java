@@ -113,6 +113,9 @@ public class TemplateController extends BaseController {
             super.addBaseAttributes(model);
             model.addAttribute("entry", entry);
             model.addAttribute("itemTemplates", DBServices.getChecklistItemTemplateService().getAll(ChecklistItemTemplate.class));
+            if (descriptions != null) {
+                model.addAttribute("newItems", Arrays.stream(descriptions.split(",")).filter(i -> !i.isBlank()));
+            }
             return "checklists/create";
         }
 
