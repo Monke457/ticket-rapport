@@ -2,7 +2,6 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml">
 <section th:replace="~{fragments/head :: head(${title})}"></section>
 <section th:replace="~{fragments/header :: header}"></section>
-<section layout:fragment="styles"></section>
 <body>
 <main class="container">
     <section layout:fragment="content"></section>
@@ -10,5 +9,6 @@
 </body>
 <section th:replace="~{fragments/pagination :: pagination(${controller})}"></section>
 <section th:replace="~{fragments/footer :: footer}"></section>
+<section layout:fragment="styles"></section>
 <section layout:fragment="scripts"></section>
 </html>
