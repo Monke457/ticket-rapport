@@ -5,10 +5,11 @@
         <div th:replace="~{fragments/forms/error-alert :: error-alert('description')}"></div>
     </div>
     <div class="mb-3">
-        <label class="form-label" th:for="*{items}">Items (Ctrl + click to select multiple)</label>
+        <label class="form-label">Items (Ctrl + click to select multiple)</label>
         <div>
             <select id="itemTemplates" class="form-select" multiple="multiple" style="min-height:150px;" th:onchange="updateIds()">
-                <option th:each="item: ${itemTemplates}" th:value="${item.id}" th:text="${item.description}" th:selected="${#arrays.contains(entry.items, item)}"></option>
+                <option th:each="item: ${itemTemplates}" th:value="${item.id}" th:text="${item.description}"
+                        th:selected="${#arrays.contains(entry.items, item) || (itemIds != null && #strings.contains(itemIds, item.id))}"></option>
             </select>
             <input id="ids" type="hidden" th:name="itemIds" value="">
         </div>
