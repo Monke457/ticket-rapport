@@ -2,8 +2,8 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml"
       layout:decorate="~{layout}" th:with="title='Home'">
 <body>
-<section th:if="${authUser.isAdmin}" layout:fragment="content">
-    <div >
+<section layout:fragment="content">
+    <div th:if="${authUser.isAdmin}">
         <h5 class="mb-4">Unassigned Tickets</h5>
         <div th:replace="~{fragments/ticket-cards :: ticket-cards(${unassigned}, 'home')}"></div>
         <hr class="mt-4">
@@ -15,10 +15,8 @@
         <h5 class="my-4">Completed Tickets</h5>
         <div th:replace="~{fragments/ticket-cards :: ticket-cards(${completed}, 'home')}"></div>
     </div>
-</section>
 
-<section th:if="${!authUser.isAdmin}" layout:fragment="content">
-    <div>
+    <div th:if="${!authUser.isAdmin}">
         <h5 class="mb-4">Your Tasks</h5>
         <div th:replace="~{fragments/ticket-cards :: ticket-cards(${open}, 'home')}"></div>
         <hr class="mt-4">

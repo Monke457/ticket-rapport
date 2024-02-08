@@ -187,6 +187,7 @@ public class TemplateController extends BaseController {
         if (descriptions != null) {
             itemTemplates.addAll(Arrays
                     .stream(descriptions.split(","))
+                    .filter(i -> !i.isBlank())
                     .map(desc -> new ChecklistItemTemplate(desc, Set.of(entry)))
                     .collect(Collectors.toSet()));
         }
