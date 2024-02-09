@@ -82,9 +82,15 @@
         </div>
         <div class="mb-3">
             <label>Checklist</label>
-            <div class="form-check" th:each="item: ${entry.checklist}">
-                <input class="form-check-input" th:name="checklistItems" type="checkbox" th:for="${item.id}" th:value="${item.id}" th:checked="${item.completed}">
-                <label class="form-check-label" th:for="${item.id}" th:text="${item.description}"></label>
+            <div class="border rounded">
+                <label class="d-flex gap-2 border-bottom p-2" style="cursor:pointer;" th:each="item: ${entry.checklist}" th:for="${item.id}" >
+                    <input class="form-check-input" th:id="${item.id}"
+                           type="checkbox"
+                           th:name="checklistItems"
+                           th:value="${item.id}"
+                           th:checked="${item.completed}"/>
+                    <span th:text="${item.description}"></span>
+                </label>
             </div>
         </div>
 
