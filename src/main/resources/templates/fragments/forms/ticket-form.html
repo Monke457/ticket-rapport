@@ -34,12 +34,12 @@
     <div th:if="${type == 'edit'}">
         <div class="mb-3">
             <label class="form-label" th:for="*{protocol}">Protocol</label>
-            <textarea class="form-control" th:field="*{protocol}"></textarea>
+            <textarea class="form-control resizer" th:field="*{protocol}"></textarea>
             <div th:replace="~{fragments/forms/error-alert :: error-alert('protocol')}"></div>
         </div>
         <div class="mb-3">
             <label class="form-label" th:for="*{solution}">Solution</label>
-            <textarea class="form-control" th:field="*{solution}"></textarea>
+            <textarea class="form-control resizer" th:field="*{solution}"></textarea>
             <div th:replace="~{fragments/forms/error-alert :: error-alert('solution')}"></div>
         </div>
         <div class="mb-3">

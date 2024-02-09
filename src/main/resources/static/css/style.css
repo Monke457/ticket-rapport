@@ -8,6 +8,10 @@ main {
     padding: 20px 0 40px 0;
 }
 
+textarea {
+    resize: none;
+}
+
 .divider {
     margin-top: auto;
 }
