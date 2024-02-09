@@ -86,6 +86,7 @@
             descriptionInput.value = "";
             count++;
             update_ids();
+            filter();
             return false;
         }
 
@@ -94,8 +95,10 @@
             var search = searchInput.value.trim();
             var itemList = document.getElementById('item-list');
 
-            for (var i = 0; i < itemList.children.length; i++) {
+            for (var i = 0; i < itemList.children.length-1; i++) {
                 var child = itemList.children[i];
+                console.log(child.children[0]);
+
                 var includes = child.children[0].value.toLowerCase().includes(search.toLowerCase());
 
                 if (includes || search == "") {
