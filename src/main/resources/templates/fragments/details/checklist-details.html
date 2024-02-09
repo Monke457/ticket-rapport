@@ -5,8 +5,8 @@
     </div>
     <div class="mb-3">
         <div class="form-label">Items</div>
-        <ul class="list-group bg-light">
-            <li class="list-group-item" th:each="item: ${entry.items}">
+        <ul class="list-group">
+            <li class="list-group-item bg-light" th:each="item: ${entry.items}">
                 <span th:text="${item.description}"></span>
             </li>
         </ul>
