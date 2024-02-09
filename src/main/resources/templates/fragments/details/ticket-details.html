@@ -44,7 +44,7 @@
         </div>
         <div class="mb-3">
             <ul class="list-group">
-                <li class="list-group-item" th:each="item: ${entry.checklist}" th:styleappend="${item.getStyle()}">
+                <li class="list-group-item bg-light" th:each="item: ${entry.checklist}" th:styleappend="${item.getStyle()}">
                     <img th:src="@{/img/} + (${item.completed} ? 'check.svg' : 'cross.svg')" alt="item-box" title="Item Box"/>
                     <span th:text="${item.description}"></span>
                 </li>
