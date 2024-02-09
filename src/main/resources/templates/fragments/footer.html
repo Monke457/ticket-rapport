@@ -2,7 +2,9 @@
     <div class="container d-flex flex-wrap align-items-center my-3 gap-3" style="justify-content:space-between;">
         <p class="col-md-5 mb-0 text-muted">&copy; 2024 Kauz Informatik Medien AG</p>
 
-        <a class="navbar-brand" th:href="@{/}">TICKETREPORT</a>
+        <a class="navbar-brand" th:href="@{/}">
+            <img th:src="@{/img/logo.png}" style="max-width:38px" alt="logo.png" title="Ticket Rapport Logo">
+        </a>
 
         <ul class="nav col-md-5" style="justify-content:flex-end"  th:if="${authUser.role.description == 'ADMIN'}">
             <li class="nav-item">
