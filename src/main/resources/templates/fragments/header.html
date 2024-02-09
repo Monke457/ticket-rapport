@@ -34,12 +34,12 @@
                     </li>
                 </ul>
             </div>
-            <div class="d-flex">
-                <a th:if="${authUser == null}" href="/login">Login</a>
-                <div th:unless="${authUser == null}">
-                    <div th:text="${authUser.email}"></div>
-                    <a href="/logout">Logout</a>
-                </div>
+
+            <a th:if="${authUser == null}" th:href="@{/login}">Login</a>
+
+            <div th:unless="${authUser == null}" class="d-flex flex-wrap gap-2 justify-content-between">
+                <div th:text="${authUser.email}"></div>
+                <a class="text-decoration-none" th:href="@{/logout}">Logout</a>
             </div>
         </div>
     </div>
