@@ -1,5 +1,6 @@
-<div th:fragment="checklist" id="checklist" xmlns:th="http://www.w3.org/1999/xhtml">
-    <div class="d-flex justify-content-between align-items-center p-1 gap-2" th:each="item: ${items}" id="${item.id}">
+<div th:fragment="checklist" xmlns:th="http://www.w3.org/1999/xhtml" id="checklist">
+    <div class="d-flex justify-content-between align-items-center p-1 gap-2" th:each="item: ${items}"
+            id="${item.id}">
         <div class="d-flex flex-column">
             <img style="cursor:pointer" th:src="@{/img/caret-up.svg}" alt="up" title="Up" th:onclick="moveUp(this.parentElement.parentElement)">
             <img style="cursor:pointer" th:src="@{/img/caret-down.svg}" alt="down" title="Down" th:onclick="moveDown(this.parentElement.parentElement)">

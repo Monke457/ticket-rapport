@@ -45,4 +45,8 @@ public class ChecklistItem implements DBEntity {
         this.completed = completed;
         this.ticket = ticket;
     }
+
+    public String getStyle() {
+        return "border-left: 12px solid " + (completed ? "#ade3ad" : "#dc3545") + ";";
+    }
 }
