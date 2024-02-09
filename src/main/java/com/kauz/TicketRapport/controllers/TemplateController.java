@@ -1,6 +1,8 @@
 package com.kauz.TicketRapport.controllers;
 
 import com.kauz.TicketRapport.models.filters.Filter;
+import com.kauz.TicketRapport.models.helpers.ItemTemplatePojo;
+import com.kauz.TicketRapport.models.helpers.TemplatePojoMapper;
 import com.kauz.TicketRapport.models.templates.ChecklistItemTemplate;
 import com.kauz.TicketRapport.models.templates.ChecklistTemplate;
 import jakarta.validation.Valid;
@@ -9,10 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -20,6 +19,8 @@ import java.util.stream.Collectors;
  */
 @Controller
 public class TemplateController extends BaseController {
+
+    private final TemplatePojoMapper mapper = new TemplatePojoMapper();
 
     /**
      * Get handler for the checklist templates page.
@@ -88,8 +89,11 @@ public class TemplateController extends BaseController {
     @GetMapping("/checklists/create")
     public String create(Model model) {
         super.addBaseAttributes(model);
+        List<ChecklistItemTemplate> itemTemplates = DBServices.getChecklistItemTemplateService().getAll(ChecklistItemTemplate.class).toList();
+        List<ItemTemplatePojo> itemPojos = mapper.mapPojos(itemTemplates);
+
         model.addAttribute("entry", new ChecklistTemplate());
-        model.addAttribute("itemTemplates", DBServices.getChecklistItemTemplateService().getAll(ChecklistItemTemplate.class));
+        model.addAttribute("itemPojos", itemPojos);
         return "checklists/create";
     }
 
@@ -98,29 +102,27 @@ public class TemplateController extends BaseController {
      * Checks if the data is valid and saves a new checklist template to the database.
      * Creates or updates the item templates that are contained in the checklist.
      *
-     * @param itemIds a comma separated string of ids of the item templates in the new checklist template.
-     * @param descriptions a comma separated string of descriptions for the item templates in the new checklist template.
      * @param entry the checklist template to save.
      * @param result information about the data binding.
      * @param model the model containing data for the endpoint.
      * @return a reference to a checklist Thymeleaf template.
      */
     @RequestMapping(value = "/checklists/create", method = RequestMethod.POST)
-    public String create(@RequestParam(required = false) String itemIds,
-                         @RequestParam(required = false, value = "list_desc") String descriptions,
+    public String create(@RequestParam(required = false, name = "checked_items") String checkedItems,
+                         @RequestParam(required = false, name = "checked_ids") String checkedIds,
                          @Valid @ModelAttribute("entry") ChecklistTemplate entry, BindingResult result, Model model) {
         if (result.hasErrors()) {
             super.addBaseAttributes(model);
+
+            Collection<ChecklistItemTemplate> itemTemplates = DBServices.getChecklistItemTemplateService().getAll(ChecklistItemTemplate.class).toList();
+            List<ItemTemplatePojo> itemPojos = mapper.mapPojos(itemTemplates, checkedItems);
+
             model.addAttribute("entry", entry);
-            model.addAttribute("itemTemplates", DBServices.getChecklistItemTemplateService().getAll(ChecklistItemTemplate.class));
-            if (descriptions != null) {
-                model.addAttribute("newItems", Arrays.stream(descriptions.split(",")).filter(i -> !i.isBlank()));
-            }
-            model.addAttribute("itemIds", itemIds);
+            model.addAttribute("itemPojos", itemPojos);
             return "checklists/create";
         }
 
-        updateItems(entry, itemIds, descriptions);
+        updateItems(entry, checkedIds, checkedItems);
 
         DBServices.getChecklistTemplateService().create(entry);
         return "redirect:/checklists";
@@ -136,8 +138,15 @@ public class TemplateController extends BaseController {
     @GetMapping("/checklists/edit")
     public String edit(@RequestParam UUID id, Model model) {
         super.addBaseAttributes(model);
-        model.addAttribute("entry", DBServices.getChecklistTemplateService().find(ChecklistTemplate.class, id));
-        model.addAttribute("itemTemplates", DBServices.getChecklistItemTemplateService().getAll(ChecklistItemTemplate.class));
+
+        List<ChecklistItemTemplate> itemTemplates = DBServices.getChecklistItemTemplateService().getAll(ChecklistItemTemplate.class).toList();
+        ChecklistTemplate entry = DBServices.getChecklistTemplateService().find(ChecklistTemplate.class, id);
+
+        List<ItemTemplatePojo> itemPojos = mapper.mapPojos(itemTemplates, entry.getItems());
+
+        model.addAttribute("entry", entry);
+        model.addAttribute("itemPojos", itemPojos);
+
         return "checklists/edit";
     }
 
@@ -147,8 +156,6 @@ public class TemplateController extends BaseController {
      * Also updates the checklist item templates connected to the checklist.
      *
      * @param id the id of the checklist template to update.
-     * @param itemIds a comma separated string of ids of the item templates in the checklist.
-     * @param descriptions a comma separated string of descriptions for the item templates in the checklist.
      * @param entry the checklist template entry to update with the new data.
      * @param result information about the data binding.
      * @param model the model containing data for the endpoint.
@@ -156,22 +163,23 @@ public class TemplateController extends BaseController {
      */
     @RequestMapping(value = "/checklists/edit", method = RequestMethod.POST)
     public String edit(@RequestParam UUID id,
-                       @RequestParam(required = false) String itemIds,
-                       @RequestParam(required = false, value = "list_desc") String descriptions,
+                       @RequestParam(required = false, name="checked_ids", defaultValue = "") String checkedIds,
+                       @RequestParam(required = false, name="checked_items", defaultValue = "") String checkedItems,
                        @Valid @ModelAttribute("entry") ChecklistTemplate entry,
                        BindingResult result, Model model) {
+
         if (result.hasErrors()) {
             super.addBaseAttributes(model);
+
+            Collection<ChecklistItemTemplate> itemTemplates = DBServices.getChecklistItemTemplateService().getAll(ChecklistItemTemplate.class).toList();
+            List<ItemTemplatePojo> itemPojos = mapper.mapPojos(itemTemplates, checkedItems);
+
             model.addAttribute("entry", entry);
-            model.addAttribute("itemTemplates", DBServices.getChecklistItemTemplateService().getAll(ChecklistItemTemplate.class));
-            if (descriptions != null) {
-                model.addAttribute("newItems", Arrays.stream(descriptions.split(",")).filter(i -> !i.isBlank()));
-            }
-            model.addAttribute("itemIds", itemIds);
+            model.addAttribute("itemPojos", itemPojos);
             return "checklists/edit";
         }
 
-        updateItems(entry, itemIds, descriptions);
+        updateItems(entry, checkedIds, checkedItems);
 
         DBServices.getChecklistTemplateService().update(entry);
         return "redirect:/checklists";
@@ -187,18 +195,23 @@ public class TemplateController extends BaseController {
      * @param descriptions comma separated string of descriptions for the new checklist item templates.
      */
     private void updateItems(ChecklistTemplate entry, String itemIds, String descriptions) {
-        Set<ChecklistItemTemplate> itemTemplates = new HashSet<>();
-        if (itemIds != null && !itemIds.isBlank()) {
-            Set<UUID> ids = Arrays.stream(itemIds.split(",")).map(UUID::fromString).collect(Collectors.toSet());
-            itemTemplates.addAll(DBServices.getChecklistItemTemplateService().find(ids).collect(Collectors.toSet()));
+        Set<UUID> ids = Arrays.stream(itemIds.split(","))
+                .filter(id -> id.length() > 5)
+                .map(UUID::fromString)
+                .collect(Collectors.toSet());
+
+        Set<ChecklistItemTemplate> itemTemplates = DBServices.getChecklistItemTemplateService().find(ids).collect(Collectors.toSet());
+
+        for (ChecklistItemTemplate item : itemTemplates) {
+            descriptions = descriptions.replace(item.getDescription(), "");
         }
-        if (descriptions != null) {
-            itemTemplates.addAll(Arrays
-                    .stream(descriptions.split(","))
-                    .filter(i -> !i.isBlank())
-                    .map(desc -> new ChecklistItemTemplate(desc, Set.of(entry)))
-                    .collect(Collectors.toSet()));
-        }
+
+        itemTemplates.addAll(Arrays
+                .stream(descriptions.split(","))
+                .filter(i -> !i.isBlank())
+                .map(desc -> new ChecklistItemTemplate(desc, Set.of(entry)))
+                .collect(Collectors.toSet()));
+
         entry.setItems(itemTemplates);
     }
 

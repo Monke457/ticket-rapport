@@ -1,0 +1,128 @@
+<div th:fragment="multiselect(items)" class="d-flex flex-column gap-2 mb-3" xmlns:th="http://www.w3.org/1999/xhtml">
+    <label>Items</label>
+
+    <div class="border rounded">
+        <div class="d-flex border-bottom">
+            <input id="search" class="form-control" style="border:none;"
+                   type="text"
+                   placeholder="Search..."
+                   autocomplete="off"
+                   name="search"
+                   onkeydown="return event.key == 'Enter' ? filter() : true;"/>
+            <button class="btn btn-sm btn-primary no-l-radius" type="button" th:onclick="filter()">
+                <img th:src="@{/img/search.svg}" style="filter:invert(1);" alt="search.svg" title="Search"/>
+            </button>
+        </div>
+
+        <div id="item-list" class="overflow-y-scroll" style="max-height:170px;">
+            <label class="d-flex gap-2 border-bottom p-2" style="cursor:pointer;" th:each="item: ${items}" th:for="${item.id}" >
+                <input class="form-check" th:id="${item.id}"
+                       type="checkbox"
+                       name="checked_items"
+                       th:value="${item.description}"
+                       th:checked="${item.checked}"
+                       th:onchange="update_ids()" />
+                <span th:text="${item.description}"></span>
+            </label>
+            <input id="checked_ids" type="hidden" th:name="checked_ids">
+        </div>
+    </div>
+
+    <div class="d-flex">
+        <input id="description-input" class="form-control no-r-radius"
+               type="text"
+               placeholder="New Item..."
+               name="addItem"
+               onkeydown="return event.key == 'Enter' ? add_item() : true;"/>
+        <button class="btn btn-sm btn-success no-l-radius" type="button" th:onclick="add_item()">
+            <img th:src="@{/img/plus.svg}" style="filter:invert(1);" alt="plus.svg" title="Add"/>
+        </button>
+    </div>
+
+    <style>
+        .no-l-radius {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+        .no-r-radius {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+    </style>
+    <script th:inline="javascript">
+        var count = 1;
+
+        function add_item() {
+            var descriptionInput = document.getElementById('description-input');
+            var description = descriptionInput.value;
+            if (description == "") return false;
+
+            var itemList = document.getElementById('item-list');
+
+            var label = document.createElement('label');
+            var input = document.createElement('input');
+            var span = document.createElement('span');
+
+            label.classList.add('d-flex', 'gap-2', 'border-bottom', 'p-2');
+            label.style.cursor = 'pointer';
+            label.for = count;
+            label.addEventListener('click', function() {
+                update_ids();
+            }, false);
+
+            input.classList.add('form-check');
+            input.id = count;
+            input.type = 'checkbox';
+            input.name = 'checked_items';
+            input.value = description;
+            input.checked = 'true';
+
+            span.innerHTML = description;
+
+            label.appendChild(input);
+            label.appendChild(span);
+            itemList.insertBefore(label, itemList.firstChild);
+
+            descriptionInput.value = "";
+            count++;
+            update_ids();
+            return false;
+        }
+
+        function filter() {
+            var searchInput = document.getElementById('search');
+            var search = searchInput.value.trim();
+            var itemList = document.getElementById('item-list');
+
+            for (var i = 0; i < itemList.children.length; i++) {
+                var child = itemList.children[i];
+                var includes = child.children[0].value.toLowerCase().includes(search.toLowerCase());
+
+                if (includes || search == "") {
+                    child.classList.remove("d-none");
+                    child.classList.add("d-block");
+                } else {
+                    child.classList.add("d-none");
+                    child.classList.remove("d-block");
+                }
+            }
+            return false;
+        }
+
+        function update_ids() {
+            var input = document.getElementById('checked_ids');
+            var checkboxes = document.getElementsByName('checked_items');
+
+            input.value = "";
+
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) {
+                    if (checkboxes[i].id == "") checkboxes[i].id = count++;
+                    input.value += checkboxes[i].id + ",";
+                }
+            }
+        }
+        update_ids();
+    </script>
+</div>
+

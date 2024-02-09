@@ -1,73 +1,10 @@
 <div th:fragment="checklist-form" xmlns:th="http://www.w3.org/1999/xhtml">
     <div class="mb-3">
         <label class="form-label" th:for="*{description}">* Description</label>
-        <input class="form-control" th:field="*{description}">
+        <input class="form-control" th:field="*{description}" onkeydown="return event.key != 'Enter';">
         <div th:replace="~{fragments/forms/error-alert :: error-alert('description')}"></div>
     </div>
-    <div class="mb-3">
-        <label class="form-label">Items (Ctrl + click to select multiple)</label>
-        <div>
-            <select id="itemTemplates" class="form-select" multiple="multiple" style="min-height:150px;" th:onchange="updateIds()">
-                <option th:each="item: ${itemTemplates}" th:value="${item.id}" th:text="${item.description}"
-                        th:selected="${#arrays.contains(entry.items, item) || (itemIds != null && #strings.contains(itemIds, item.id))}"></option>
-            </select>
-            <input id="ids" type="hidden" th:name="itemIds" value="">
-        </div>
-    </div>
-    <div id="newItems">
-        <div th:each="item : ${newItems}" class="d-flex justify-content-between align-items-center p-1 gap-2">
-            <div class="d-flex gap-2 align-items-center w-100">
-                <input class="form-control" type="text" name="list_desc" placeholder="Checklist task description" th:value="${item}">
-            </div>
-            <button class="btn btn-sm btn-outline-danger" type="button" th:onclick="remove(this.parentElement)">X</button>
-        </div>
-        <button class="btn btn-sm btn-success mt-2" type="button" th:onclick="add(this.parentElement)">Add Item +</button>
-    </div>
-    <script th:inline="javascript">
-        var count = 1;
-        var ids = document.getElementById('ids');
-        var options = document.getElementById('itemTemplates').options;
 
-        function updateIds() {
-            ids.value = "";
-            for (var i = 0; i < options.length; i++) {
-                if (options[i].selected) {
-                    ids.value += options[i].value + ",";
-                }
-            }
-        }
-        updateIds();
-
-        function add(el) {
-            outerDiv = document.createElement('div');
-            innerDiv = document.createElement('div');
-            textInput = document.createElement('input');
-            button = document.createElement('button');
-
-            outerDiv.classList.add('d-flex', 'justify-content-between', 'align-items-center', 'p-1', 'gap-2');
-            innerDiv.classList.add('d-flex', 'gap-2', 'align-items-center', 'w-100');
-
-            textInput.classList.add('form-control');
-            textInput.type = 'text';
-            textInput.name = 'list_desc';
-            textInput.placeholder = 'Checklist task description';
-
-            button.classList.add('btn', 'btn-sm', 'btn-outline-danger');
-            button.type = 'button';
-            button.addEventListener('click', function() {
-                remove(this.parentElement);
-            }, false);
-            button.innerHTML = 'X';
-
-            innerDiv.appendChild(textInput);
-            outerDiv.appendChild(innerDiv);
-            outerDiv.appendChild(button);
-            el.insertBefore(outerDiv, el.lastElementChild);
-        }
-
-        function remove(el) {
-            el.parentElement.removeChild(el);
-        }
-    </script>
+    <div th:replace="~{fragments/forms/multiselect :: multiselect(${itemPojos})}"></div>
 </div>
 
