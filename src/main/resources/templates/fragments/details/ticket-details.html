@@ -43,6 +43,7 @@
             <div class="form-control bg-light" style="min-height:37px;" th:text="${entry.worktime}"></div>
         </div>
         <div class="mb-3">
+            <label>Checklist</label>
             <ul class="list-group">
                 <li class="list-group-item bg-light" th:each="item: ${entry.checklist}" th:styleappend="${item.getStyle()}">
                     <img th:src="@{/img/} + (${item.completed} ? 'check.svg' : 'cross.svg')" alt="item-box" title="Item Box"/>
