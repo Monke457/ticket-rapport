@@ -1,6 +1,5 @@
 package com.kauz.TicketRapport.models;
 
-import com.kauz.TicketRapport.models.helpers.DBEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

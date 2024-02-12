@@ -5,6 +5,8 @@ import com.kauz.TicketRapport.models.Client;
 import com.kauz.TicketRapport.models.Status;
 import com.kauz.TicketRapport.models.Ticket;
 import com.kauz.TicketRapport.models.filters.TicketFilter;
+import com.kauz.TicketRapport.models.mappers.ChecklistMapper;
+import com.kauz.TicketRapport.models.pojos.ChecklistPojo;
 import com.kauz.TicketRapport.models.templates.ChecklistItemTemplate;
 import com.kauz.TicketRapport.models.templates.ChecklistTemplate;
 import jakarta.validation.Valid;
@@ -22,6 +24,8 @@ import java.util.stream.Collectors;
  */
 @Controller
 public class TicketController extends BaseController {
+
+    private final ChecklistMapper mapper = new ChecklistMapper();
 
     /**
      * Get handler for the ticket list page. Should only be accessible by admins
@@ -206,6 +210,7 @@ public class TicketController extends BaseController {
         model.addAttribute("clients", DBServices.getClientService().getAll(Client.class));
         model.addAttribute("statuses", DBServices.getStatusService().getAll(Status.class));
         model.addAttribute("templates", DBServices.getChecklistTemplateService().getAll(ChecklistTemplate.class));
+        model.addAttribute("checklistPojo", new ChecklistPojo());
         return "tickets/create";
     }
 
@@ -225,9 +230,9 @@ public class TicketController extends BaseController {
      * @return a reference to a Thymeleaf template.
      */
     @RequestMapping(value = "/tickets/create", method = RequestMethod.POST)
-    public String create(@RequestParam String checkboxes,
-                         @RequestParam String descriptions,
-                         @RequestParam String ids,
+    public String create(@RequestParam(defaultValue = "") String checkboxes,
+                         @RequestParam(defaultValue = "") String descriptions,
+                         @RequestParam(defaultValue = "") String ids,
                          @RequestParam(required = false) String saveTemplate,
                          @RequestParam(required = false) String templateName,
                          @Valid @ModelAttribute("entry") Ticket entry,
@@ -240,6 +245,8 @@ public class TicketController extends BaseController {
             model.addAttribute("clients", DBServices.getClientService().getAll(Client.class));
             model.addAttribute("statuses", DBServices.getStatusService().getAll(Status.class));
             model.addAttribute("templates", DBServices.getChecklistTemplateService().getAll(ChecklistTemplate.class));
+            model.addAttribute("checklistPojo", mapper.mapPojo(saveTemplate != null, templateName,
+                    ids.split(";;"), descriptions.split(";;"), checkboxes.split(";;")));
             return "tickets/create";
         }
 
@@ -287,6 +294,7 @@ public class TicketController extends BaseController {
         model.addAttribute("users", DBServices.getUserService().getLearners());
         model.addAttribute("clients", DBServices.getClientService().getAll(Client.class));
         model.addAttribute("statuses", DBServices.getStatusService().getAll(Status.class));
+        model.addAttribute("checklistPojo", new ChecklistPojo());
         model.addAttribute("referer", referer);
         return "tickets/edit";
     }
@@ -320,6 +328,8 @@ public class TicketController extends BaseController {
             model.addAttribute("users", DBServices.getUserService().getLearners());
             model.addAttribute("clients", DBServices.getClientService().getAll(Client.class));
             model.addAttribute("statuses", DBServices.getStatusService().getAll(Status.class));
+            model.addAttribute("checklistPojo", mapper.mapPojo(
+                    ids.split(";;"), descriptions.split(";;"), checkboxes.split(";;")));
             return "tickets/edit";
         }
 
@@ -365,7 +375,7 @@ public class TicketController extends BaseController {
 
         int position = 1;
         for (int i = 0; i < idArray.length; i++) {
-            if (descArray[i].trim().isEmpty()) continue;
+            if (descArray[i].trim().isBlank()) continue;
             ChecklistItem item = null;
 
             if (idArray[i].length() > 3) {
@@ -380,7 +390,7 @@ public class TicketController extends BaseController {
             item.setDescription(descArray[i].trim());
             item.setPosition(position++);
             item.setTicket(entry);
-            item.setCompleted(Objects.equals(checkArray[i], "true"));
+            item.setCompleted(checkArray[i].equals("true"));
 
             if (saveTemplate) {
                 ChecklistItemTemplate itemTemplate = null;

@@ -1,6 +1,5 @@
 package com.kauz.TicketRapport.models;
 
-import com.kauz.TicketRapport.models.helpers.DBEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

@@ -1,18 +1,16 @@
-package com.kauz.TicketRapport.models.helpers;
+package com.kauz.TicketRapport.models.pojos;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.UUID;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ItemTemplatePojo {
-    private UUID id;
+public class ChecklistItemPojo {
+    private String id;
     private String description;
-    private boolean checked;
+    private boolean completed;
 }

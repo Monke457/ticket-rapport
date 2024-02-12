@@ -1,11 +1,12 @@
-package com.kauz.TicketRapport.models.helpers;
+package com.kauz.TicketRapport.models.mappers;
 
+import com.kauz.TicketRapport.models.pojos.ItemTemplatePojo;
 import com.kauz.TicketRapport.models.templates.ChecklistItemTemplate;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class TemplatePojoMapper {
+public class TemplateMapper {
     public List<ItemTemplatePojo> mapPojos(Collection<ChecklistItemTemplate> items) {
         return mapPojos(items, new HashSet<>());
     }

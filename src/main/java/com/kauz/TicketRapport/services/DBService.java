@@ -1,7 +1,7 @@
 package com.kauz.TicketRapport.services;
 
 import com.kauz.TicketRapport.models.filters.Filter;
-import com.kauz.TicketRapport.models.helpers.DBEntity;
+import com.kauz.TicketRapport.models.DBEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;

@@ -1,4 +1,4 @@
-package com.kauz.TicketRapport.models.helpers;
+package com.kauz.TicketRapport.models;
 
 import java.util.UUID;
 

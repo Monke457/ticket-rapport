@@ -1,8 +1,8 @@
 package com.kauz.TicketRapport.controllers;
 
 import com.kauz.TicketRapport.models.filters.Filter;
-import com.kauz.TicketRapport.models.helpers.ItemTemplatePojo;
-import com.kauz.TicketRapport.models.helpers.TemplatePojoMapper;
+import com.kauz.TicketRapport.models.pojos.ItemTemplatePojo;
+import com.kauz.TicketRapport.models.mappers.TemplateMapper;
 import com.kauz.TicketRapport.models.templates.ChecklistItemTemplate;
 import com.kauz.TicketRapport.models.templates.ChecklistTemplate;
 import jakarta.validation.Valid;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Controller
 public class TemplateController extends BaseController {
 
-    private final TemplatePojoMapper mapper = new TemplatePojoMapper();
+    private final TemplateMapper mapper = new TemplateMapper();
 
     /**
      * Get handler for the checklist templates page.

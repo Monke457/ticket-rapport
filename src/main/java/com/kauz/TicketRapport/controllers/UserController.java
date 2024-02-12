@@ -5,8 +5,7 @@ import com.kauz.TicketRapport.models.Ticket;
 import com.kauz.TicketRapport.models.User;
 import com.kauz.TicketRapport.models.filters.TicketFilter;
 import com.kauz.TicketRapport.models.filters.UserFilter;
-import com.kauz.TicketRapport.models.helpers.UserFormData;
-import com.kauz.TicketRapport.services.DBServices;
+import com.kauz.TicketRapport.models.pojos.UserPojo;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -72,7 +71,7 @@ public class UserController extends BaseController {
     @GetMapping("/users/create")
     public String create(Model model) {
         super.addBaseAttributes(model);
-        model.addAttribute("entry", new UserFormData());
+        model.addAttribute("entry", new UserPojo());
         model.addAttribute("roles", DBServices.getRoleService().getAll(Role.class));
         return "users/create";
     }
@@ -87,7 +86,7 @@ public class UserController extends BaseController {
      * @return a reference to a Thymeleaf template.
      */
     @RequestMapping(value = "/users/create", method = RequestMethod.POST)
-    public String create(@Valid @ModelAttribute("entry") UserFormData entry,
+    public String create(@Valid @ModelAttribute("entry") UserPojo entry,
                          BindingResult result, Model model) {
         String passError = validatePassword(entry.getPassword(), entry.getConfirmPassword());
 
