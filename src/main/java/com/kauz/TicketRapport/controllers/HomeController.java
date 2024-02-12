@@ -29,6 +29,8 @@ public class HomeController extends BaseController {
     public String getIndex(Model model) {
         super.addBaseAttributes(model);
 
+        if (authUser.getUser() == null) return "index";
+
         TicketFilter filter = new TicketFilter();
         if (!authUser.getUser().isAdmin()) {
             filter.setLearnerId(authUser.getUser().getId());

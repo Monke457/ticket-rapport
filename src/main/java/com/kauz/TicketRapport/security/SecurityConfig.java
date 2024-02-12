@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.configurers.LogoutConf
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
@@ -25,17 +26,21 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/tickets/details*").authenticated()
-                        .requestMatchers("/tickets", "/tickets/*").hasRole("ADMIN")
-                        .requestMatchers("/clients", "/clients/*").hasRole("ADMIN")
-                        .requestMatchers("/users", "/users/*").hasRole("ADMIN")
-                        .requestMatchers("/checklists", "/checklists/*").hasRole("ADMIN")
-                        .requestMatchers("/checklists/items", "/checklists/items/*").hasRole("ADMIN")
-                        .anyRequest().authenticated())
+                        .requestMatchers("/tickets/**").hasRole("ADMIN")
+                        .requestMatchers("/clients/**").hasRole("ADMIN")
+                        .requestMatchers("/users/**").hasRole("ADMIN")
+                        .requestMatchers("/checklists/**").hasRole("ADMIN")
+                        .requestMatchers("/checklists/items/**").hasRole("ADMIN")
+                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/webjars/**", "/css/**", "/js/**", "/img/**").permitAll()
+                        .anyRequest().authenticated()
+                )
                 .formLogin(FormLoginConfigurer::permitAll)
-                .logout(LogoutConfigurer::permitAll);
+                .logout(logout -> logout
+                        .logoutSuccessUrl("/")
+                        .permitAll());
         return http.build();
     }
 }

@@ -6,7 +6,7 @@
             <img th:src="@{/img/logo.png}" style="max-width:38px" alt="logo.png" title="Ticket Rapport Logo">
         </a>
 
-        <ul class="nav col-md-5" style="justify-content:flex-end"  th:if="${authUser.role.description == 'ADMIN'}">
+        <ul class="nav col-md-5" style="justify-content:flex-end"  th:if="${authUser != null && authUser.role.description == 'ADMIN'}">
             <li class="nav-item">
                 <a class="nav-link px-2 text-muted" th:href="@{/archive}">Archive</a>
             </li>

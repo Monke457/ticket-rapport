@@ -3,7 +3,7 @@
       layout:decorate="~{layout}" th:with="title='Home'">
 <body>
 <section layout:fragment="content">
-    <div th:if="${authUser.isAdmin}">
+    <div th:if="${authUser != null && authUser.isAdmin}">
         <h5 class="mb-4">Unassigned Tickets</h5>
         <div th:replace="~{fragments/ticket-cards :: ticket-cards(${unassigned}, 'home')}"></div>
         <hr class="mt-4">
@@ -16,7 +16,7 @@
         <div th:replace="~{fragments/ticket-cards :: ticket-cards(${completed}, 'home')}"></div>
     </div>
 
-    <div th:if="${!authUser.isAdmin}">
+    <div th:if="${authUser != null && !authUser.isAdmin}">
         <h5 class="mb-4">Your Tasks</h5>
         <div th:replace="~{fragments/ticket-cards :: ticket-cards(${open}, 'home')}"></div>
         <hr class="mt-4">
@@ -45,9 +45,26 @@
         <div id="filtered">
         </div>
     </div>
+
+    <div th:if="${authUser == null}" class="text-center d-flex flex-column gap-4 align-items-center">
+        <h3>Welcome to the ticket report system!</h3>
+        <img id="welcomeImg" class="img-fluid rounded" th:src="@{/img/minimalist1.jpg}" alt="minimalist1.jpg"/>
+        <a class="btn btn-success" th:href="@{/login}">Login</a>
+    </div>
 </section>
 </body>
-<script th:if="${!authUser.isAdmin}" layout:fragment="scripts" th:inline="javascript" >
+<style layout:fragment="styles">
+    #welcomeImg {
+        max-height: 400px;
+        content: url("/img/minimalist1.jpg");
+    }
+    @media only screen and (max-width: 720px)  {
+        #welcomeImg {
+            content: url("/img/minimalist.jpg");
+        }
+    }
+</style>
+<script th:if="${authUser != null && !authUser.isAdmin}" layout:fragment="scripts" th:inline="javascript" >
     // live filter
     async function getFilteredTickets() {
         var search = document.getElementById('search');
