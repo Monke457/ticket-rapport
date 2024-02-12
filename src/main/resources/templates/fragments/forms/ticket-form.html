@@ -62,9 +62,10 @@
         <label>Checklist</label>
         <div th:if="${type == 'create'}">
             <div class="mt-2">
-                <input class="form-check-input" type="checkbox" th:name="saveTemplate" th:checked="${checklistPojo.save}">
-                <label class="form-label" th:for="saveTemplate">Save checklist as template</label>
-                <input class="form-control" type="text" th:name="templateName" th:value="${checklistPojo.name}" placeholder="Template Name">
+                <input id="save" class="form-check-input" type="checkbox" th:field="${checklistPojo.save}">
+                <label class="form-label" th:for="save">Save checklist as template</label>
+                <input class="form-control" type="text" th:field="${checklistPojo.name}" placeholder="Template Name">
+                <div class="alert alert-warning mt-1" th:if="${!checklistPojo.valid}" th:text="${checklistPojo.error}"></div>
             </div>
             <div class="d-flex align-items-center my-2 gap-2">
                 <select id="templateSelect" class="form-select">
@@ -75,17 +76,19 @@
             </div>
         </div>
         <div id="checklist">
-            <div id="${item.id}" class="d-flex justify-content-between align-items-center p-1 gap-2"
-                 th:each="item: ${checklistPojo.items.size > 0 ? checklistPojo.items : entry.checklist}">
-                <div class="d-flex flex-column">
-                    <img style="cursor:pointer" th:src="@{/img/caret-up.svg}" alt="up" title="Up" th:onclick="moveUp(this.parentElement.parentElement)">
-                    <img style="cursor:pointer" th:src="@{/img/caret-down.svg}" alt="down" title="Down" th:onclick="moveDown(this.parentElement.parentElement)">
+            <div th:each="item, itemStat: ${checklistPojo.items.size > 0 ? checklistPojo.items : entry.checklist}">
+                <div class="d-flex justify-content-between align-items-center p-1 gap-2">
+                    <div class="d-flex flex-column">
+                        <img style="cursor:pointer" th:src="@{/img/caret-up.svg}" alt="up" th:onclick="moveUp(this.parentElement.parentElement)">
+                        <img style="cursor:pointer" th:src="@{/img/caret-down.svg}" alt="down" th:onclick="moveDown(this.parentElement.parentElement)">
+                    </div>
+                    <div class="d-flex gap-2 align-items-center w-100">
+                        <input class="form-check-input" type="checkbox" th:value="${item.id}" th:checked="${item.completed}" th:onchange="updateHiddenInputs()">
+                        <input class="form-control" type="text" th:value="${item.description}" th:onkeyup="updateHiddenInputs()">
+                    </div>
+                    <button class="btn btn-sm btn-outline-danger" type="button" th:onclick="remove(this.parentElement.parentElement)">X</button>
                 </div>
-                <div class="d-flex gap-2 align-items-center w-100">
-                    <input class="form-check-input" th:name="checklistItems" type="checkbox" th:value="${item.id}" th:checked="${item.completed}" th:onchange="updateHiddenInputs()">
-                    <input class="form-control" type="text" th:name="list_desc" th:value="${item.description}" th:onkeyup="updateHiddenInputs()">
-                </div>
-                <button class="btn btn-sm btn-outline-danger" type="button" th:onclick="remove(this.parentElement)">X</button>
+                <div class="alert alert-warning mt-1" th:if="${checklistPojo.items.size > 0 && !item.valid}" th:text="${item.error}"></div>
             </div>
             <button class="btn btn-sm btn-success mt-2" type="button" th:onclick="add(this.parentElement)">Add Item +</button>
         </div>

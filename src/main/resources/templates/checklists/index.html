@@ -34,11 +34,11 @@
                             th:each="i: ${#numbers.sequence(0, T(java.lang.Math).min(entry.items.size -1, 2))}"
                             th:text="${entry.items[i].description}">
                         </li>
-                        <div class="collapse" th:if="${entry.items.size > 2}" th:id="'items-list-' + ${entry.id}">
-                            <li th:each="i: ${#numbers.sequence(2, entry.items.size -1)}" th:text="${entry.items[i].description}"></li>
+                        <div class="collapse" th:if="${entry.items.size > 3}" th:id="'items-list-' + ${entry.id}">
+                            <li th:each="i: ${#numbers.sequence(3, entry.items.size -1)}" th:text="${entry.items[i].description}"></li>
                         </div>
                     </div>
-                    <a th:if="${entry.items.size > 2}" class="collapse-btn text-decoration-none"
+                    <a th:if="${entry.items.size > 3}" class="collapse-btn text-decoration-none"
                        data-bs-toggle="collapse" th:href="'#items-list-' + ${entry.id}"
                        role="button" aria-expanded="false" aria-controls="collapseExample">
                     </a>

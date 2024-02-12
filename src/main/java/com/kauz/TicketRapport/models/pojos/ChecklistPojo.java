@@ -15,14 +15,20 @@ import java.util.List;
 public class ChecklistPojo {
     private boolean save;
     private String name;
-    private List<Object> items = new LinkedList<>();
+    private List<ChecklistItemPojo> items = new LinkedList<>();
+    private boolean valid = true;
+    private String error;
 
     public ChecklistPojo(boolean save, String name) {
         this.save = save;
         this.name = name;
     }
 
-    public ChecklistPojo(List<Object> items) {
-        this.items = items;
+    public boolean hasErrors() {
+        if (!valid) return true;
+        for (ChecklistItemPojo item : items) {
+            if (!item.isValid()) return true;
+        }
+        return false;
     }
 }

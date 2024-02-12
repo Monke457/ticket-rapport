@@ -13,4 +13,12 @@ public class ChecklistItemPojo {
     private String id;
     private String description;
     private boolean completed;
+    private boolean valid = true;
+    private String error;
+
+    public ChecklistItemPojo(String id, String description, boolean completed) {
+        this.id = id;
+        this.description = description;
+        this.completed = completed;
+    }
 }
