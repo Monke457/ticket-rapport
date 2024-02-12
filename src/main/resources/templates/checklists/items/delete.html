@@ -14,6 +14,14 @@
             <div class="form-control bg-light" th:text="${entry.description}"></div>
         </div>
 
+        <div class="alert alert-danger" th:if="${entry.templates.size > 0}">
+            Item template will be removed from
+            <span th:text="${entry.templates.size}"></span> checklist
+            <span th:text="${entry.templates.size > 1 ? ' templates' : ' template'}"></span>
+            <ul class="mb-0">
+                <li th:each="checklist: ${entry.templates}" th:text="${checklist.description}"></li>
+            </ul>
+        </div>
         <form th:action="@{delete(id=${entry.id})}" method="post">
             <div class="text-end">
                 <a class="btn btn-outline-primary" th:href="@{/checklists/items}">Cancel</a>

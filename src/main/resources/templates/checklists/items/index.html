@@ -16,14 +16,16 @@
         </div>
     </form>
 
-    <table class="table my-4">
+    <table class="table my-4 responsive">
         <tr>
             <th th:replace="~{fragments/table-header :: table-header('checklists/items', 'description', 'Description')}"></th>
+            <th th:replace="~{fragments/table-header :: table-header('checklists/items', 'templates.count', 'Templates')}"></th>
             <th style="min-width:140px;"></th>
         </tr>
         <tr th:each="entry: ${entries}">
-            <td th:text="${entry.description}"></td>
-            <td class="text-end">
+            <td id="description" th:text="${entry.description}"></td>
+            <td id="templates" th:text="${entry.templates.size}"></td>
+            <td class="table-links d-flex flex-wrap justify-content-end gap-1">
                 <a class="btn btn-sm btn-warning" th:href="@{/checklists/items/edit(id=${entry.id})}">
                     <img th:src="@{/img/edit.svg}" alt="edit.svg" title="Edit"/>
                 </a>
@@ -35,4 +37,22 @@
     </table>
 </section>
 </body>
+<style layout:fragment="styles">
+    @media only screen and (max-width: 720px) {
+         #description{
+            font-weight: bold;
+            font-size: large;
+            text-align: center;
+        }
+        #templates {
+            text-align: center;
+        }
+        #templates::before {
+            content: "\A Used in ";
+        }
+        #templates::after {
+            content: " Template(s)";
+        }
+    }
+</style>
 </html>

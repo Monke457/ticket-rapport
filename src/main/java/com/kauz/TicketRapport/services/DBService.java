@@ -147,10 +147,18 @@ public class DBService<T extends DBEntity> {
                     String join = order.substring(0, order.indexOf("."));
                     String field = order.substring(order.indexOf(".") + 1);
 
-                    orders.add(asc
-                            ? cb.asc(root.join(join, JoinType.LEFT).get(field))
-                            : cb.desc(root.join(join, JoinType.LEFT).get(field))
-                    );
+                    if (field.equals("count")) {
+                        orders.add(asc
+                                ? cb.asc(cb.count(root.join(join, JoinType.LEFT)))
+                                : cb.desc(cb.count(root.join(join, JoinType.LEFT)))
+                        );
+                        cq.groupBy(root.get("id"));
+                    } else {
+                        orders.add(asc
+                                ? cb.asc(root.join(join, JoinType.LEFT).get(field))
+                                : cb.desc(root.join(join, JoinType.LEFT).get(field))
+                        );
+                    }
                 } else {
                     orders.add(asc
                             ? cb.asc(root.get(order))
