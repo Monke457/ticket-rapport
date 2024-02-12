@@ -36,3 +36,19 @@ Once the Docker image is correctly built, you can test it locally using
 ```
 docker-compose up
 ```
+
+## Login credentials
+
+You can log in to the app using the following username and password
+
+#### Admin
+```
+username: admin@ticket-kauz.ch
+password: Pass123!
+```
+
+#### Learner
+```
+username: learner@ticket-kauz.ch
+password: Pass123!
+```
