@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml"
-      layout:decorate="~{layout}" th:with="title='Home'">
+      layout:decorate="~{layout}" th:with="title='Home'" xmlns:sec="http://www.w3.org/1999/xhtml">
 <body>
 <section layout:fragment="content">
-    <div th:if="${authUser != null && authUser.isAdmin}">
+    <div sec:authorize="hasRole('ROLE_ADMIN')">
         <h5 class="mb-4" th:text="#{tickets.unassigned}"></h5>
         <div th:replace="~{fragments/ticket-cards :: ticket-cards(${unassigned}, 'home')}"></div>
         <hr class="mt-4">
@@ -16,7 +16,7 @@
         <div th:replace="~{fragments/ticket-cards :: ticket-cards(${completed}, 'home')}"></div>
     </div>
 
-    <div th:if="${authUser != null && !authUser.isAdmin}">
+    <div sec:authorize="hasRole('ROLE_LEARNER')">
         <h5 class="mb-4" th:text="#{tasks.open}"></h5>
         <div th:replace="~{fragments/ticket-cards :: ticket-cards(${open}, 'home')}"></div>
         <hr class="mt-4">
@@ -46,7 +46,7 @@
         </div>
     </div>
 
-    <div th:if="${authUser == null}" class="text-center d-flex flex-column gap-4 align-items-center">
+    <div sec:authorize="!isAuthenticated()" class="text-center d-flex flex-column gap-4 align-items-center">
         <h3 th:text="#{welcome}"></h3>
         <img id="welcomeImg" class="img-fluid rounded" th:src="@{/img/minimalist1.jpg}" alt="minimalist1.jpg"/>
         <a class="btn btn-success" th:href="@{/login}" th:text="#{login}"></a>
