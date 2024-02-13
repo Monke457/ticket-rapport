@@ -1,55 +1,55 @@
 package com.kauz.TicketRapport.models.mappers;
 
-import com.kauz.TicketRapport.models.pojos.ItemTemplatePojo;
+import com.kauz.TicketRapport.models.dtos.ItemTemplateDTO;
 import com.kauz.TicketRapport.models.templates.ChecklistItemTemplate;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class TemplateMapper {
-    public List<ItemTemplatePojo> mapPojos(Collection<ChecklistItemTemplate> items) {
-        return mapPojos(items, new HashSet<>());
+    public List<ItemTemplateDTO> mapDTO(Collection<ChecklistItemTemplate> items) {
+        return mapDTO(items, new HashSet<>());
     }
 
-    public List<ItemTemplatePojo> mapPojos(Collection<ChecklistItemTemplate> items, Collection<ChecklistItemTemplate> checkedItems) {
-        List<ItemTemplatePojo> result = addPojos(items, checkedItems);
+    public List<ItemTemplateDTO> mapDTO(Collection<ChecklistItemTemplate> items, Collection<ChecklistItemTemplate> checkedItems) {
+        List<ItemTemplateDTO> result = addDTOs(items, checkedItems);
 
-        return sortPojos(result);
+        return sortDTOs(result);
     }
 
-    public List<ItemTemplatePojo> mapPojos(Collection<ChecklistItemTemplate> items, String checkedItems) {
-        List<ItemTemplatePojo> result = addPojos(items, new HashSet<>());
+    public List<ItemTemplateDTO> mapDTO(Collection<ChecklistItemTemplate> items, String checkedItems) {
+        List<ItemTemplateDTO> result = addDTOs(items, new HashSet<>());
 
-        for (ItemTemplatePojo item : result) {
+        for (ItemTemplateDTO item : result) {
             if (checkedItems.contains(item.getDescription())) {
                 item.setChecked(true);
                 checkedItems = checkedItems.replace(item.getDescription(), "");
             }
         }
 
-        List<ItemTemplatePojo> newItems = Arrays.stream(checkedItems.split(","))
+        List<ItemTemplateDTO> newItems = Arrays.stream(checkedItems.split(","))
                 .filter(s -> !s.isBlank())
-                .map(s -> new ItemTemplatePojo(null, s, true))
+                .map(s -> new ItemTemplateDTO(null, s, true))
                 .toList();
         result.addAll(newItems);
 
-        return sortPojos(result);
+        return sortDTOs(result);
     }
 
-    private List<ItemTemplatePojo> addPojos(Collection<ChecklistItemTemplate> items, Collection<ChecklistItemTemplate> checkedItems) {
+    private List<ItemTemplateDTO> addDTOs(Collection<ChecklistItemTemplate> items, Collection<ChecklistItemTemplate> checkedItems) {
         return items.stream()
-                .map(i -> new ItemTemplatePojo(
+                .map(i -> new ItemTemplateDTO(
                         i.getId(),
                         i.getDescription(),
                         checkedItems.contains(i)))
                 .collect(Collectors.toList());
     }
 
-    private List<ItemTemplatePojo> sortPojos(Collection<ItemTemplatePojo> pojos) {
-        return pojos.stream().sorted(Comparator
-                        .comparing(ItemTemplatePojo::isChecked)
+    private List<ItemTemplateDTO> sortDTOs(Collection<ItemTemplateDTO> dtos) {
+        return dtos.stream().sorted(Comparator
+                        .comparing(ItemTemplateDTO::isChecked)
                         .reversed()
-                        .thenComparing(ItemTemplatePojo::getDescription))
+                        .thenComparing(ItemTemplateDTO::getDescription))
                 .collect(Collectors.toList());
     }
 }

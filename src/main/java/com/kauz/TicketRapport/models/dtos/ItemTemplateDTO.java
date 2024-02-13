@@ -1,4 +1,4 @@
-package com.kauz.TicketRapport.models.pojos;
+package com.kauz.TicketRapport.models.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ItemTemplatePojo {
+public class ItemTemplateDTO {
     private UUID id;
     private String description;
     private boolean checked;

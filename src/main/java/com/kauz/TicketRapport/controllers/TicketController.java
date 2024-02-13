@@ -6,16 +6,14 @@ import com.kauz.TicketRapport.models.Status;
 import com.kauz.TicketRapport.models.Ticket;
 import com.kauz.TicketRapport.models.filters.TicketFilter;
 import com.kauz.TicketRapport.models.mappers.ChecklistMapper;
-import com.kauz.TicketRapport.models.pojos.ChecklistItemPojo;
-import com.kauz.TicketRapport.models.pojos.ChecklistPojo;
+import com.kauz.TicketRapport.models.dtos.ChecklistItemDTO;
+import com.kauz.TicketRapport.models.dtos.ChecklistDTO;
 import com.kauz.TicketRapport.models.templates.ChecklistItemTemplate;
 import com.kauz.TicketRapport.models.templates.ChecklistTemplate;
 import jakarta.validation.Valid;
-import org.hibernate.annotations.Check;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
@@ -212,7 +210,7 @@ public class TicketController extends BaseController {
         model.addAttribute("clients", DBServices.getClientService().getAll(Client.class));
         model.addAttribute("statuses", DBServices.getStatusService().getAll(Status.class));
         model.addAttribute("templates", DBServices.getChecklistTemplateService().getAll(ChecklistTemplate.class));
-        model.addAttribute("checklistPojo", new ChecklistPojo());
+        model.addAttribute("checklistPojo", new ChecklistDTO());
         return "tickets/create";
     }
 
@@ -232,25 +230,25 @@ public class TicketController extends BaseController {
     @RequestMapping(value = "/tickets/create", method = RequestMethod.POST)
     public String create(@Valid @ModelAttribute("entry") Ticket entry,
                          BindingResult result,
-                         @ModelAttribute("checklistPojo") ChecklistPojo checklist,
+                         @ModelAttribute("checklistPojo") ChecklistDTO checklist,
                          @RequestParam(defaultValue = "") String checkboxes,
                          @RequestParam(defaultValue = "") String descriptions,
                          @RequestParam(defaultValue = "") String ids,
                          Model model) {
 
-        ChecklistPojo pojo = mapper.mapPojo(checklist.isSave(), checklist.getName(),
+        ChecklistDTO dto = mapper.mapDTO(checklist.isSave(), checklist.getName(),
                 ids.split(";;"), descriptions.split(";;"), checkboxes.split(";;"));
 
-        validatePojo(pojo);
+        validateDTO(dto);
 
-        if (result.hasErrors() || pojo.hasErrors()) {
+        if (result.hasErrors() || dto.hasErrors()) {
             super.addBaseAttributes(model);
             model.addAttribute("entry", entry);
             model.addAttribute("users", DBServices.getUserService().getLearners());
             model.addAttribute("clients", DBServices.getClientService().getAll(Client.class));
             model.addAttribute("statuses", DBServices.getStatusService().getAll(Status.class));
             model.addAttribute("templates", DBServices.getChecklistTemplateService().getAll(ChecklistTemplate.class));
-            model.addAttribute("checklistPojo", pojo);
+            model.addAttribute("checklistPojo", dto);
             return "tickets/create";
         }
 
@@ -266,12 +264,12 @@ public class TicketController extends BaseController {
         return "redirect:/tickets";
     }
 
-    private void validatePojo(ChecklistPojo pojo) {
-        if (pojo.getName() != null && pojo.getName().length() > 50) {
-            pojo.setValid(false);
-            pojo.setError("Template name may not exceed 50 characters");
+    private void validateDTO(ChecklistDTO dto) {
+        if (dto.getName() != null && dto.getName().length() > 50) {
+            dto.setValid(false);
+            dto.setError("Template name may not exceed 50 characters");
         }
-        for (ChecklistItemPojo item : pojo.getItems()) {
+        for (ChecklistItemDTO item : dto.getItems()) {
             if (item.getDescription().length() > 100) {
                 item.setValid(false);
                 item.setError("Description may not exceed 100 characters");
@@ -311,7 +309,7 @@ public class TicketController extends BaseController {
         model.addAttribute("users", DBServices.getUserService().getLearners());
         model.addAttribute("clients", DBServices.getClientService().getAll(Client.class));
         model.addAttribute("statuses", DBServices.getStatusService().getAll(Status.class));
-        model.addAttribute("checklistPojo", new ChecklistPojo());
+        model.addAttribute("checklistPojo", new ChecklistDTO());
         model.addAttribute("referer", referer);
         return "tickets/edit";
     }
@@ -334,7 +332,7 @@ public class TicketController extends BaseController {
     @RequestMapping(value = "/tickets/edit", method = RequestMethod.POST)
     public String edit(@Valid @ModelAttribute("entry") Ticket entry,
                        BindingResult result,
-                       @ModelAttribute("checklistPojo") ChecklistPojo checklist,
+                       @ModelAttribute("checklistPojo") ChecklistDTO checklist,
                        @RequestParam UUID id,
                        @RequestParam String checkboxes,
                        @RequestParam String descriptions,
@@ -344,18 +342,18 @@ public class TicketController extends BaseController {
 
         if (!authUser.getUser().isAdmin()) return "redirect:/tickets";
 
-        ChecklistPojo pojo = mapper.mapPojo(checklist.isSave(), checklist.getName(),
+        ChecklistDTO dto = mapper.mapDTO(checklist.isSave(), checklist.getName(),
                 ids.split(";;"), descriptions.split(";;"), checkboxes.split(";;"));
 
-        validatePojo(pojo);
+        validateDTO(dto);
 
-        if (result.hasErrors() || pojo.hasErrors()) {
+        if (result.hasErrors() || dto.hasErrors()) {
             super.addBaseAttributes(model);
             model.addAttribute("entry", entry);
             model.addAttribute("users", DBServices.getUserService().getLearners());
             model.addAttribute("clients", DBServices.getClientService().getAll(Client.class));
             model.addAttribute("statuses", DBServices.getStatusService().getAll(Status.class));
-            model.addAttribute("checklistPojo", pojo);
+            model.addAttribute("checklistPojo", dto);
             return "tickets/edit";
         }
 

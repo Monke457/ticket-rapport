@@ -1,4 +1,4 @@
-package com.kauz.TicketRapport.models.pojos;
+package com.kauz.TicketRapport.models.dtos;
 
 import com.kauz.TicketRapport.models.Role;
 import jakarta.validation.constraints.Email;
@@ -16,7 +16,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserPojo {
+public class UserDTO {
     private String firstname;
     private String lastname;
 

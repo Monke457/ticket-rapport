@@ -1,7 +1,7 @@
 package com.kauz.TicketRapport.controllers;
 
 import com.kauz.TicketRapport.models.filters.Filter;
-import com.kauz.TicketRapport.models.pojos.ItemTemplatePojo;
+import com.kauz.TicketRapport.models.dtos.ItemTemplateDTO;
 import com.kauz.TicketRapport.models.mappers.TemplateMapper;
 import com.kauz.TicketRapport.models.templates.ChecklistItemTemplate;
 import com.kauz.TicketRapport.models.templates.ChecklistTemplate;
@@ -90,7 +90,7 @@ public class TemplateController extends BaseController {
     public String create(Model model) {
         super.addBaseAttributes(model);
         List<ChecklistItemTemplate> itemTemplates = DBServices.getChecklistItemTemplateService().getAll(ChecklistItemTemplate.class).toList();
-        List<ItemTemplatePojo> itemPojos = mapper.mapPojos(itemTemplates);
+        List<ItemTemplateDTO> itemPojos = mapper.mapDTO(itemTemplates);
 
         model.addAttribute("entry", new ChecklistTemplate());
         model.addAttribute("itemPojos", itemPojos);
@@ -115,7 +115,7 @@ public class TemplateController extends BaseController {
             super.addBaseAttributes(model);
 
             Collection<ChecklistItemTemplate> itemTemplates = DBServices.getChecklistItemTemplateService().getAll(ChecklistItemTemplate.class).toList();
-            List<ItemTemplatePojo> itemPojos = mapper.mapPojos(itemTemplates, checkedItems);
+            List<ItemTemplateDTO> itemPojos = mapper.mapDTO(itemTemplates, checkedItems);
 
             model.addAttribute("entry", entry);
             model.addAttribute("itemPojos", itemPojos);
@@ -142,7 +142,7 @@ public class TemplateController extends BaseController {
         List<ChecklistItemTemplate> itemTemplates = DBServices.getChecklistItemTemplateService().getAll(ChecklistItemTemplate.class).toList();
         ChecklistTemplate entry = DBServices.getChecklistTemplateService().find(ChecklistTemplate.class, id);
 
-        List<ItemTemplatePojo> itemPojos = mapper.mapPojos(itemTemplates, entry.getItems());
+        List<ItemTemplateDTO> itemPojos = mapper.mapDTO(itemTemplates, entry.getItems());
 
         model.addAttribute("entry", entry);
         model.addAttribute("itemPojos", itemPojos);
@@ -172,7 +172,7 @@ public class TemplateController extends BaseController {
             super.addBaseAttributes(model);
 
             Collection<ChecklistItemTemplate> itemTemplates = DBServices.getChecklistItemTemplateService().getAll(ChecklistItemTemplate.class).toList();
-            List<ItemTemplatePojo> itemPojos = mapper.mapPojos(itemTemplates, checkedItems);
+            List<ItemTemplateDTO> itemPojos = mapper.mapDTO(itemTemplates, checkedItems);
 
             model.addAttribute("entry", entry);
             model.addAttribute("itemPojos", itemPojos);

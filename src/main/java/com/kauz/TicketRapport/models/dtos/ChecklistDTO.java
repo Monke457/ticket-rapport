@@ -1,4 +1,4 @@
-package com.kauz.TicketRapport.models.pojos;
+package com.kauz.TicketRapport.models.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,21 +12,21 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChecklistPojo {
+public class ChecklistDTO {
     private boolean save;
     private String name;
-    private List<ChecklistItemPojo> items = new LinkedList<>();
+    private List<ChecklistItemDTO> items = new LinkedList<>();
     private boolean valid = true;
     private String error;
 
-    public ChecklistPojo(boolean save, String name) {
+    public ChecklistDTO(boolean save, String name) {
         this.save = save;
         this.name = name;
     }
 
     public boolean hasErrors() {
         if (!valid) return true;
-        for (ChecklistItemPojo item : items) {
+        for (ChecklistItemDTO item : items) {
             if (!item.isValid()) return true;
         }
         return false;
