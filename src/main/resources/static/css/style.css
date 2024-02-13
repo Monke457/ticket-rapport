@@ -60,7 +60,7 @@ textarea {
     }
 
     footer div {
-        justify-content: center!important;
+        flex-direction:column;
     }
 
     footer ul {

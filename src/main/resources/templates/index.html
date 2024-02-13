@@ -4,28 +4,28 @@
 <body>
 <section layout:fragment="content">
     <div th:if="${authUser != null && authUser.isAdmin}">
-        <h5 class="mb-4">Unassigned Tickets</h5>
+        <h5 class="mb-4" th:text="#{tickets.unassigned}"></h5>
         <div th:replace="~{fragments/ticket-cards :: ticket-cards(${unassigned}, 'home')}"></div>
         <hr class="mt-4">
 
-        <h5 class="my-4">Tickets In Progress</h5>
+        <h5 class="my-4" th:text="#{tickets.open}"></h5>
         <div th:replace="~{fragments/ticket-cards :: ticket-cards(${open}, 'home')}"></div>
         <hr class="mt-4">
 
-        <h5 class="my-4">Completed Tickets</h5>
+        <h5 class="my-4" th:text="#{tickets.completed}"></h5>
         <div th:replace="~{fragments/ticket-cards :: ticket-cards(${completed}, 'home')}"></div>
     </div>
 
     <div th:if="${authUser != null && !authUser.isAdmin}">
-        <h5 class="mb-4">Your Tasks</h5>
+        <h5 class="mb-4" th:text="#{tasks.open}"></h5>
         <div th:replace="~{fragments/ticket-cards :: ticket-cards(${open}, 'home')}"></div>
         <hr class="mt-4">
 
-        <h5 class="my-4">Completed Tasks</h5>
+        <h5 class="my-4" th:text="#{tasks.completed}"></h5>
         <div th:replace="~{fragments/ticket-cards :: ticket-cards(${completed}, 'home')}"></div>
         <hr class="mt-4">
 
-        <h5 class="my-4">Closed Tickets</h5>
+        <h5 class="my-4" th:text="#{tickets.closed}"></h5>
         <form class="row row-cols-lg-auto g-1 align-items-center my-4" th:object="${filter}" onkeydown="if(event.keyCode === 13) { getFilteredTickets(); return false; }">
             <div class="col" style="min-width:200px;">
                 <input id="search" class="form-control" th:field="*{search}" placeholder="Search">
@@ -47,9 +47,9 @@
     </div>
 
     <div th:if="${authUser == null}" class="text-center d-flex flex-column gap-4 align-items-center">
-        <h3>Welcome to the ticket report system!</h3>
+        <h3 th:text="#{welcome}"></h3>
         <img id="welcomeImg" class="img-fluid rounded" th:src="@{/img/minimalist1.jpg}" alt="minimalist1.jpg"/>
-        <a class="btn btn-success" th:href="@{/login}">Login</a>
+        <a class="btn btn-success" th:href="@{/login}" th:text="#{login}"></a>
     </div>
 </section>
 </body>

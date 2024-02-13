@@ -2,24 +2,24 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
       xmlns:layout="http://www.w3.org/1999/xhtml"
       layout:decorate="~{layout}"
-      th:with="title='Error'">
+      th:with="title='__#{archive}__'">
 <body>
 <section layout:fragment="content">
-    <h5>Closed Tickets</h5>
+    <h5 th:text="#{tickets.closed}"></h5>
 
     <form class="row row-cols-lg-auto g-1 align-items-center my-4" th:object="${filter}" th:action="@{archive}" method="get">
         <div class="col" style="min-width:200px;">
-            <input id="search" class="form-control" th:field="*{search}" placeholder="Search">
+            <input id="search" class="form-control" th:field="*{search}" th:placeholder="#{search}">
         </div>
         <div class="col" style="min-width:200px;">
             <select id="client" class="form-select" th:field="*{clientId}">
-                <option value="">All Clients</option>
+                <option value="" th:text="#{clients.all}"></option>
                 <option th:each="client: ${clients}" th:value="${client.id}" th:text="${client.name}"></option>
             </select>
         </div>
         <div class="col-2">
             <button class="btn btn-sm btn-primary">
-                <img th:src="@{/img/search.svg}" style="filter:invert(1)" alt="search.svg" title="Search"/>
+                <img th:src="@{/img/search.svg}" style="filter:invert(1)" alt="search.svg" th:title="#{Search}"/>
             </button>
         </div>
     </form>

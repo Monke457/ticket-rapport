@@ -99,6 +99,5 @@ public class HomeController extends BaseController {
         model.addAttribute("tickets", DBServices.getTicketService().find(Ticket.class, filter).toList());
         model.addAttribute("referer", "home");
         return "fragments/ticket-cards :: ticket-cards";
-
     }
 }
