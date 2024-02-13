@@ -1,4 +1,4 @@
-package com.kauz.TicketRapport.models.filters;
+package com.kauz.TicketRapport.filters;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

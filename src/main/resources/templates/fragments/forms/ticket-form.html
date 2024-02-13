@@ -1,23 +1,23 @@
 <div th:fragment="ticket-form(type)" xmlns:th="http://www.w3.org/1999/xhtml">
     <div class="mb-3">
-        <label class="form-label" th:for="*{title}">* Title</label>
+        <label class="form-label" th:for="title">* Title</label>
         <input class="form-control" th:field="*{title}">
         <div th:replace="~{fragments/forms/error-alert :: error-alert('title')}"></div>
     </div>
     <div class="mb-3">
-        <label class="form-label" th:for="*{description}">Description</label>
+        <label class="form-label" th:for="description">Description</label>
         <input class="form-control" th:field="*{description}">
         <div th:replace="~{fragments/forms/error-alert :: error-alert('description')}"></div>
     </div>
     <div class="mb-3">
-        <label class="form-label" th:for="*{assignedUser}">Assigned Learner</label>
+        <label class="form-label" th:for="assignedUser.id">Assigned Learner</label>
         <select class="mb-3 form-select" th:field="*{assignedUser.id}">
             <option value="">Select Learner</option>
             <option th:each="user: ${users}" th:value="${user.id}" th:text="${user.fullName}"></option>
         </select>
     </div>
     <div class="mb-3">
-        <label class="form-label" th:for="*{client}">* Client</label>
+        <label class="form-label" th:for="client.id">* Client</label>
         <select class="mb-3 form-select" th:field="*{client.id}">
             <option th:if="*{client.id == null || client.id == ''}" value="null">Select Client</option>
             <option th:each="client: ${clients}" th:value="${client.id}" th:text="${client.name}"></option>
@@ -25,7 +25,7 @@
         <div class="alert alert-warning mt-1" th:if="${#fields.hasErrors('client.id')}">Please select a client</div>
     </div>
     <div class="mb-3" th:classappend="${type == 'create'} ? 'd-none' : ''">
-        <label class="form-label" th:for="*{status}">* Status</label>
+        <label class="form-label" th:for="status.id">* Status</label>
         <select class="mb-3 form-select" th:field="*{status.id}">
             <option th:each="status: ${statuses}" th:value="${status.id}" th:text="${status.description}"></option>
         </select>
@@ -33,12 +33,12 @@
     </div>
     <div th:if="${type == 'edit'}">
         <div class="mb-3">
-            <label class="form-label" th:for="*{protocol}">Protocol</label>
+            <label class="form-label" th:for="protocol">Protocol</label>
             <textarea class="form-control resizer" th:field="*{protocol}"></textarea>
             <div th:replace="~{fragments/forms/error-alert :: error-alert('protocol')}"></div>
         </div>
         <div class="mb-3">
-            <label class="form-label" th:for="*{solution}">Solution</label>
+            <label class="form-label" th:for="solution">Solution</label>
             <textarea class="form-control resizer" th:field="*{solution}"></textarea>
             <div th:replace="~{fragments/forms/error-alert :: error-alert('solution')}"></div>
         </div>
@@ -46,12 +46,12 @@
             <label class="form-label mb-0">Work Time</label>
             <div class="d-flex gap-2">
                 <div>
-                    <label style="font-size:13px;" th:for="*{workHours}">Hours</label>
+                    <label style="font-size:13px;" th:for="workHours">Hours</label>
                     <input class="form-control" type="number" min="0" max="99" th:field="*{workHours}">
                     <div th:replace="~{fragments/forms/error-alert :: error-alert('workHours')}"></div>
                 </div>
                 <div>
-                    <label style="font-size:13px;" th:for="*{workMinutes}">Minutes</label>
+                    <label style="font-size:13px;" th:for="workMinutes">Minutes</label>
                     <input class="form-control" type="number" min="0" max="59" th:field="*{workMinutes}">
                     <div th:replace="~{fragments/forms/error-alert :: error-alert('workMinutes')}"></div>
                 </div>
@@ -79,9 +79,9 @@
             <div th:each="item, itemStat: ${checklistPojo.items.size > 0 ? checklistPojo.items : entry.checklist}">
                 <div class="d-flex justify-content-between align-items-center p-1 gap-2">
                     <div class="d-flex flex-column">
-                        <img style="cursor:pointer" th:src="@{/img/caret-up.svg}" alt="up"
+                        <img class="arrow-btn" th:src="@{/img/caret-up.svg}" alt="up"
                              th:onclick="moveUp(this.parentElement.parentElement.parentElement)">
-                        <img style="cursor:pointer" th:src="@{/img/caret-down.svg}" alt="down"
+                        <img class="arrow-btn" th:src="@{/img/caret-down.svg}" alt="down"
                              th:onclick="moveDown(this.parentElement.parentElement.parentElement)">
                     </div>
                     <div class="d-flex gap-2 align-items-center w-100">
@@ -90,7 +90,7 @@
                     </div>
                     <button class="btn btn-sm btn-outline-danger" type="button" th:onclick="remove(this.parentElement.parentElement)">X</button>
                 </div>
-                <div class="alert alert-warning mt-1" th:if="${checklistPojo.items.size > 0 && !item.valid}" th:text="${item.error}"></div>
+                <div class="alert alert-warning mt-1 py-2" th:if="${checklistPojo.items.size > 0 && !item.valid}" th:text="${item.error}"></div>
             </div>
             <button class="btn btn-sm btn-success mt-2" type="button" th:onclick="add(this.parentElement)">Add Item +</button>
         </div>
@@ -100,6 +100,17 @@
             <input type="hidden" id="hiddenDescriptions" th:name="descriptions">
         </div>
     </div>
+
+    <style>
+        .arrow-btn {
+            cursor: pointer;
+        }
+        .arrow-btn:hover {
+            background: darkgrey;
+            border-radius: 2px;
+            filter: invert(1);
+        }
+    </style>
 
     <script th:inline="javascript">
         var count = 1;

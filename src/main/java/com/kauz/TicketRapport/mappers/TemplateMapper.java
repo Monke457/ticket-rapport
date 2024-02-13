@@ -1,6 +1,6 @@
-package com.kauz.TicketRapport.models.mappers;
+package com.kauz.TicketRapport.mappers;
 
-import com.kauz.TicketRapport.models.dtos.ItemTemplateDTO;
+import com.kauz.TicketRapport.dtos.ItemTemplateDTO;
 import com.kauz.TicketRapport.models.templates.ChecklistItemTemplate;
 
 import java.util.*;

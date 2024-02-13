@@ -8,7 +8,7 @@
                    placeholder="Search..."
                    autocomplete="off"
                    name="search"
-                   onkeydown="return event.key == 'Enter' ? filter() : true;"/>
+                   onkeydown="return filter(event.key)"/>
             <button class="btn btn-sm btn-primary no-l-radius" type="button" th:onclick="filter()">
                 <img th:src="@{/img/search.svg}" style="filter:invert(1);" alt="search.svg" title="Search"/>
             </button>
@@ -90,14 +90,13 @@
             return false;
         }
 
-        function filter() {
+        function filter(key) {
             var searchInput = document.getElementById('search');
             var search = searchInput.value.trim();
             var itemList = document.getElementById('item-list');
 
             for (var i = 0; i < itemList.children.length-1; i++) {
                 var child = itemList.children[i];
-                console.log(child.children[0]);
 
                 var includes = child.children[0].value.toLowerCase().includes(search.toLowerCase());
 
@@ -109,7 +108,8 @@
                     child.classList.remove("d-block");
                 }
             }
-            return false;
+            console.log(key)
+            return key != 'Enter';
         }
 
         function update_ids() {

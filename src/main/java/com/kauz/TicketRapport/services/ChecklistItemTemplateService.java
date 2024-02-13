@@ -1,6 +1,6 @@
 package com.kauz.TicketRapport.services;
 
-import com.kauz.TicketRapport.models.filters.Filter;
+import com.kauz.TicketRapport.filters.Filter;
 import com.kauz.TicketRapport.models.templates.ChecklistItemTemplate;
 import com.kauz.TicketRapport.models.templates.ChecklistTemplate;
 import jakarta.persistence.criteria.*;

@@ -1,4 +1,4 @@
-package com.kauz.TicketRapport.models.dtos;
+package com.kauz.TicketRapport.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,9 +19,10 @@ public class ChecklistDTO {
     private boolean valid = true;
     private String error;
 
-    public ChecklistDTO(boolean save, String name) {
+    public ChecklistDTO(boolean save, String name, List<ChecklistItemDTO> items) {
         this.save = save;
         this.name = name;
+        this.items = items;
     }
 
     public boolean hasErrors() {

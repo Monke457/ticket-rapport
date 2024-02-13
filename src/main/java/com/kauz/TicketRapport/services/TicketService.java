@@ -4,8 +4,8 @@ import com.kauz.TicketRapport.models.Client;
 import com.kauz.TicketRapport.models.Status;
 import com.kauz.TicketRapport.models.Ticket;
 import com.kauz.TicketRapport.models.User;
-import com.kauz.TicketRapport.models.filters.Filter;
-import com.kauz.TicketRapport.models.filters.TicketFilter;
+import com.kauz.TicketRapport.filters.Filter;
+import com.kauz.TicketRapport.filters.TicketFilter;
 import jakarta.persistence.criteria.*;
 import org.springframework.stereotype.Repository;
 

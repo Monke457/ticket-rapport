@@ -2,8 +2,8 @@ package com.kauz.TicketRapport.controllers;
 
 import com.kauz.TicketRapport.models.Client;
 import com.kauz.TicketRapport.models.Ticket;
-import com.kauz.TicketRapport.models.filters.Filter;
-import com.kauz.TicketRapport.models.filters.TicketFilter;
+import com.kauz.TicketRapport.filters.Filter;
+import com.kauz.TicketRapport.filters.TicketFilter;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

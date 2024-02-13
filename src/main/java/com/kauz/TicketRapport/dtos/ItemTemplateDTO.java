@@ -1,4 +1,4 @@
-package com.kauz.TicketRapport.models.dtos;
+package com.kauz.TicketRapport.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

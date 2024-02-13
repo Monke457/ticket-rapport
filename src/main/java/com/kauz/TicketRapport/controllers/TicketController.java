@@ -4,13 +4,15 @@ import com.kauz.TicketRapport.models.ChecklistItem;
 import com.kauz.TicketRapport.models.Client;
 import com.kauz.TicketRapport.models.Status;
 import com.kauz.TicketRapport.models.Ticket;
-import com.kauz.TicketRapport.models.filters.TicketFilter;
-import com.kauz.TicketRapport.models.mappers.ChecklistMapper;
-import com.kauz.TicketRapport.models.dtos.ChecklistItemDTO;
-import com.kauz.TicketRapport.models.dtos.ChecklistDTO;
+import com.kauz.TicketRapport.filters.TicketFilter;
+import com.kauz.TicketRapport.mappers.ChecklistMapper;
+import com.kauz.TicketRapport.dtos.ChecklistItemDTO;
+import com.kauz.TicketRapport.dtos.ChecklistDTO;
 import com.kauz.TicketRapport.models.templates.ChecklistItemTemplate;
 import com.kauz.TicketRapport.models.templates.ChecklistTemplate;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,7 +27,8 @@ import java.util.stream.Collectors;
  */
 @Controller
 public class TicketController extends BaseController {
-    private final ChecklistMapper mapper = new ChecklistMapper();
+    @Autowired
+    private ChecklistMapper mapper;
 
     /**
      * Get handler for the ticket list page. Should only be accessible by admins
@@ -180,14 +183,12 @@ public class TicketController extends BaseController {
     }
 
     @RequestMapping(value = "/tickets/details/reopen", method = RequestMethod.POST)
-    public String reopen(@RequestParam UUID id,
-                         @ModelAttribute Ticket entry,
-                         BindingResult result) {
+    public String reopen(@RequestParam UUID id) {
 
         Ticket ticket = DBServices.getTicketService().find(Ticket.class, id);
 
         if (ticket.getAssignedUser() == null || ticket.getAssignedUser().getId() != authUser.getUser().getId()) {
-            return "redirect:/";
+            throw new AccessDeniedException("Permission denied");
         }
 
         ticket.setStatus(DBServices.getStatusService().find("In Progress"));
@@ -272,7 +273,7 @@ public class TicketController extends BaseController {
         for (ChecklistItemDTO item : dto.getItems()) {
             if (item.getDescription().length() > 100) {
                 item.setValid(false);
-                item.setError("Description may not exceed 100 characters");
+                item.setError("Item description may not exceed 100 characters");
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.kauz.TicketRapport.models.dtos;
+package com.kauz.TicketRapport.dtos;
 
 import com.kauz.TicketRapport.models.Role;
 import jakarta.validation.constraints.Email;

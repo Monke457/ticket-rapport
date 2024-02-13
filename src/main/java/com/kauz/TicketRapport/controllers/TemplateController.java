@@ -1,8 +1,8 @@
 package com.kauz.TicketRapport.controllers;
 
-import com.kauz.TicketRapport.models.filters.Filter;
-import com.kauz.TicketRapport.models.dtos.ItemTemplateDTO;
-import com.kauz.TicketRapport.models.mappers.TemplateMapper;
+import com.kauz.TicketRapport.filters.Filter;
+import com.kauz.TicketRapport.dtos.ItemTemplateDTO;
+import com.kauz.TicketRapport.mappers.TemplateMapper;
 import com.kauz.TicketRapport.models.templates.ChecklistItemTemplate;
 import com.kauz.TicketRapport.models.templates.ChecklistTemplate;
 import jakarta.validation.Valid;

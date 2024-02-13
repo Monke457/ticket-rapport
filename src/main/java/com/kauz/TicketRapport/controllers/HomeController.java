@@ -2,7 +2,7 @@ package com.kauz.TicketRapport.controllers;
 
 import com.kauz.TicketRapport.models.Client;
 import com.kauz.TicketRapport.models.Ticket;
-import com.kauz.TicketRapport.models.filters.TicketFilter;
+import com.kauz.TicketRapport.filters.TicketFilter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

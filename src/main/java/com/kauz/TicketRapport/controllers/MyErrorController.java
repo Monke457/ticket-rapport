@@ -24,7 +24,7 @@ public class MyErrorController extends BaseController implements ErrorController
         Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
 
         if (status == null || !Objects.equals(status.toString(), "403")) {
-            model.addAttribute("message", status + " Oops! Something went wrong.");
+            model.addAttribute("message", "Error " + status + ": Oops! Something went wrong.");
         } else {
             model.addAttribute("message", "You are not permitted to access this page.");
         }

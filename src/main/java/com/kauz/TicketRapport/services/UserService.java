@@ -2,8 +2,8 @@ package com.kauz.TicketRapport.services;
 
 import com.kauz.TicketRapport.models.Role;
 import com.kauz.TicketRapport.models.User;
-import com.kauz.TicketRapport.models.filters.Filter;
-import com.kauz.TicketRapport.models.filters.UserFilter;
+import com.kauz.TicketRapport.filters.Filter;
+import com.kauz.TicketRapport.filters.UserFilter;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
 import jakarta.transaction.Transactional;
