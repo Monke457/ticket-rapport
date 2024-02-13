@@ -8,3 +8,7 @@ const resizeOnType = (evt) => {
 document.querySelectorAll(".resizer").forEach(el => {
     el.addEventListener("keyup", resizeOnType);
 });
+
+function change_lang(option) {
+    window.location.replace('?lang=' + option);
+}

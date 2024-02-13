@@ -8,31 +8,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <div class="me-auto mb-2 mb-lg-0">
-                <ul th:unless="${authUser == null || !authUser.isAdmin}" class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/archive}" th:text="#{archive}"></a>
-                    </li>
-
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" style="cursor:pointer;" data-bs-toggle="dropdown" aria-expanded="false">
-                            Administration
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a class="dropdown-item" th:href="@{/tickets}" th:text="#{tickets}"></a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" th:href="@{/clients}" th:text="#{clients}"></a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" th:href="@{/checklists}" th:text="#{checklist.templates}"></a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" th:href="@{/users}" th:text="#{users}"></a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
+                <ul th:replace="~{fragments/menu :: menu('navbar-nav')}"></ul>
             </div>
 
             <div class="d-flex flex-column gap-1">
@@ -59,10 +35,4 @@
             </div>
         </div>
     </div>
-
-    <script type="text/javascript">
-        function change_lang(option) {
-            window.location.replace('?lang=' + option);
-        }
-    </script>
 </nav>
