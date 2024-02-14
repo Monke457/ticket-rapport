@@ -86,9 +86,9 @@ public class TicketController extends BaseController {
         }
 
         super.addBaseAttributes(model);
-        model.addAttribute("referer", referer);
         model.addAttribute("entry", entry);
         model.addAttribute("status", entry.getStatus().getDescription());
+        model.addAttribute("referer", referer);
         return "tickets/details";
     }
 
@@ -101,7 +101,7 @@ public class TicketController extends BaseController {
      * @param referer a string representing the page the user came from / to return to.
      * @return a reference to a Thymeleaf template.
      */
-    @RequestMapping(value = "/tickets/status", method = RequestMethod.POST)
+    @PostMapping(value = "/tickets/status")
     public String status(@RequestParam UUID id, @RequestParam String action, @RequestParam(required = false) String referer) {
         String returnString = "redirect:" + (referer == null ? "/" : referer);
 
@@ -133,14 +133,15 @@ public class TicketController extends BaseController {
      * @param model a model containing all the relevant view data.
      * @return a reference to a Thymeleaf template.
      */
-    @RequestMapping(value = "/tickets/details/update", method = RequestMethod.POST)
+    @PostMapping(value = "/tickets/details/update")
     public String update(@RequestParam UUID id,
                          @RequestParam String action,
                          @RequestParam String status,
                          @RequestParam(required = false) String checklistItems,
                          @Valid @ModelAttribute("entry") Ticket entry,
                          BindingResult result,
-                         Model model) {
+                         Model model,
+                         @RequestParam(required = false) String referer) {
 
         if (result.hasErrors()) {
             boolean error = false;
@@ -154,14 +155,16 @@ public class TicketController extends BaseController {
                 super.addBaseAttributes(model);
                 model.addAttribute("entry", entry);
                 model.addAttribute("status", status);
+                model.addAttribute("referer", referer);
                 return "tickets/details";
             }
         }
 
         Ticket ticket = DBServices.getTicketService().find(Ticket.class, id);
+        String returnUrl = "redirect:" + (referer == null ? "/" : referer);
 
         if (ticket.getAssignedUser() == null || ticket.getAssignedUser().getId() != authUser.getUser().getId()) {
-            return "redirect:/";
+            return returnUrl;
         }
 
         if (checklistItems == null) checklistItems = "";
@@ -178,13 +181,17 @@ public class TicketController extends BaseController {
         }
         DBServices.getTicketService().update(ticket);
 
-        if (action.equals("exit")) return "redirect:/";
+        if (action.equals("exit")) return returnUrl;
 
-        return "redirect:/tickets/details?id=" + id;
+        super.addBaseAttributes(model);
+        model.addAttribute("entry", ticket);
+        model.addAttribute("status", ticket.getStatus().getDescription());
+        model.addAttribute("referer", referer);
+        return "tickets/details";
     }
 
-    @RequestMapping(value = "/tickets/details/reopen", method = RequestMethod.POST)
-    public String reopen(@RequestParam UUID id) {
+    @PostMapping(value = "/tickets/details/reopen")
+    public String reopen(@RequestParam UUID id, Model model, @RequestParam(required = false) String referer) {
 
         Ticket ticket = DBServices.getTicketService().find(Ticket.class, id);
 
@@ -195,7 +202,11 @@ public class TicketController extends BaseController {
         ticket.setStatus(DBServices.getStatusService().find("In Progress"));
         DBServices.getTicketService().update(ticket);
 
-        return "redirect:/tickets/details?id=" + id;
+        super.addBaseAttributes(model);
+        model.addAttribute("entry", ticket);
+        model.addAttribute("status", ticket.getStatus().getDescription());
+        model.addAttribute("referer", referer);
+        return "tickets/details";
     }
 
     /**
@@ -230,7 +241,7 @@ public class TicketController extends BaseController {
      * @param model the model containing the relevant view data.
      * @return a reference to a Thymeleaf template.
      */
-    @RequestMapping(value = "/tickets/create", method = RequestMethod.POST)
+    @PostMapping(value = "/tickets/create")
     public String create(@Valid @ModelAttribute("entry") Ticket entry,
                          BindingResult result,
                          @ModelAttribute("checklistPojo") ChecklistDTO checklist,
@@ -339,7 +350,7 @@ public class TicketController extends BaseController {
      * @param model the model containing the relevant view data.
      * @return a reference to a Thymeleaf template.
      */
-    @RequestMapping(value = "/tickets/edit", method = RequestMethod.POST)
+    @PostMapping(value = "/tickets/edit")
     public String edit(@Valid @ModelAttribute("entry") Ticket entry,
                        BindingResult result,
                        @ModelAttribute("checklistPojo") ChecklistDTO checklist,
@@ -474,7 +485,7 @@ public class TicketController extends BaseController {
      * @param result information about the data binding.
      * @return a reference to the ticket list Thymeleaf template.
      */
-    @RequestMapping(value = "/tickets/delete", method = RequestMethod.POST)
+    @PostMapping(value = "/tickets/delete")
     public String delete(@RequestParam UUID id,
                          @ModelAttribute Ticket entry,
                          BindingResult result,

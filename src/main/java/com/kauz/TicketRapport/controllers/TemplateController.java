@@ -5,6 +5,7 @@ import com.kauz.TicketRapport.dtos.ItemTemplateDTO;
 import com.kauz.TicketRapport.mappers.TemplateMapper;
 import com.kauz.TicketRapport.models.templates.ChecklistItemTemplate;
 import com.kauz.TicketRapport.models.templates.ChecklistTemplate;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -87,8 +88,8 @@ public class TemplateController extends BaseController {
      * @return a reference to the checklist create template.
      */
     @GetMapping("/checklists/create")
-    public String create(Model model) {
-        super.addBaseAttributes(model);
+    public String create(Model model, HttpServletRequest request) {
+        super.addBaseAttributes(model, request);
         List<ChecklistItemTemplate> itemTemplates = DBServices.getChecklistItemTemplateService().getAll(ChecklistItemTemplate.class).toList();
         List<ItemTemplateDTO> itemPojos = mapper.mapDTO(itemTemplates);
 
@@ -108,9 +109,12 @@ public class TemplateController extends BaseController {
      * @return a reference to a checklist Thymeleaf template.
      */
     @RequestMapping(value = "/checklists/create", method = RequestMethod.POST)
-    public String create(@RequestParam(required = false, name = "checked_items") String checkedItems,
-                         @RequestParam(required = false, name = "checked_ids") String checkedIds,
-                         @Valid @ModelAttribute("entry") ChecklistTemplate entry, BindingResult result, Model model) {
+    public String create(@RequestParam(name = "checked_items", defaultValue = "") String checkedItems,
+                         @RequestParam(name = "checked_ids", defaultValue = "") String checkedIds,
+                         @Valid @ModelAttribute("entry") ChecklistTemplate entry,
+                         BindingResult result,
+                         Model model,
+                         @RequestParam(required = false) String referer) {
         if (result.hasErrors()) {
             super.addBaseAttributes(model);
 
@@ -119,13 +123,16 @@ public class TemplateController extends BaseController {
 
             model.addAttribute("entry", entry);
             model.addAttribute("itemPojos", itemPojos);
+            model.addAttribute("referer", referer);
             return "checklists/create";
         }
 
         updateItems(entry, checkedIds, checkedItems);
 
         DBServices.getChecklistTemplateService().create(entry);
-        return "redirect:/checklists";
+
+        if(referer == null) return "redirect:/checklists";
+        return "redirect:" + referer;
     }
 
     /**
@@ -136,8 +143,10 @@ public class TemplateController extends BaseController {
      * @return a reference to the checklist template edit form.
      */
     @GetMapping("/checklists/edit")
-    public String edit(@RequestParam UUID id, Model model) {
-        super.addBaseAttributes(model);
+    public String edit(@RequestParam UUID id,
+                       Model model,
+                       HttpServletRequest request) {
+        super.addBaseAttributes(model, request);
 
         List<ChecklistItemTemplate> itemTemplates = DBServices.getChecklistItemTemplateService().getAll(ChecklistItemTemplate.class).toList();
         ChecklistTemplate entry = DBServices.getChecklistTemplateService().find(ChecklistTemplate.class, id);
@@ -163,10 +172,12 @@ public class TemplateController extends BaseController {
      */
     @RequestMapping(value = "/checklists/edit", method = RequestMethod.POST)
     public String edit(@RequestParam UUID id,
-                       @RequestParam(required = false, name="checked_ids", defaultValue = "") String checkedIds,
-                       @RequestParam(required = false, name="checked_items", defaultValue = "") String checkedItems,
+                       @RequestParam(name="checked_ids", defaultValue = "") String checkedIds,
+                       @RequestParam(name="checked_items", defaultValue = "") String checkedItems,
                        @Valid @ModelAttribute("entry") ChecklistTemplate entry,
-                       BindingResult result, Model model) {
+                       BindingResult result,
+                       Model model,
+                       @RequestParam(required = false) String referer) {
 
         if (result.hasErrors()) {
             super.addBaseAttributes(model);
@@ -176,13 +187,16 @@ public class TemplateController extends BaseController {
 
             model.addAttribute("entry", entry);
             model.addAttribute("itemPojos", itemPojos);
+            model.addAttribute("referer", referer);
             return "checklists/edit";
         }
 
         updateItems(entry, checkedIds, checkedItems);
 
         DBServices.getChecklistTemplateService().update(entry);
-        return "redirect:/checklists";
+
+        if(referer == null) return "redirect:/checklists";
+        return "redirect:" + referer;
     }
 
     /**
@@ -223,8 +237,10 @@ public class TemplateController extends BaseController {
      * @return a reference to the checklist item template edit form.
      */
     @GetMapping("/checklists/items/edit")
-    public String editItems(@RequestParam UUID id, Model model) {
-        super.addBaseAttributes(model);
+    public String editItems(@RequestParam UUID id,
+                            Model model,
+                            HttpServletRequest request) {
+        super.addBaseAttributes(model, request);
         model.addAttribute("entry", DBServices.getChecklistItemTemplateService().find(ChecklistItemTemplate.class, id));
         return "checklists/items/edit";
     }
@@ -240,14 +256,21 @@ public class TemplateController extends BaseController {
      * @return a reference to a checklist item Thymeleaf template.
      */
     @RequestMapping(value = "/checklists/items/edit", method = RequestMethod.POST)
-    public String editItems(@RequestParam UUID id, @Valid @ModelAttribute("entry") ChecklistItemTemplate entry, BindingResult result, Model model) {
+    public String editItems(@RequestParam UUID id,
+                            @Valid @ModelAttribute("entry") ChecklistItemTemplate entry,
+                            BindingResult result,
+                            Model model,
+                            @RequestParam(required = false) String referer) {
         if (result.hasErrors()) {
             super.addBaseAttributes(model);
             model.addAttribute("entry", entry);
+            model.addAttribute("referer", referer);
             return "checklists/items/edit";
         }
         DBServices.getChecklistItemTemplateService().update(entry);
-        return "redirect:/checklists/items";
+
+        if(referer == null) return "redirect:/checklists/items";
+        return "redirect:" + referer;
     }
 
     /**
@@ -258,8 +281,10 @@ public class TemplateController extends BaseController {
      * @return a reference to a checklist delete form.
      */
     @GetMapping("/checklists/delete")
-    public String delete(@RequestParam UUID id, Model model) {
-        super.addBaseAttributes(model);
+    public String delete(@RequestParam UUID id,
+                         Model model,
+                         HttpServletRequest request) {
+        super.addBaseAttributes(model, request);
         model.addAttribute("entry", DBServices.getChecklistTemplateService().find(ChecklistTemplate.class, id));
         return "checklists/delete";
     }
@@ -274,14 +299,19 @@ public class TemplateController extends BaseController {
      * @return a reference to a checklist Thymeleaf template.
      */
     @RequestMapping(value = "/checklists/delete", method = RequestMethod.POST)
-    public String delete(@RequestParam UUID id, @ModelAttribute ChecklistTemplate entry, BindingResult result) {
+    public String delete(@RequestParam UUID id,
+                         @ModelAttribute ChecklistTemplate entry,
+                         BindingResult result,
+                         @RequestParam(required = false) String referer) {
         if (!result.hasErrors()) {
             ChecklistTemplate template = DBServices.getChecklistTemplateService().find(ChecklistTemplate.class, id);
             // remove relations first
             template.getItems().clear();
             DBServices.getChecklistTemplateService().delete(ChecklistTemplate.class, template);
         }
-        return "redirect:/checklists";
+
+        if (referer == null) return "redirect:/checklists";
+        return "redirect:" + referer;
     }
 
     /**
@@ -292,8 +322,10 @@ public class TemplateController extends BaseController {
      * @return a reference to a checklist item delete form.
      */
     @GetMapping("/checklists/items/delete")
-    public String deleteItem(@RequestParam UUID id, Model model) {
-        super.addBaseAttributes(model);
+    public String deleteItem(@RequestParam UUID id,
+                             Model model,
+                             HttpServletRequest request) {
+        super.addBaseAttributes(model, request);
         model.addAttribute("entry", DBServices.getChecklistItemTemplateService().find(ChecklistItemTemplate.class, id));
         return "checklists/items/delete";
     }
@@ -309,7 +341,10 @@ public class TemplateController extends BaseController {
      * @return a reference to a checklist item Thymeleaf template.
      */
     @RequestMapping(value = "/checklists/items/delete", method = RequestMethod.POST)
-    public String deleteItem(@RequestParam UUID id, @ModelAttribute ChecklistItemTemplate entry, BindingResult result) {
+    public String deleteItem(@RequestParam UUID id,
+                             @ModelAttribute ChecklistItemTemplate entry,
+                             BindingResult result,
+                             @RequestParam(required = false) String referer) {
         if (!result.hasErrors()) {
             ChecklistItemTemplate itemTemplate = DBServices.getChecklistItemTemplateService().find(ChecklistItemTemplate.class, id);
             // remove relations first
@@ -320,6 +355,8 @@ public class TemplateController extends BaseController {
             DBServices.getChecklistTemplateService().update(templates);
             DBServices.getChecklistItemTemplateService().delete(ChecklistItemTemplate.class, itemTemplate);
         }
-        return "redirect:/checklists/items";
+
+        if (referer == null) return "redirect:/checklists/items";
+        return "redirect:" + referer;
     }
 }

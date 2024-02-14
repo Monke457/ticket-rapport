@@ -4,6 +4,7 @@ import com.kauz.TicketRapport.models.Client;
 import com.kauz.TicketRapport.models.Ticket;
 import com.kauz.TicketRapport.filters.Filter;
 import com.kauz.TicketRapport.filters.TicketFilter;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -59,8 +60,8 @@ public class ClientController extends BaseController {
      * @return a reference point for the client creation template.
      */
     @GetMapping("/clients/create")
-    public String create(Model model) {
-        super.addBaseAttributes(model);
+    public String create(Model model, HttpServletRequest request) {
+        super.addBaseAttributes(model, request);
         model.addAttribute("entry", new Client());
         return "clients/create";
     }
@@ -75,14 +76,20 @@ public class ClientController extends BaseController {
      * @return a reference to a client template.
      */
     @RequestMapping(value = "/clients/create", method = RequestMethod.POST)
-    public String create(@Valid @ModelAttribute("entry") Client entry, BindingResult result, Model model) {
+    public String create(@Valid @ModelAttribute("entry") Client entry,
+                         BindingResult result,
+                         Model model,
+                         @RequestParam(required = false) String referer) {
         if (result.hasErrors()) {
             super.addBaseAttributes(model);
             model.addAttribute("entry", entry);
+            model.addAttribute("referer", referer);
             return "clients/create";
         }
         DBServices.getClientService().create(entry);
-        return "redirect:/clients";
+
+        if(referer == null) return "redirect:/clients";
+        return "redirect:" + referer;
     }
 
     /**
@@ -93,8 +100,8 @@ public class ClientController extends BaseController {
      * @return a reference to the client edit template.
      */
     @GetMapping("/clients/edit")
-    public String edit(Model model, @RequestParam UUID id) {
-        super.addBaseAttributes(model);
+    public String edit(Model model, @RequestParam UUID id, HttpServletRequest request) {
+        super.addBaseAttributes(model, request);
         Client client = DBServices.getClientService().find(Client.class, id);
         model.addAttribute("entry", client);
         return "clients/edit";
@@ -111,14 +118,21 @@ public class ClientController extends BaseController {
      * @return a reference to a client template.
      */
     @RequestMapping(value = "/clients/edit", method = RequestMethod.POST)
-    public String edit(@RequestParam UUID id, @Valid @ModelAttribute("entry") Client entry, BindingResult result, Model model) {
+    public String edit(@RequestParam UUID id,
+                       @Valid @ModelAttribute("entry") Client entry,
+                       BindingResult result,
+                       Model model,
+                       @RequestParam(required = false) String referer) {
         if (result.hasErrors()) {
             addBaseAttributes(model);
             model.addAttribute("entry", entry);
+            model.addAttribute("referer", referer);
             return "clients/edit";
         }
         DBServices.getClientService().update(entry);
-        return "redirect:/clients";
+
+        if(referer == null) return "redirect:/clients";
+        return "redirect:" + referer;
     }
 
     /**
@@ -129,8 +143,8 @@ public class ClientController extends BaseController {
      * @return a reference to the client delete template.
      */
     @GetMapping("/clients/delete")
-    public String delete(Model model, @RequestParam UUID id) {
-        super.addBaseAttributes(model);
+    public String delete(Model model, @RequestParam UUID id, HttpServletRequest request) {
+        super.addBaseAttributes(model, request);
         model.addAttribute("entry", DBServices.getClientService().find(Client.class, id));
         return "clients/delete";
     }
@@ -141,11 +155,10 @@ public class ClientController extends BaseController {
      *
      * @param id the id of the client.
      * @param entry the client entry to remove.
-     * @param result information about the data binding
      * @return a reference to a client template.
      */
     @RequestMapping(value = "/clients/delete", method = RequestMethod.POST)
-    public String delete(@RequestParam UUID id, @ModelAttribute Client entry, BindingResult result) {
+    public String delete(@RequestParam UUID id, @ModelAttribute Client entry, @RequestParam(required = false) String referer) {
         // remove client from tickets first
         TicketFilter filter = new TicketFilter();
         filter.setClientId(id);
@@ -155,6 +168,8 @@ public class ClientController extends BaseController {
         }
         DBServices.getTicketService().update(clientTickets);
         DBServices.getClientService().delete(Client.class, entry);
-        return "redirect:/clients";
+
+        if (referer == null) return "redirect:/clients";
+        return "redirect:" + referer;
     }
 }

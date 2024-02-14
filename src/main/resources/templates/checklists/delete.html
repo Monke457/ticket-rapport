@@ -6,14 +6,14 @@
         <div class="d-flex justify-content-between align-items-center mb-2">
             <span></span>
             <h5>Delete Checklist Template</h5>
-            <a class="btn btn-sm btn-secondary" th:href="@{/checklists}">Back</a>
+            <div th:replace="~{fragments/forms/return-form :: return-form}"></div>
         </div>
 
         <div th:replace="~{fragments/details/checklist-details :: checklist-details}"></div>
 
         <form th:action="@{delete(id=${entry.id})}" method="post">
+            <input type="hidden" th:value="${referer}" th:name="referer">
             <div class="text-end">
-                <a class="btn btn-outline-primary" th:href="@{/checklists}">Cancel</a>
                 <button class="btn btn-danger">Delete</button>
             </div>
         </form>

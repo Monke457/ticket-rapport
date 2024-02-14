@@ -3,6 +3,7 @@ package com.kauz.TicketRapport.controllers;
 import com.kauz.TicketRapport.models.Client;
 import com.kauz.TicketRapport.models.Ticket;
 import com.kauz.TicketRapport.filters.TicketFilter;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -99,5 +100,15 @@ public class HomeController extends BaseController {
         model.addAttribute("tickets", DBServices.getTicketService().find(Ticket.class, filter).toList());
         model.addAttribute("referer", "home");
         return "fragments/ticket-cards :: ticket-cards";
+    }
+
+    @GetMapping("/back")
+    public String goBack(@RequestParam(required = false) String referer,
+                            HttpServletRequest request) {
+        if (referer != null) return "redirect:" + referer;
+
+        String prev = request.getHeader("referer");
+        if (prev == null) return "redirect:/";
+        return "redirect:" + prev;
     }
 }

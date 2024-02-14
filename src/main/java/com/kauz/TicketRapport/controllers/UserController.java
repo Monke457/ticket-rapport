@@ -6,6 +6,7 @@ import com.kauz.TicketRapport.models.User;
 import com.kauz.TicketRapport.filters.TicketFilter;
 import com.kauz.TicketRapport.filters.UserFilter;
 import com.kauz.TicketRapport.dtos.UserDTO;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -69,8 +70,8 @@ public class UserController extends BaseController {
      * @return a reference to the user create Thymeleaf template.
      */
     @GetMapping("/users/create")
-    public String create(Model model) {
-        super.addBaseAttributes(model);
+    public String create(Model model, HttpServletRequest request) {
+        super.addBaseAttributes(model, request);
         model.addAttribute("entry", new UserDTO());
         model.addAttribute("roles", DBServices.getRoleService().getAll(Role.class));
         return "users/create";
@@ -87,7 +88,9 @@ public class UserController extends BaseController {
      */
     @RequestMapping(value = "/users/create", method = RequestMethod.POST)
     public String create(@Valid @ModelAttribute("entry") UserDTO entry,
-                         BindingResult result, Model model) {
+                         BindingResult result,
+                         Model model,
+                         @RequestParam(required = false) String referer) {
         String passError = validatePassword(entry.getPassword(), entry.getConfirmPassword());
 
         if (result.hasErrors() || passError != null) {
@@ -95,13 +98,16 @@ public class UserController extends BaseController {
             model.addAttribute("entry", entry);
             model.addAttribute("roles", DBServices.getRoleService().getAll(Role.class));
             model.addAttribute("passError", passError);
+            model.addAttribute("referer", referer);
             return "users/create";
         }
 
         User user = new User(entry.getFirstname(), entry.getLastname(), entry.getEmail(), encoder.encode(entry.getPassword()), entry.getRole());
 
         DBServices.getUserService().create(user);
-        return "redirect:/users";
+
+        if (referer == null) return "redirect:/users";
+        return "redirect:" + referer;
     }
 
     /**
@@ -125,8 +131,10 @@ public class UserController extends BaseController {
      * @return a reference to the user edit Thymeleaf template.
      */
     @GetMapping("/users/edit")
-    public String edit(Model model, @RequestParam UUID id) {
-        super.addBaseAttributes(model);
+    public String edit(@RequestParam UUID id,
+                       Model model,
+                       HttpServletRequest request) {
+        super.addBaseAttributes(model, request);
         User user = DBServices.getUserService().find(User.class, id);
         model.addAttribute("entry", user);
         model.addAttribute("roles", DBServices.getRoleService().getAll(Role.class));
@@ -144,15 +152,22 @@ public class UserController extends BaseController {
      * @return a reference to a Thymeleaf template.
      */
     @RequestMapping(value = "/users/edit", method = RequestMethod.POST)
-    public String edit(@RequestParam UUID id, @Valid @ModelAttribute("entry") User entry, BindingResult result, Model model) {
+    public String edit(@RequestParam UUID id,
+                       @Valid @ModelAttribute("entry") User entry,
+                       BindingResult result,
+                       Model model,
+                       @RequestParam(required = false) String referer) {
         if (result.hasErrors()) {
             addBaseAttributes(model);
             model.addAttribute("entry", entry);
             model.addAttribute("roles", DBServices.getRoleService().getAll(Role.class));
+            model.addAttribute("referer", referer);
             return "users/edit";
         }
         DBServices.getUserService().update(entry);
-        return "redirect:/users";
+
+        if(referer == null) return "redirect:/users";
+        return "redirect:" + referer;
     }
 
     /**
@@ -163,8 +178,10 @@ public class UserController extends BaseController {
      * @return a reference to the user delete Thymeleaf template.
      */
     @GetMapping("/users/delete")
-    public String delete(Model model, @RequestParam UUID id) {
-        super.addBaseAttributes(model);
+    public String delete(Model model,
+                         @RequestParam UUID id,
+                         HttpServletRequest request) {
+        super.addBaseAttributes(model, request);
         model.addAttribute("entry", DBServices.getUserService().find(User.class, id));
         return "users/delete";
     }
@@ -179,7 +196,10 @@ public class UserController extends BaseController {
      * @return a reference to the user list Thymeleaf template.
      */
     @RequestMapping(value = "/users/delete", method = RequestMethod.POST)
-    public String delete(@RequestParam UUID id, @ModelAttribute User entry, BindingResult result) {
+    public String delete(@RequestParam UUID id,
+                         @ModelAttribute User entry,
+                         BindingResult result,
+                         @RequestParam(required = false) String referer) {
         if (!result.hasErrors()) {
             // remove user from tickets first
             TicketFilter filter = new TicketFilter();
@@ -191,6 +211,8 @@ public class UserController extends BaseController {
             DBServices.getTicketService().update(userTickets);
             DBServices.getUserService().delete(User.class, entry);
         }
-        return "redirect:/users";
+
+        if (referer == null) return "redirect:/users";
+        return "redirect:" + referer;
     }
 }

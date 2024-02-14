@@ -8,19 +8,26 @@
         <div class="form-label">Description</div>
         <div class="form-control bg-light" style="min-height:37px;" th:text="${entry.description}"></div>
     </div>
-    <div class="mb-3">
+    <div class="mb-3" sec:authorize="hasRole('ROLE_ADMIN')">
         <div class="form-label">Assigned Learner</div>
-        <div class="form-control bg-light" >
-            <span th:unless="${entry.assignedUser == null}" th:text="${entry.assignedUser.fullName}"></span>
-            <span th:if="${entry.assignedUser == null}">None</span>
-        </div>
+        <a th:unless="${entry.assignedUser == null}"
+           th:href="@{/users(id=${entry.assignedUser.id})}"
+           class="form-control btn btn-outline-secondary text-start">
+            <span th:text="${entry.assignedUser.fullName}"></span>
+        </a>
+        <div th:if="${entry.assignedUser == null}" class="form-control bg-light">None</div>
     </div>
     <div class="mb-3">
         <div class="form-label">Client</div>
-        <div class="form-control bg-light" >
-            <span th:unless="${entry.client == null}" th:text="${entry.client.name}"></span>
-            <span th:if="${entry.client == null}">None</span>
-        </div>
+        <span th:unless="${entry.client == null}">
+            <span sec:authorize="hasRole('ROLE_ADMIN')">
+                <a th:href="@{/clients(id=${entry.client.id})}" class="form-control btn btn-outline-secondary text-start">
+                    <span th:text="${entry.client.name}"></span>
+                </a>
+            </span>
+            <span sec:authorize="hasRole('ROLE_LEARNER')" class="form-control bg-light" th:text="${entry.client.name}"></span>
+        </span>
+        <div th:if="${entry.client == null}" class="form-control bg-light">None</div>
     </div>
     <div class="mb-3">
         <div class="form-label">Status</div>
@@ -55,7 +62,7 @@
     </div>
 
     <form sec:authorize="hasRole('ROLE_LEARNER')" th:if="${delete == 'false' && status == 'In Progress'}"
-          th:action="@{details/update(id=${entry.id})}" th:object="${entry}" method="post">
+          th:action="@{/tickets/details/update(id=${entry.id})}" th:object="${entry}" method="post">
         <input type="hidden" th:name="status" th:value="${status}">
         <input type="hidden" th:name="referer" th:value="${referer}">
         <div class="mb-3">
