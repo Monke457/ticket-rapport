@@ -11,14 +11,12 @@
         <div class="col" style="min-width:200px;">
             <input id="search" class="form-control" th:field="*{search}" th:placeholder="#{search}">
         </div>
-        <div class="col" style="min-width:200px;">
-            <select id="client" class="form-select" th:field="*{clientId}">
+        <div class="d-flex">
+            <select id="client" class="form-select input-flush" style="min-width:200px;" th:field="*{clientId}">
                 <option value="" th:text="#{clients.all}"></option>
                 <option th:each="client: ${clients}" th:value="${client.id}" th:text="${client.name}"></option>
             </select>
-        </div>
-        <div class="col-2">
-            <button class="btn btn-sm btn-primary">
+            <button class="btn btn-sm btn-primary button-flush">
                 <img th:src="@{/img/search.svg}" style="filter:invert(1)" alt="search.svg" th:title="#{Search}"/>
             </button>
         </div>

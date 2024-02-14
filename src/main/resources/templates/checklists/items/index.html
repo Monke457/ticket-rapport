@@ -9,8 +9,9 @@
 
     <form class="row row-cols-lg-auto g-1 align-items-center my-4" th:object="${filter}" th:action="@{/checklists/items}" method="get">
         <div th:replace="~{fragments/forms/filter-fields :: filter-fields}"></div>
-        <div class="col-2">
-            <button class="btn btn-sm btn-primary" type="submit">
+        <div class="d-flex ps-0">
+            <input class="form-control input-flush" style="min-width:200px;" th:field="*{search}" placeholder="Search">
+            <button class="btn btn-sm btn-primary button-flush" type="submit">
                 <img th:src="@{/img/search.svg}" style="filter:invert(1)" alt="search.svg" title="Search"/>
             </button>
         </div>

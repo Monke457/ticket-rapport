@@ -9,7 +9,7 @@
                    autocomplete="off"
                    name="search"
                    onkeydown="return filter(event.key)"/>
-            <button class="btn btn-sm btn-primary no-l-radius" type="button" th:onclick="filter()">
+            <button class="btn btn-sm btn-primary button-flush" type="button" th:onclick="filter()">
                 <img th:src="@{/img/search.svg}" style="filter:invert(1);" alt="search.svg" title="Search"/>
             </button>
         </div>
@@ -31,26 +31,16 @@
     <div id="emptyMessage" class="alert alert-warning mb-0 d-none">No items found</div>
 
     <div class="d-flex">
-        <input id="description-input" class="form-control no-r-radius"
+        <input id="description-input" class="form-control input-flush"
                type="text"
                placeholder="New Item..."
                name="addItem"
                onkeydown="return event.key == 'Enter' ? add_item() : true;"/>
-        <button class="btn btn-sm btn-success no-l-radius" type="button" th:onclick="add_item()">
+        <button class="btn btn-sm btn-success button" type="button" th:onclick="add_item()">
             <img th:src="@{/img/plus.svg}" style="filter:invert(1);" alt="plus.svg" title="Add"/>
         </button>
     </div>
 
-    <style>
-        .no-l-radius {
-            border-top-left-radius: 0;
-            border-bottom-left-radius: 0;
-        }
-        .no-r-radius {
-            border-top-right-radius: 0;
-            border-bottom-right-radius: 0;
-        }
-    </style>
     <script th:inline="javascript">
         var count = 1;
 
