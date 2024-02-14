@@ -49,7 +49,13 @@ public class ClientController extends BaseController {
             return "clients/index";
         }
 
+        TicketFilter filter = new TicketFilter();
+        filter.setClientId(id);
+        filter.setStatus("In Progress,Completed");
         model.addAttribute("entry", DBServices.getClientService().find(Client.class, id));
+        model.addAttribute("tickets", DBServices.getTicketService().find(Ticket.class, filter));
+        filter.setStatus("Closed");
+        model.addAttribute("closedCount", DBServices.getTicketService().find(Ticket.class, filter).count());
         return "clients/details";
     }
 

@@ -3,4 +3,5 @@
     <div class="form-label">Name</div>
     <div class="form-control bg-light" style="min-height:37px;" th:text="${entry.name}"></div>
   </div>
+  <div th:replace="~{fragments/details/related-tickets :: related-tickets('Client Tickets', ${tickets}, ${closedCount})}"></div>
 </div>

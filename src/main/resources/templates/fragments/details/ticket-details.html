@@ -10,19 +10,19 @@
     </div>
     <div class="mb-3" sec:authorize="hasRole('ROLE_ADMIN')">
         <div class="form-label">Assigned Learner</div>
-        <a th:unless="${entry.assignedUser == null}"
-           th:href="@{/users(id=${entry.assignedUser.id})}"
-           class="form-control btn btn-outline-secondary text-start">
-            <span th:text="${entry.assignedUser.fullName}"></span>
-        </a>
+        <div th:unless="${entry.assignedUser == null}">
+            <a th:replace="~{fragments/details/link-field ::
+                link-field(@{/users(id=${entry.assignedUser.id})}, ${entry.assignedUser.fullName})}">
+            </a>
+        </div>
         <div th:if="${entry.assignedUser == null}" class="form-control bg-light">None</div>
     </div>
     <div class="mb-3">
         <div class="form-label">Client</div>
         <span th:unless="${entry.client == null}">
             <span sec:authorize="hasRole('ROLE_ADMIN')">
-                <a th:href="@{/clients(id=${entry.client.id})}" class="form-control btn btn-outline-secondary text-start">
-                    <span th:text="${entry.client.name}"></span>
+                <a th:replace="~{fragments/details/link-field ::
+                    link-field(@{/clients(id=${entry.client.id})}, ${entry.client.name})}">
                 </a>
             </span>
             <span sec:authorize="hasRole('ROLE_LEARNER')" class="form-control bg-light" th:text="${entry.client.name}"></span>

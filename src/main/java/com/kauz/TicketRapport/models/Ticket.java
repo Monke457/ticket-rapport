@@ -78,7 +78,7 @@ public class Ticket implements DBEntity {
      *
      * @return a string of style attributes.
      */
-    public String getCardStyle() {
+    public String getStyle() {
         // no status no style
         if (status.getDescription().isBlank()) return "";
         return "border-left: 12px solid " + getBackgroundColor() + ";";

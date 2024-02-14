@@ -20,7 +20,7 @@ public class TicketFilter extends Filter {
     private UUID clientId;
     private UUID statusId;
 
-    // multiple statuses separated by commas
+    // multiple statuses separated by commas (this can just be an array)
     private String status;
 
     public TicketFilter(String search, String sort, int page, boolean asc, UUID clientId, UUID statusId) {

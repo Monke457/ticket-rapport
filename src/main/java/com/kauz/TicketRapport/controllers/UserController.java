@@ -59,7 +59,13 @@ public class UserController extends BaseController {
             return "users/index";
         }
 
+        TicketFilter filter = new TicketFilter();
+        filter.setLearnerId(id);
+        filter.setStatus("In Progress,Completed");
         model.addAttribute("entry", DBServices.getUserService().find(User.class, id));
+        model.addAttribute("tickets", DBServices.getTicketService().find(Ticket.class, filter));
+        filter.setStatus("Closed");
+        model.addAttribute("closedCount", DBServices.getTicketService().find(Ticket.class, filter).count());
         return "users/details";
     }
 

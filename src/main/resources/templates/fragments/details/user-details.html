@@ -9,7 +9,7 @@
     </div>
     <div class="mb-3">
         <div class="form-label">Email</div>
-        <div class="form-control bg-light" style="min-height:37px;" th:text="${entry.email}"></div>
+        <a th:replace="~{fragments/details/link-field :: link-field('mailto:' + ${entry.email}, ${entry.email})}"></a>
     </div>
     <div class="mb-3">
         <div class="form-label">Role</div>
@@ -18,4 +18,6 @@
             <span th:if="${entry.role.description == null}">None</span>
         </div>
     </div>
+
+    <div th:replace="~{fragments/details/related-tickets :: related-tickets('Assigned Tickets', ${tickets}, ${closedCount})}"></div>
 </div>

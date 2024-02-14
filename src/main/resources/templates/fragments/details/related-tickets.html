@@ -1,0 +1,22 @@
+<div xmlns:th="http://www.w3.org/1999/xhtml" th:fragment="related-tickets(label, tickets, closed)" class="mb-3" >
+    <label class="form-label" th:text="${label}"></label>
+    <ul class="list-group">
+        <a class="list-group-item bg-light ticket-link"
+           th:each="item: ${tickets}"
+           th:styleappend="${item.getStyle()}"
+           th:href="@{/tickets/details(id=${item.id})}">
+
+            <span th:text="${item.title}"></span>
+        </a>
+        <a class="list-group-item bg-light" style="border-left: 12px solid #ade3ad;">
+            <span th:text="${closed}"></span>
+            Closed Tickets
+        </a>
+    </ul>
+</div>
+
+<style>
+    .ticket-link:hover {
+        background: none !important;
+    }
+</style>
