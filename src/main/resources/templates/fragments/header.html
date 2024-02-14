@@ -1,5 +1,5 @@
 <nav th:fragment="header" xmlns:th="http://www.w3.org/1999/xhtml" class="navbar navbar-expand-lg border-bottom"
-     xmlns:layout="http://www.w3.org/1999/xhtml">
+     xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
     <div class="container">
         <a class="navbar-brand" th:href="@{/}">
             <img th:src="@{/img/logo.png}" style="max-width:38px" alt="logo.png" title="Ticket Rapport Logo">
@@ -12,16 +12,18 @@
                 <ul th:replace="~{fragments/menu :: menu('navbar-nav')}"></ul>
             </div>
 
-            <div class="d-flex flex-column gap-1">
-                <a class="text-decoration-none" th:if="${authUser == null}" th:href="@{/login}" th:text="#{login}"></a>
+            <div class="d-flex align-items-center gap-2">
+                <a class="btn btn-sm btn-outline-dark" sec:authorize="!isAuthenticated()" th:href="@{/login}" th:text="#{login}"></a>
 
-                <div th:unless="${authUser == null}" class="d-flex flex-wrap gap-2 justify-content-between">
-                    <div th:text="${authUser.email}"></div>
-                    <a class="text-decoration-none" th:href="@{/logout}" th:text="#{logout}"></a>
-                </div>
+                <div sec:authorize="isAuthenticated()" th:text="${authUser.fullName}" class="fw-bold"></div>
+                <form sec:authorize="isAuthenticated()" class="form" th:action="@{/logout}" method="post">
+                    <button class="btn btn-sm btn-outline-dark" th:href="@{/logout}" th:text="#{logout}"></button>
+                </form>
 
-                <div class="nav-item dropstart" style="align-self:flex-end">
-                    <a class="nav-link px-2 text-muted" style="cursor:pointer;" data-bs-toggle="dropdown" aria-expanded="false">
+
+                <div class="nav-item dropstart">
+                    <a id="world-btn" class="btn btn-sm btn-outline-dark" style="padding-top:3px;"
+                       data-bs-toggle="dropdown" aria-expanded="false">
                         <img th:src="@{/img/world.svg}" alt="world.svg" Title="Language"/>
                     </a>
                     <ul class="dropdown-menu">
@@ -36,6 +38,11 @@
             </div>
         </div>
     </div>
+    <style>
+        #world-btn:hover img,  #world-btn:active img {
+            filter: invert(1) !important;
+        }
+    </style>
     <script th:inline="javascript">
         function change_lang(lang) {
             window.location.replace('?lang=' + lang);
