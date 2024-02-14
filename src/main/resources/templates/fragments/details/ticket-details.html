@@ -1,4 +1,5 @@
-<div th:fragment="ticket-details(delete)" xmlns:th="http://www.w3.org/1999/xhtml">
+<div th:fragment="ticket-details(delete)" xmlns:th="http://www.w3.org/1999/xhtml"
+     xmlns:sec="http://www.w3.org/1999/xhtml">
     <div class="mb-3">
         <div class="form-label">Title</div>
         <div class="form-control bg-light" style="min-height:37px;" th:text="${entry.title}"></div>
@@ -46,23 +47,24 @@
             <label class="form-label">Checklist</label>
             <ul class="list-group">
                 <li class="list-group-item bg-light" th:each="item: ${entry.checklist}" th:styleappend="${item.getStyle()}">
-                    <img th:src="@{/img/} + (${item.completed} ? 'check.svg' : 'cross.svg')" alt="item-box" title="Item Box"/>
+                    <img th:src="@{/img/} + (${item.completed} ? 'check.svg' : 'cross.svg')" alt="item-status"/>
                     <span th:text="${item.description}"></span>
                 </li>
             </ul>
         </div>
     </div>
 
-    <form th:unless="${delete == 'true' || authUser.isAdmin || status != 'In Progress'}"
-          th:action="@{/tickets/details/update(id=${entry.id})}" th:object="${entry}" method="post">
+    <form sec:authorize="hasRole('ROLE_LEARNER')" th:if="${delete == 'false' && status == 'In Progress'}"
+          th:action="@{details/update(id=${entry.id})}" th:object="${entry}" method="post">
         <input type="hidden" th:name="status" th:value="${status}">
+        <input type="hidden" th:name="referer" th:value="${referer}">
         <div class="mb-3">
-            <div class="form-label" th:for="*{protocol}">Protocol</div>
+            <div class="form-label" th:for="protocol">Protocol</div>
             <textarea class="form-control mb-2 resizer" th:field="*{protocol}"></textarea>
             <div th:replace="~{fragments/forms/error-alert :: error-alert('protocol')}"></div>
         </div>
         <div class="mb-3">
-            <div class="form-label" th:for="*{solution}">Solution</div>
+            <div class="form-label" th:for="solution">Solution</div>
             <textarea class="form-control resizer" th:field="*{solution}"></textarea>
             <div th:replace="~{fragments/forms/error-alert :: error-alert('solution')}"></div>
         </div>
@@ -70,12 +72,12 @@
             <label class="form-label mb-0">Work Time</label>
             <div class="d-flex gap-2">
                 <div>
-                    <label style="font-size:13px;" th:for="*{workHours}">Hours</label>
+                    <label style="font-size:13px;" th:for="workHours">Hours</label>
                     <input class="form-control" type="number" min="0" max="99" th:field="*{workHours}">
                     <div th:replace="~{fragments/forms/error-alert :: error-alert('workHours')}"></div>
                 </div>
                 <div>
-                    <label style="font-size:13px;" th:for="*{workMinutes}">Minutes</label>
+                    <label style="font-size:13px;" th:for="workMinutes">Minutes</label>
                     <input class="form-control" type="number" min="0" max="59" th:field="*{workMinutes}">
                     <div th:replace="~{fragments/forms/error-alert :: error-alert('workMinutes')}"></div>
                 </div>

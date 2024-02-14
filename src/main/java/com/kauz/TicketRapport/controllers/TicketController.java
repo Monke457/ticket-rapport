@@ -10,6 +10,7 @@ import com.kauz.TicketRapport.dtos.ChecklistItemDTO;
 import com.kauz.TicketRapport.dtos.ChecklistDTO;
 import com.kauz.TicketRapport.models.templates.ChecklistItemTemplate;
 import com.kauz.TicketRapport.models.templates.ChecklistTemplate;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -71,16 +72,16 @@ public class TicketController extends BaseController {
      * Should be accessible by admins or the authenticated user assigned to the ticket.
      *
      * @param id the id of the ticket.
-     * @param referer the view from which the user came.
      * @param model a model containing all the relevant view data.
      * @return a reference to the ticket details Thymeleaf template.
      */
     @GetMapping("/tickets/details")
-    public String getDetails(@RequestParam UUID id, @RequestParam(required = false) String referer, Model model) {
+    public String getDetails(@RequestParam UUID id, Model model, HttpServletRequest request) {
         Ticket entry = DBServices.getTicketService().find(Ticket.class, id);
+        String referer = request.getHeader("referer");
         if (!authUser.getUser().isAdmin()) {
             if (entry.getAssignedUser() == null || authUser.getUser().getId() != entry.getAssignedUser().getId()) {
-                return referer.equals("home") ? "redirect:/" : "redirect:/tickets";
+                return "redirect:" + (referer == null ? "/" : referer);
             }
         }
 
@@ -102,7 +103,7 @@ public class TicketController extends BaseController {
      */
     @RequestMapping(value = "/tickets/status", method = RequestMethod.POST)
     public String status(@RequestParam UUID id, @RequestParam String action, @RequestParam(required = false) String referer) {
-        String returnString = referer.equals("home") ? "redirect:/" : "redirect:/tickets";
+        String returnString = "redirect:" + (referer == null ? "/" : referer);
 
         if (!authUser.getUser().isAdmin()) return returnString;
 
@@ -204,7 +205,7 @@ public class TicketController extends BaseController {
      * @return a reference to the Thymeleaf template of the ticket creation form.
      */
     @GetMapping("/tickets/create")
-    public String create(Model model) {
+    public String create(Model model, HttpServletRequest request) {
         super.addBaseAttributes(model);
         model.addAttribute("entry", new Ticket());
         model.addAttribute("users", DBServices.getUserService().getLearners());
@@ -212,6 +213,7 @@ public class TicketController extends BaseController {
         model.addAttribute("statuses", DBServices.getStatusService().getAll(Status.class));
         model.addAttribute("templates", DBServices.getChecklistTemplateService().getAll(ChecklistTemplate.class));
         model.addAttribute("checklistPojo", new ChecklistDTO());
+        model.addAttribute("referer", request.getHeader("referer"));
         return "tickets/create";
     }
 
@@ -235,6 +237,7 @@ public class TicketController extends BaseController {
                          @RequestParam(defaultValue = "") String checkboxes,
                          @RequestParam(defaultValue = "") String descriptions,
                          @RequestParam(defaultValue = "") String ids,
+                         @RequestParam(required = false) String referer,
                          Model model) {
 
         ChecklistDTO dto = mapper.mapDTO(checklist.isSave(), checklist.getName(),
@@ -250,6 +253,7 @@ public class TicketController extends BaseController {
             model.addAttribute("statuses", DBServices.getStatusService().getAll(Status.class));
             model.addAttribute("templates", DBServices.getChecklistTemplateService().getAll(ChecklistTemplate.class));
             model.addAttribute("checklistPojo", dto);
+            model.addAttribute("referer", referer);
             return "tickets/create";
         }
 
@@ -262,7 +266,11 @@ public class TicketController extends BaseController {
             entry.setAssignedUser(null);
         }
         DBServices.getTicketService().create(entry);
-        return "redirect:/tickets";
+
+        if (referer == null) {
+            return "redirect:/tickets/index";
+        }
+        return "redirect:" + referer;
     }
 
     private void validateDTO(ChecklistDTO dto) {
@@ -299,11 +307,12 @@ public class TicketController extends BaseController {
      *
      * @param model the model containing the relevant view data.
      * @param id the id of the ticket to edit.
-     * @param referer a string representing the page the user came from / to return to.
      * @return a reference to the ticket edit Thymeleaf template.
      */
     @GetMapping("/tickets/edit")
-    public String edit(Model model, @RequestParam UUID id, @RequestParam(required = false) String referer) {
+    public String edit(@RequestParam UUID id,
+                       Model model,
+                       HttpServletRequest request) {
         super.addBaseAttributes(model);
         Ticket ticket = DBServices.getTicketService().find(Ticket.class, id);
         model.addAttribute("entry", ticket);
@@ -311,7 +320,7 @@ public class TicketController extends BaseController {
         model.addAttribute("clients", DBServices.getClientService().getAll(Client.class));
         model.addAttribute("statuses", DBServices.getStatusService().getAll(Status.class));
         model.addAttribute("checklistPojo", new ChecklistDTO());
-        model.addAttribute("referer", referer);
+        model.addAttribute("referer", request.getHeader("referer"));
         return "tickets/edit";
     }
 
@@ -338,10 +347,10 @@ public class TicketController extends BaseController {
                        @RequestParam String checkboxes,
                        @RequestParam String descriptions,
                        @RequestParam String ids,
-                       @RequestParam String referer,
+                       @RequestParam(required = false) String referer,
                        Model model) {
 
-        if (!authUser.getUser().isAdmin()) return "redirect:/tickets";
+        if (!authUser.getUser().isAdmin()) return "redirect:/";
 
         ChecklistDTO dto = mapper.mapDTO(checklist.isSave(), checklist.getName(),
                 ids.split(";;"), descriptions.split(";;"), checkboxes.split(";;"));
@@ -355,6 +364,7 @@ public class TicketController extends BaseController {
             model.addAttribute("clients", DBServices.getClientService().getAll(Client.class));
             model.addAttribute("statuses", DBServices.getStatusService().getAll(Status.class));
             model.addAttribute("checklistPojo", dto);
+            model.addAttribute("referer", referer);
             return "tickets/edit";
         }
 
@@ -365,8 +375,8 @@ public class TicketController extends BaseController {
         }
         DBServices.getTicketService().update(entry);
 
-        if (referer.equals("home")) return "redirect:/";
-        return "redirect:/tickets";
+        if (referer == null) return "redirect:/tickets";
+        return "redirect:" + referer;
     }
 
     private void updateChecklist(Ticket entry, String checkboxes, String descriptions, String ids) {
@@ -449,9 +459,10 @@ public class TicketController extends BaseController {
      * @return a reference to the ticket delete Thymeleaf template.
      */
     @GetMapping("/tickets/delete")
-    public String delete(Model model, @RequestParam UUID id) {
+    public String delete(@RequestParam UUID id, Model model, HttpServletRequest request) {
         super.addBaseAttributes(model);
         model.addAttribute("entry", DBServices.getTicketService().find(Ticket.class, id));
+        model.addAttribute("referer", request.getHeader("referer"));
         return "tickets/delete";
     }
 
@@ -464,10 +475,14 @@ public class TicketController extends BaseController {
      * @return a reference to the ticket list Thymeleaf template.
      */
     @RequestMapping(value = "/tickets/delete", method = RequestMethod.POST)
-    public String delete(@RequestParam UUID id, @ModelAttribute Ticket entry, BindingResult result) {
+    public String delete(@RequestParam UUID id,
+                         @ModelAttribute Ticket entry,
+                         BindingResult result,
+                         @RequestParam(required = false) String referer) {
         if (!result.hasErrors() && authUser.getUser().isAdmin()) {
             DBServices.getTicketService().delete(Ticket.class, entry);
         }
-        return "redirect:/tickets";
+        if (referer == null) return "redirect:/tickets";
+        return "redirect:" + referer;
     }
 }

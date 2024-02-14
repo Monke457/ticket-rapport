@@ -22,7 +22,7 @@
         </div>
     </form>
 
-    <div th:replace="~{fragments/ticket-cards :: ticket-cards(${tickets}, 'archive')}"></div>
+    <div th:replace="~{fragments/ticket-cards :: ticket-cards(tickets=${tickets})}"></div>
 </section>
 </body>
 </html>

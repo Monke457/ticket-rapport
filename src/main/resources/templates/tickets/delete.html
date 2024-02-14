@@ -12,8 +12,9 @@
         <div th:replace="~{fragments/details/ticket-details :: ticket-details('true')}"></div>
 
         <form th:action="@{delete(id=${entry.id})}" method="post">
+            <input type="hidden" th:value="${referer}" th:name="referer">
             <div class="text-end">
-                <a class="btn btn-outline-primary" th:href="@{/tickets}">Cancel</a>
+                <a class="btn btn-outline-primary" th:onclick="history.back()">Cancel</a>
                 <button class="btn btn-danger">Delete</button>
             </div>
         </form>

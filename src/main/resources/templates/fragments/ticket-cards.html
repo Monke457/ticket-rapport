@@ -1,4 +1,4 @@
-<div th:fragment="ticket-cards(tickets, referer)" class="d-flex flex-wrap gap-4" xmlns:th="http://www.w3.org/1999/xhtml">
+<div th:fragment="ticket-cards" class="d-flex flex-wrap gap-4" xmlns:th="http://www.w3.org/1999/xhtml">
     <div class="alert alert-warning w-100 mb-0" th:if="${#arrays.length(tickets) == 0}">No tickets found</div>
     <div th:unless="${#arrays.length(tickets) == 0}" th:each="ticket: ${tickets}"
          class="card bg-gradient bg-light" style="width: 300px;" th:styleappend="${ticket.getCardStyle()}">
@@ -6,7 +6,7 @@
             <div>
                 <div class="d-flex justify-content-between">
                     <h6 class="card-title" th:text="${ticket.title}"></h6>
-                    <a th:unless="${!authUser.isAdmin || referer == 'archive'}" th:href="@{/tickets/edit(id=${ticket.id}, referer=${referer})}">
+                    <a th:if="${editable}" th:href="@{/tickets/edit(id=${ticket.id})}">
                         <img th:src="@{/img/edit.svg}" alt="edit" Title="Edit"/>
                     </a>
                 </div>
@@ -24,7 +24,7 @@
                 <p class="card-text" th:text="${#strings.abbreviate(ticket.description, 100)}"></p>
             </div>
             <div class="text-end card-link mt-2">
-                <a class="btn btn-sm btn-outline-secondary" th:href="@{tickets/details(id=${ticket.id}, referer=${referer})}">View</a>
+                <a class="btn btn-sm btn-outline-secondary" th:href="@{tickets/details(id=${ticket.id})}">View</a>
             </div>
         </div>
     </div>

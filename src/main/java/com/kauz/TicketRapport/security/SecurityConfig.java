@@ -34,7 +34,7 @@ public class SecurityConfig implements WebMvcConfigurer {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/tickets/details*").authenticated()
+                        .requestMatchers("/tickets/details/**").authenticated()
                         .requestMatchers("/tickets/**").hasRole("ADMIN")
                         .requestMatchers("/clients/**").hasRole("ADMIN")
                         .requestMatchers("/users/**").hasRole("ADMIN")

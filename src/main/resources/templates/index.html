@@ -5,24 +5,24 @@
 <section layout:fragment="content">
     <div sec:authorize="hasRole('ROLE_ADMIN')">
         <h5 class="mb-4" th:text="#{tickets.unassigned}"></h5>
-        <div th:replace="~{fragments/ticket-cards :: ticket-cards(${unassigned}, 'home')}"></div>
+        <div th:replace="~{fragments/ticket-cards :: ticket-cards(tickets=${unassigned}, editable=true)}"></div>
         <hr class="mt-4">
 
         <h5 class="my-4" th:text="#{tickets.open}"></h5>
-        <div th:replace="~{fragments/ticket-cards :: ticket-cards(${open}, 'home')}"></div>
+        <div th:replace="~{fragments/ticket-cards :: ticket-cards(tickets=${open}, editable=true)}"></div>
         <hr class="mt-4">
 
         <h5 class="my-4" th:text="#{tickets.completed}"></h5>
-        <div th:replace="~{fragments/ticket-cards :: ticket-cards(${completed}, 'home')}"></div>
+        <div th:replace="~{fragments/ticket-cards :: ticket-cards(tickets=${completed}, editable=true)}"></div>
     </div>
 
     <div sec:authorize="hasRole('ROLE_LEARNER')">
         <h5 class="mb-4" th:text="#{tasks.open}"></h5>
-        <div th:replace="~{fragments/ticket-cards :: ticket-cards(${open}, 'home')}"></div>
+        <div th:replace="~{fragments/ticket-cards :: ticket-cards(tickets=${open})}"></div>
         <hr class="mt-4">
 
         <h5 class="my-4" th:text="#{tasks.completed}"></h5>
-        <div th:replace="~{fragments/ticket-cards :: ticket-cards(${completed}, 'home')}"></div>
+        <div th:replace="~{fragments/ticket-cards :: ticket-cards(tickets=${completed})}"></div>
         <hr class="mt-4">
 
         <h5 class="my-4" th:text="#{tickets.closed}"></h5>

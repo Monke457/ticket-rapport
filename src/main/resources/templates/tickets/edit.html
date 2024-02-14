@@ -9,7 +9,6 @@
             <a class="btn btn-sm btn-secondary" th:onclick="history.back()">Back</a>
         </div>
         <form th:action="@{edit(id=${entry.id})}" th:object="${entry}" method="post">
-            <input type="hidden" name="referer" th:value="${referer}">
             <div th:replace="~{fragments/forms/ticket-form :: ticket-form('edit')}"></div>
             <button type="submit" class="btn btn-primary float-end">Submit</button>
         </form>
