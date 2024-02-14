@@ -12,6 +12,10 @@ textarea {
     resize: none;
 }
 
+#world-btn:hover img {
+    filter: invert(1);
+}
+
 .divider {
     margin-top: auto;
 }

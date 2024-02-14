@@ -9,6 +9,8 @@ document.querySelectorAll(".resizer").forEach(el => {
     el.addEventListener("keyup", resizeOnType);
 });
 
-function change_lang(option) {
-    window.location.replace('?lang=' + option);
+function update_lang(lang) {
+    const page = new URL(window.location.href);
+    page.searchParams.set("lang", lang);
+    window.location.replace(page);
 }

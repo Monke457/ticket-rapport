@@ -6,21 +6,11 @@
         </a>
         <ul class="dropdown-menu">
             <li>
-                <a class="dropdown-item" style="cursor:pointer;" id="en" th:text="#{lang.eng}" onclick="change_lang('en')"></a>
+                <a class="dropdown-item" style="cursor:pointer;" id="en" th:text="#{lang.eng}" onclick="update_lang('en')"></a>
             </li>
             <li>
-                <a class="dropdown-item" style="cursor:pointer;" id="fr" th:text="#{lang.de}" onclick="change_lang('de')"></a>
+                <a class="dropdown-item" style="cursor:pointer;" id="fr" th:text="#{lang.de}" onclick="update_lang('de')"></a>
             </li>
         </ul>
     </div>
-    <style>
-        #world-btn:hover img,  #world-btn:active img {
-            filter: invert(1) !important;
-        }
-    </style>
-    <script th:inline="javascript">
-        function change_lang(lang) {
-            window.location.replace('?lang=' + lang);
-        }
-    </script>
 </span>

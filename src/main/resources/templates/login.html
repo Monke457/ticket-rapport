@@ -8,8 +8,7 @@
          style="max-width:450px; box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);">
         <form class="form" th:action="@{/login}" method="post">
             <legend>Login</legend>
-            <div th:if="${error}" class="alert alert-error">Incorrect username or password</div>
-            <div th:if="${logout}" class="alert alert-success">You have been logged out</div>
+            <div th:if="${param.error}" class="alert alert-danger">Incorrect username or password</div>
             <div class="mb-3">
                 <label class="form-label" for="username">Username</label>
                 <input class="form-control" type="text" id="username" name="username" />
@@ -30,7 +29,5 @@
         <h3>Ticket Rapport</h3>
     </a>
 </main>
-
-
 </body>
 </html>
