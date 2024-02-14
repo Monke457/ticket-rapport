@@ -53,7 +53,7 @@
     </div>
 </section>
 </body>
-<style layout:fragment="styles">
+<style layout:fragment="styles" sec:authorize="!isAuthenticated()">
     #welcomeImg {
         max-height: 400px;
         content: url("/img/minimalist1.jpg");
@@ -64,7 +64,7 @@
         }
     }
 </style>
-<script th:if="${authUser != null && !authUser.isAdmin}" layout:fragment="scripts" th:inline="javascript" >
+<script sec:authorize="hasRole('ROLE_LEARNER')" layout:fragment="scripts" th:inline="javascript" >
     // live filter
     async function getFilteredTickets() {
         var search = document.getElementById('search');
