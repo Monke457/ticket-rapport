@@ -1,12 +1,16 @@
 <div xmlns:th="http://www.w3.org/1999/xhtml" th:fragment="related-tickets(label, tickets, closed)" class="mb-3" >
     <label class="form-label" th:text="${label}"></label>
     <ul class="list-group">
-        <a class="list-group-item bg-light ticket-link"
+        <a class="list-group-item ticket-link"
            th:each="item: ${tickets}"
            th:styleappend="${item.getStyle()}"
            th:href="@{/tickets/details(id=${item.id})}">
 
-            <span th:text="${item.title}"></span>
+            <p class="p-0 m-0" th:text="${item.title}"></p>
+
+            <span class="fw-lighter text-muted" th:text="${item.status.description}"></span>
+            <span class="fw-lighter float-end" th:if="${showClient}" th:text="${item.client == null ? 'Deleted Client' : item.client.name}"></span>
+            <span class="fw-lighter float-end" th:if="${showLearner}" th:text="${item.assignedUser == null ? 'Unassigned' : item.assignedUser.fullName}"></span>
         </a>
         <a class="list-group-item bg-light" style="border-left: 12px solid #ade3ad;">
             <span th:text="${closed}"></span>

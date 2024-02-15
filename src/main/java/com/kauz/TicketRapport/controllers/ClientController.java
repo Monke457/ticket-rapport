@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -53,7 +54,8 @@ public class ClientController extends BaseController {
         filter.setClientId(id);
         filter.setStatus("In Progress,Completed");
         model.addAttribute("entry", DBServices.getClientService().find(Client.class, id));
-        model.addAttribute("tickets", DBServices.getTicketService().find(Ticket.class, filter));
+        model.addAttribute("tickets", DBServices.getTicketService().find(Ticket.class, filter)
+                .sorted(Comparator.comparing(t -> t.getAssignedUser() == null ? "" : t.getAssignedUser().getFullName())));
         filter.setStatus("Closed");
         model.addAttribute("closedCount", DBServices.getTicketService().find(Ticket.class, filter).count());
         return "clients/details";

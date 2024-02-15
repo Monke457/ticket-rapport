@@ -98,7 +98,6 @@ public class HomeController extends BaseController {
         TicketFilter filter = new TicketFilter(search, clientId, "Closed");
         filter.setLearnerId(authUser.getUser().getId());
         model.addAttribute("tickets", DBServices.getTicketService().find(Ticket.class, filter).toList());
-        model.addAttribute("referer", "home");
         return "fragments/ticket-cards :: ticket-cards";
     }
 

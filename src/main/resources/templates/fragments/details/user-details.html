@@ -19,5 +19,5 @@
         </div>
     </div>
 
-    <div th:replace="~{fragments/details/related-tickets :: related-tickets('Assigned Tickets', ${tickets}, ${closedCount})}"></div>
+    <div th:replace="~{fragments/details/related-tickets :: related-tickets(label='Assigned Tickets', tickets=${tickets}, closed=${closedCount}, showClient=true)}"></div>
 </div>
