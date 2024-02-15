@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
       xmlns:layout="http://www.w3.org/1999/xhtml"
       layout:decorate="~{layout}"
-      th:with="title='__#{archive}__'">
+      th:with="title='__#{archive}__', controller='archive'">
 <body>
 <section layout:fragment="content">
     <h5 th:text="#{tickets.closed}"></h5>

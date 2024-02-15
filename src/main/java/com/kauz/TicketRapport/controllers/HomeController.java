@@ -72,12 +72,18 @@ public class HomeController extends BaseController {
     @GetMapping("/archive")
     public String getArchive(Model model,
                              @RequestParam(defaultValue = "") String search,
-                             @RequestParam(defaultValue = "") UUID clientId) {
+                             @RequestParam(defaultValue = "") UUID clientId,
+                             @RequestParam(defaultValue = "1") int page) {
         super.addBaseAttributes(model);
+
         TicketFilter filter = new TicketFilter(search, clientId, "Closed");
-        model.addAttribute("tickets", DBServices.getTicketService().find(Ticket.class, filter).toList());
+        filter.setPage(page);
+        int pageSize = 12;
+
+        model.addAttribute("tickets", DBServices.getTicketService().find(Ticket.class, filter, pageSize).toList());
         model.addAttribute("clients", DBServices.getClientService().getAll(Client.class));
         model.addAttribute("filter", filter);
+        model.addAttribute("totalPages", DBServices.getTicketService().getPages(Ticket.class, filter, pageSize));
         return "archive";
     }
 
