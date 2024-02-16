@@ -309,7 +309,8 @@ public class TicketController extends BaseController {
      */
     @GetMapping("/tickets/getTemplate")
     public String checklistTemplate(@RequestParam("id") UUID id, Model model) {
-        model.addAttribute("items", DBServices.getChecklistItemTemplateService().findByTemplate(id));
+        model.addAttribute("checklist",
+                mapper.mapDTO(DBServices.getChecklistItemTemplateService().findByTemplate(id)));
         return "fragments/checklist :: checklist";
     }
 
@@ -330,7 +331,7 @@ public class TicketController extends BaseController {
         model.addAttribute("users", DBServices.getUserService().getLearners());
         model.addAttribute("clients", DBServices.getClientService().getAll(Client.class));
         model.addAttribute("statuses", DBServices.getStatusService().getAll(Status.class));
-        model.addAttribute("checklistPojo", new ChecklistDTO());
+        model.addAttribute("checklistPojo", mapper.mapDTO(ticket.getChecklist()));
         model.addAttribute("referer", request.getHeader("referer"));
         return "tickets/edit";
     }

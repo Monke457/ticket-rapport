@@ -65,36 +65,18 @@
             <div class="mt-2">
                 <input id="save" class="form-check-input" type="checkbox" th:field="${checklistPojo.save}">
                 <label class="form-label" th:for="save">Save checklist as template</label>
-                <input class="form-control" type="text" th:field="${checklistPojo.name}" placeholder="Template Name">
+                <input class="form-control" style="display:none;" type="text" th:field="${checklistPojo.name}" placeholder="Template Name">
                 <div class="alert alert-warning mt-1" th:if="${!checklistPojo.valid}" th:text="${checklistPojo.error}"></div>
             </div>
-            <div class="d-flex align-items-center my-2 gap-2">
-                <select id="templateSelect" class="form-select">
+            <div class="d-flex my-2">
+                <select id="templateSelect" class="form-select input-flush">
                     <option value="0">Select Template</option>
                     <option th:each="template: ${templates}" th:value="${template.id}" th:text="${template.description}"></option>
                 </select>
-                <button type="button" class="btn btn-primary btn-sm" th:onclick="generateList()">Generate</button>
+                <button type="button" class="btn btn-outline-primary btn-sm button-flush" th:onclick="generateList()">Generate</button>
             </div>
         </div>
-        <div id="checklist">
-            <div th:each="item, itemStat: ${checklistPojo.items.size > 0 ? checklistPojo.items : entry.checklist}">
-                <div class="d-flex justify-content-between align-items-center p-1 gap-2">
-                    <div class="d-flex flex-column">
-                        <img class="arrow-btn" th:src="@{/img/caret-up.svg}" alt="up"
-                             th:onclick="moveUp(this.parentElement.parentElement.parentElement)">
-                        <img class="arrow-btn" th:src="@{/img/caret-down.svg}" alt="down"
-                             th:onclick="moveDown(this.parentElement.parentElement.parentElement)">
-                    </div>
-                    <div class="d-flex gap-2 align-items-center w-100">
-                        <input class="form-check-input" type="checkbox" th:value="${item.id}" th:checked="${item.completed}" th:onchange="updateHiddenInputs()">
-                        <input class="form-control" type="text" th:value="${item.description}" th:onkeyup="updateHiddenInputs()">
-                    </div>
-                    <button class="btn btn-sm btn-outline-danger" type="button" th:onclick="remove(this.parentElement.parentElement)">X</button>
-                </div>
-                <div class="alert alert-warning mt-1 py-2" th:if="${checklistPojo.items.size > 0 && !item.valid}" th:text="${item.error}"></div>
-            </div>
-            <button class="btn btn-sm btn-success mt-2" type="button" th:onclick="add(this.parentElement)">Add Item +</button>
-        </div>
+        <div th:replace="~{fragments/checklist :: checklist(checklist=${checklistPojo})}"></div>
         <div class="d-none">
             <input type="hidden" id="hiddenIds" th:name="ids">
             <input type="hidden" id="hiddenCheckboxes" th:name="checkboxes">
@@ -110,6 +92,9 @@
             background: darkgrey;
             border-radius: 2px;
             filter: invert(1);
+        }
+        #save:checked ~ #name {
+            display: block !important;
         }
     </style>
 
@@ -151,6 +136,13 @@
                     hiddenIds.value += children[i].value + ";;";
                     hiddenCheckboxes.value += children[i].checked + ";;";
                 }
+            }
+
+            var listAlert = document.getElementById('list-alert');
+            if (children.length == 0) {
+                listAlert.style.display = "block";
+            } else {
+                listAlert.style.display = "none";
             }
         }
         updateHiddenInputs();

@@ -1,6 +1,13 @@
-<ul th:fragment="menu(class)" th:classappend="${class}"
-    th:unless="${authUser == null || !authUser.isAdmin}"
-    xmlns:th="http://www.w3.org/1999/xhtml">
+<ul th:fragment="menu(class)"
+    th:classappend="${class}"
+    sec:authorize="hasRole('ROLE_ADMIN')"
+    xmlns:th="http://www.w3.org/1999/xhtml"
+    xmlns:sec="http://www.w3.org/1999/xhtml">
+
+    <li class="nav-item">
+        <a class="nav-link text-muted" th:href="@{/}" th:text="#{home}"></a>
+    </li>
+
     <li class="nav-item">
         <a class="nav-link text-muted" th:href="@{/archive}" th:text="#{archive}"></a>
     </li>

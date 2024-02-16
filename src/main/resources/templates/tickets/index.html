@@ -5,7 +5,7 @@
 <section layout:fragment="content">
     <h5 class="mb-2">Tickets</h5>
     <div sec:authorize="hasRole('ROLE_ADMIN')">
-        <a class="btn btn-sm btn-success" th:href="@{/tickets/create}">New Ticket</a>
+        <a class="btn btn-sm btn-outline-success" th:href="@{/tickets/create}">New Ticket +</a>
     </div>
 
     <form class="row row-cols-lg-auto g-1 align-items-center my-4" th:object="${filter}" th:action="@{tickets}" method="get">

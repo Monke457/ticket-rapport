@@ -21,4 +21,13 @@ public class ChecklistItemDTO {
         this.description = description;
         this.completed = completed;
     }
+
+    public ChecklistItemDTO(String description) {
+        this.description = description;
+    }
+
+    public ChecklistItemDTO(String description, boolean completed) {
+        this.description = description;
+        this.completed = completed;
+    }
 }

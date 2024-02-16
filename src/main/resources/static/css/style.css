@@ -12,7 +12,12 @@ textarea {
     resize: none;
 }
 
-#world-btn:hover img {
+label {
+    font-weight: lighter;
+    font-size: 18px;
+}
+
+.invertible:hover img {
     filter: invert(1);
 }
 

@@ -3,7 +3,7 @@
 <body>
 <section layout:fragment="content">
     <h5 class="mb-2">Clients</h5>
-    <a class="btn btn-sm btn-success" th:href="@{/clients/create}">New Client</a>
+    <a class="btn btn-sm btn-outline-success" th:href="@{/clients/create}">New Client +</a>
 
     <form class="row row-cols-lg-auto g-1 align-items-center my-4" th:object="${filter}" th:action="@{/clients}" method="get">
         <div th:replace="~{fragments/forms/filter-fields :: filter-fields}"></div>

@@ -4,9 +4,9 @@
 <section layout:fragment="content">
     <div class="d-flex justify-content-between flex-wrap align-items-start gap-2 mb-2">
         <h5>Checklist Templates</h5>
-        <a class="btn btn-sm btn-primary" th:href="@{/checklists/items}">Item Templates</a>
+        <a class="btn btn-sm btn-outline-primary" th:href="@{/checklists/items}">Item Templates</a>
     </div>
-    <a class="btn btn-sm btn-success" th:href="@{/checklists/create}">New Checklist Template</a>
+    <a class="btn btn-sm btn-outline-success" th:href="@{/checklists/create}">New Checklist Template +</a>
 
     <form class="row row-cols-lg-auto g-1 align-items-center my-4" th:object="${filter}" th:action="@{/checklists}" method="get">
         <div th:replace="~{fragments/forms/filter-fields :: filter-fields}"></div>

@@ -60,14 +60,21 @@ public class UserController extends BaseController {
             return "users/index";
         }
 
+        User entry =  DBServices.getUserService().find(User.class, id);
+        model.addAttribute("entry", entry);
+        
+        if (entry.isAdmin()) return "users/details";
+
         TicketFilter filter = new TicketFilter();
         filter.setLearnerId(id);
         filter.setStatus("In Progress,Completed");
-        model.addAttribute("entry", DBServices.getUserService().find(User.class, id));
+
         model.addAttribute("tickets", DBServices.getTicketService().find(Ticket.class, filter)
                 .sorted(Comparator.comparing(t -> t.getClient() == null ? "" : t.getClient().getName())));
+
         filter.setStatus("Closed");
         model.addAttribute("closedCount", DBServices.getTicketService().find(Ticket.class, filter).count());
+
         return "users/details";
     }
 
@@ -190,7 +197,23 @@ public class UserController extends BaseController {
                          @RequestParam UUID id,
                          HttpServletRequest request) {
         super.addBaseAttributes(model, request);
-        model.addAttribute("entry", DBServices.getUserService().find(User.class, id));
+
+        User entry = DBServices.getUserService().find(User.class, id);
+        model.addAttribute("entry", entry);
+
+        if (entry.isAdmin()) return "users/delete";
+
+        TicketFilter filter = new TicketFilter();
+        filter.setLearnerId(id);
+        filter.setStatus("In Progress,Completed");
+
+
+        model.addAttribute("tickets", DBServices.getTicketService().find(Ticket.class, filter)
+                .sorted(Comparator.comparing(t -> t.getClient() == null ? "" : t.getClient().getName())));
+
+        filter.setStatus("Closed");
+        model.addAttribute("closedCount", DBServices.getTicketService().find(Ticket.class, filter).count());
+
         return "users/delete";
     }
 
