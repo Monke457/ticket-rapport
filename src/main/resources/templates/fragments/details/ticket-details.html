@@ -67,12 +67,14 @@
         <input type="hidden" th:name="referer" th:value="${referer}">
         <div class="mb-3">
             <div class="form-label" th:for="protocol">Protocol</div>
-            <textarea class="form-control mb-2 resizer" th:field="*{protocol}"></textarea>
+            <textarea class="form-control mb-2 resizer" th:field="*{protocol}"
+                      th:classappend="${#fields.hasErrors('protocol') ? 'input-error' : ''}"></textarea>
             <div th:replace="~{fragments/forms/error-alert :: error-alert('protocol')}"></div>
         </div>
         <div class="mb-3">
             <div class="form-label" th:for="solution">Solution</div>
-            <textarea class="form-control resizer" th:field="*{solution}"></textarea>
+            <textarea class="form-control resizer" th:field="*{solution}"
+                      th:classappend="${#fields.hasErrors('solution') ? 'input-error' : ''}"></textarea>
             <div th:replace="~{fragments/forms/error-alert :: error-alert('solution')}"></div>
         </div>
         <div class="mb-3">
@@ -80,12 +82,14 @@
             <div class="d-flex gap-2">
                 <div>
                     <label style="font-size:13px;" th:for="workHours">Hours</label>
-                    <input class="form-control" type="number" min="0" max="99" th:field="*{workHours}">
+                    <input class="form-control" type="number" min="0" max="99" th:field="*{workHours}"
+                           th:classappend="${#fields.hasErrors('workHours') ? 'input-error' : ''}">
                     <div th:replace="~{fragments/forms/error-alert :: error-alert('workHours')}"></div>
                 </div>
                 <div>
                     <label style="font-size:13px;" th:for="workMinutes">Minutes</label>
-                    <input class="form-control" type="number" min="0" max="59" th:field="*{workMinutes}">
+                    <input class="form-control" type="number" min="0" max="59" th:field="*{workMinutes}"
+                           th:classappend="${#fields.hasErrors('workMinutes') ? 'input-error' : ''}">
                     <div th:replace="~{fragments/forms/error-alert :: error-alert('workMinutes')}"></div>
                 </div>
             </div>

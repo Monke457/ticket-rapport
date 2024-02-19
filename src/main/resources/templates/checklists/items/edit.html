@@ -12,7 +12,7 @@
             <input type="hidden" th:value="${referer}" th:name="referer">
             <div class="mb-3">
                 <label class="form-label" th:for="*{description}">* Description</label>
-                <input class="form-control" th:field="*{description}">
+                <input class="form-control" th:field="*{description}" th:classappend="${#fields.hasErrors('description') ? 'input-error' : ''}">
                 <div th:replace="~{fragments/forms/error-alert :: error-alert('description')}"></div>
             </div>
             <button type="submit" class="btn btn-primary float-end">Submit</button>
