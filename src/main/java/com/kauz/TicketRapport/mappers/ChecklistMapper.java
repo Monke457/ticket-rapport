@@ -38,7 +38,7 @@ public class ChecklistMapper {
         ChecklistDTO result = new ChecklistDTO();
         result.setItems(items.stream()
                 .sorted(Comparator.comparing(ChecklistItem::getPosition))
-                .map(i -> new ChecklistItemDTO(i.getDescription(), i.isCompleted()))
+                .map(i -> new ChecklistItemDTO(i.getId().toString(), i.getDescription(), i.isCompleted()))
                 .collect(Collectors.toList())
         );
         return result;
