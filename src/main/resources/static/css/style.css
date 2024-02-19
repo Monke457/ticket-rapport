@@ -40,6 +40,11 @@ label {
     border-bottom-left-radius: 0;
 }
 
+.input-error {
+  outline: 0;
+  box-shadow: var(--bs-focus-ring-x, 0) var(--bs-focus-ring-y, 0) var(--bs-focus-ring-blur, 0) var(--bs-focus-ring-width) orange;
+}
+
 /* Tablet */
 @media only screen and (max-width: 1024px) {
     .form-wrapper {

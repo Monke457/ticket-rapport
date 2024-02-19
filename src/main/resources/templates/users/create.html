@@ -12,12 +12,13 @@
             <div th:replace="~{fragments/forms/user-form :: user-form(false)}"></div>
             <div class="mb-3">
                 <label class="form-label" th:for="*{password}">* Password</label>
-                <input class="form-control" type="password" th:field="*{password}">
+                <input class="form-control" type="password" th:field="*{password}" th:classappend="${#fields.hasErrors('password') ? 'input-error' : ''}">
                 <div th:replace="~{fragments/forms/error-alert :: error-alert('password')}"></div>
             </div>
             <div class="mb-3">
                 <label class="form-label" th:for="*{confirmPassword}">* Confirm Password</label>
-                <input class="form-control" type="password" th:field="*{confirmPassword}">
+                <input class="form-control" type="password" th:field="*{confirmPassword}"
+                       th:classappend="${#fields.hasErrors('confirmPassword') || passError != null ? 'input-error' : ''}">
                 <div class="alert alert-warning mt-1" th:if="${#fields.hasErrors('confirmPassword') || passError != null}">
                     <div th:each="err : ${#fields.errors('confirmPassword')}" th:text="${err}"></div>
                     <div th:if="${passError != null}" th:text="${passError}"></div>
