@@ -179,6 +179,9 @@ public class UserController extends BaseController {
             model.addAttribute("referer", referer);
             return "users/edit";
         }
+
+        User userFromBD = DBServices.getUserService().find(User.class, id);
+        entry.setPassword(userFromBD.getPassword());
         DBServices.getUserService().update(entry);
 
         if(referer == null) return "redirect:/users";
