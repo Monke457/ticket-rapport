@@ -1,6 +1,6 @@
 <form th:fragment="return-form" xmlns:th="http://www.w3.org/1999/xhtml"
       th:object="${entry}" th:action="@{/back}" method="get" >
     <input type="hidden" th:value="${referer}" th:name="referer"/>
-    <button th:if="${#fields.hasAnyErrors()}" class="btn btn-sm btn-outline-secondary">Back</button>
-    <a th:unless="${#fields.hasAnyErrors()}" class="btn btn-sm btn-outline-secondary" onclick="history.back()">Back</a>
+    <button th:if="${#fields.hasAnyErrors() || !authUser.isAdmin}" class="btn btn-sm btn-outline-secondary">Back</button>
+    <a th:unless="${#fields.hasAnyErrors() || !authUser.isAdmin}" class="btn btn-sm btn-outline-secondary" onclick="history.back()">Back</a>
 </form>
