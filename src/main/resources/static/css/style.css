@@ -1,59 +1,230 @@
 body {
-    min-height: 100vh;
     display: flex;
     flex-direction: column;
+    height: 100vh;
+}
+
+h1, h2, h3, h4, h5 {
+    font-weight: lighter;
 }
 
 main {
-    padding: 20px 0 40px 0;
+    margin: 20px 0;
 }
 
-textarea {
-    resize: none;
-}
-
-label {
+.app-title {
+    font-size: 2rem;
+    line-height: 2rem;
+    letter-spacing:4px;
+    --bs-text-opacity: 1;
+    color: var(--bs-secondary-color);
     font-weight: lighter;
-    font-size: 18px;
+    text-transform: uppercase;
 }
 
-.invertible:hover img {
-    filter: invert(1);
+.card-action {
+    text-decoration: none;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.10);
 }
 
-.divider {
-    margin-top: auto;
+.card-action:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.25);
+    filter: brightness(0.97);
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1em;
+    margin-bottom: 15px;
+}
+
+.card-link {
+    color: black;
+    text-decoration: none;
+}
+
+.card-link:hover {
+    color: grey;
+}
+
+.card-subtitle {
+    color: #212529BF;
+    font-size: 14px;
+}
+
+.card-text {
+    font-size: 14px;
+}
+
+.check-lg {
+    height: 24px;
+    width: 24px;
+}
+
+.form-card {
+    max-width:450px;
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
 }
 
 .form-wrapper {
-    width: 75%;
-    margin: auto;
+    max-width: 750px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.input-flush {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-}
-
-.button-flush {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+.inline-field {
+    min-width: 250px;
 }
 
 .input-error {
-  outline: 0;
-  box-shadow: var(--bs-focus-ring-x, 0) var(--bs-focus-ring-y, 0) var(--bs-focus-ring-blur, 0) var(--bs-focus-ring-width) orange;
+    box-shadow: 0 0 0 0.25rem rgba(13,110,253,.25);
+}
+
+.list-arrow {
+    line-height: 10px;
+    font-size: 10px;
+    cursor: pointer;
+    color: darkslategrey;
+}
+
+.list-arrow:hover {
+    color: darkgrey;
+}
+
+.multiselect-arrows {
+    display: none;
+}
+
+.multiselect-error {
+    background: var(--bs-danger-bg-subtle);
+}
+
+#multiselect-items {
+    max-height: 250px;
+}
+
+.multiselect-input:focus {
+    box-shadow:none;
+}
+
+.multiselect-label {
+    cursor: pointer;
+    word-break: break-all;
+}
+
+.multiselect-option {
+    display: flex;
+}
+
+.multiselect-check:checked + label + .multiselect-arrows {
+    display: flex;
+}
+
+.status-display {
+    color: #212529bf;
+    font-size: small;
+}
+
+.svelte-b {
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+.svelte-l {
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+}
+.svelte-r {
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+}
+.svelte-t {
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+}
+
+.t-left-border {
+    border-left-width: 0.75em;
+    border-left-style: solid;
+}
+.t-blue {
+    border-left-color: lightblue;
+}
+.t-green {
+    border-left-color: #ADDDBB;
+}
+.t-orange {
+    border-left-color: orange;
+}
+.t-red {
+    border-left-color: #DB5555;
+}
+
+.wrap-cell {
+    overflow-wrap: anywhere;
 }
 
 /* Tablet */
-@media only screen and (max-width: 1024px) {
-    .form-wrapper {
-        width: 100%;
+@media only screen and (max-width: 992px) {
+    .card-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    footer div {
+        flex-direction:column;
+        text-align: center;
+    }
+
+    footer ul {
+        justify-content: center!important;
+    }
+
+    footer .copyright {
+        text-align: center!important;
+    }
+
+    table.responsive-lg,
+    table.responsive-lg tbody,
+    table.responsive-lg tr,
+    table.responsive-lg td {
+        display: block;
+        border: none;
+    }
+
+    table.responsive-lg td {
+        padding-top: 1px;
+        padding-bottom: 1px;
+        background: transparent;
+    }
+
+    table.responsive-lg thead {
+     display: none;
+    }
+
+    table.responsive-lg tr {
+        margin-bottom: 20px;
+        text-align: center;
+        border: 1px solid lightgrey;
+        border-radius: 5px;
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+    }
+
+    table.responsive-lg tr.table-head {
+        border:none;
+    }
+
+    table.responsive-lg .table-links {
+        justify-content: center !important;
+        margin: 10px 0;
     }
 }
 
 /* Mobile */
-@media only screen and (max-width: 720px) {
+@media only screen and (max-width: 767px) {
+    .card-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     table.responsive,
     table.responsive tbody,
     table.responsive tr,
@@ -68,12 +239,13 @@ label {
         background: transparent;
     }
 
-    table.responsive th {
+    table.responsive thead {
      display: none;
     }
 
     table.responsive tr {
         margin-bottom: 20px;
+        text-align: center;
         border: 1px solid lightgrey;
         border-radius: 5px;
         box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
@@ -83,25 +255,57 @@ label {
         border:none;
     }
 
-    footer div {
-        flex-direction:column;
-    }
-
-    footer ul {
-        justify-content: center!important;
-    }
-
-    footer p {
-        text-align: center!important;
-    }
-
     .table-links {
-        margin-top: 20px;
-        margin-bottom: 7px;
         justify-content: center !important;
+        margin: 10px 0;
+    }
+}
+
+@media only screen and (max-width: 520px) {
+    table.responsive-sm,
+    table.responsive-sm tbody,
+    table.responsive-sm tr,
+    table.responsive-sm td {
+        display: block;
+        border: none;
     }
 
-    .card {
-        width: 100% !important;
+    table.responsive-sm td {
+        padding-top: 1px;
+        padding-bottom: 1px;
+        background: transparent;
+    }
+
+    table.responsive-sm thead {
+     display: none;
+    }
+
+    table.responsive-sm tr {
+        margin-bottom: 20px;
+        text-align: center;
+        border: 1px solid lightgrey;
+        border-radius: 5px;
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+    }
+
+    table.responsive-sm tr.table-head {
+        border:none;
+    }
+
+    table.responsive-sm .table-links {
+        justify-content: center !important;
+        margin: 10px 0;
+    }
+
+    .filter-clear {
+        justify-content:center;
+    }
+
+    .card-grid {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+    .page-link {
+        padding-left: 0.5em;
+        padding-right: 0.5em;
     }
 }

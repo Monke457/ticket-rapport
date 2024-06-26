@@ -1,16 +1,18 @@
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml"
-      layout:decorate="~{layout}" th:with="title='User Details'">
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{layout(title='Benutzer Details')}" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.w3.org/1999/xhtml">
 <body>
-<section layout:fragment="content">
-    <div class="form-wrapper">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <span></span>
-            <h5>User Details</h5>
-            <a class="btn btn-sm btn-outline-secondary" onclick="history.back()">Back</a>
-        </div>
+<div layout:fragment="content">
+    <th:block th:replace="~{fragments/layout-elements :: heading(title='Benutzer Details', backBtn=true, edit=true, editUrl='/users/edit(id=${entry.id}, referer=details)')}"></th:block>
+    <table class="table table-hover table-bordered table-details table-light" th:object="${entry}">
+        <tr th:replace="~{fragments/table-elements :: details-row('Name', *{fullName})}"></tr>
+        <tr th:replace="~{fragments/table-elements :: details-row(header='Email', content=*{email}, url='mailto:__*{email}__')}"></tr>
+        <tr th:replace="~{fragments/table-elements :: details-row('Rolle', *{role == null ? 'keine' : role.description})}"></tr>
+    </table>
 
-        <div th:replace="~{fragments/details/user-details :: user-details}"></div>
-    </div>
-</section>
+    <th:block th:unless="${entry.isAdmin()}">
+        <th:block th:replace="~{fragments/content-elements :: related-tickets(open=${openTickets}, closed=${closedTickets}, showClient=true, link=true)}"></th:block>
+    </th:block>
+</div>
 </body>
 </html>

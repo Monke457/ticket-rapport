@@ -1,15 +1,28 @@
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml"
-      layout:decorate="~{layout}" th:with="title='Checklist Template Details'">
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{layout(title='Checklistevorlage Details')}"
+      xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
 <body>
-<section layout:fragment="content">
-    <div class="form-wrapper">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <span></span>
-            <h5>Checklist Template Details</h5>
-            <a class="btn btn-sm btn-outline-secondary" onclick="history.back()">Back</a>
+<div layout:fragment="content">
+    <th:block th:replace="~{fragments/layout-elements :: heading(title='Checklistevorlage Details', backBtn=true, edit=true, editUrl='/checklists/edit(id=${entry.id}, referer=details)')}"></th:block>
+
+    <table class="table table-hover table-bordered table-details table-light">
+        <tr th:replace="~{fragments/table-elements :: details-row('Titel', ${entry.title})}"></tr>
+    </table>
+
+    <div class="mb-3">
+        <h5>Elementen</h5>
+        <div class="list-group">
+            <th:block th:each="item, info: ${entry.items}">
+                <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-start" th:href="@{/checklists/items/details(id=${item.item.id})}">
+                    <div class="d-flex gap-1">
+                        <span th:text="${info.index+1} + ' ' + ${item.item.description}"></span>
+                    </div>
+                    <span class="badge text-bg-primary rounded-pill" th:text="${#lists.size(item.item.checklists)}"></span>
+                </a>
+            </th:block>
         </div>
-        <div th:replace="~{fragments/details/checklist-details :: checklist-details}"></div>
+        <div th:if="${entry.items.isEmpty()}" class="alert alert-warning">Es gibt keine Checklistelementen</div>
     </div>
-</section>
+</div>
 </body>
 </html>

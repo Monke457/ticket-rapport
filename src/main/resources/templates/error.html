@@ -1,14 +1,19 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml"
-      layout:decorate="~{layout}" th:with="title='__#{error}__'">
+<html lang="en" layout:decorate="~{layout(title=Fehler)}" xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
 <body>
-<section layout:fragment="content">
-    <h2 th:text="#{error}"></h2>
-    <div class="alert alert-danger my-4" th:text="#{__${messageProperty}__}"></div>
-    <div class="d-flex justify-content-center gap-3">
-        <a class="btn btn-outline-primary" onclick="history.back()" th:text="#{back}"></a>
-        <a class="btn btn-primary" href="/" th:text="#{home}"></a>
+<div layout:fragment="content">
+    <div class="d-flex justify-content-between align-items-center">
+      <h4>Fehler!</h4>
+      <a class="btn btn-sm btn-outline-secondary" onclick="history.back()">Zurück</a>
     </div>
-</section>
+
+  <div class="alert alert-danger d-flex justify-content-between align-items-center">
+    <div class="fw-bold">Hoppla! Etwas ist schief gelaufen. <span th:text="${message}"></span></div>
+    <svg th:replace="~{fragments/vectors :: sadge}"></svg>
+  </div>
+  <div class="text-center">
+    <a class="btn btn-sm btn-outline-primary" href="/">Home</a>
+  </div>
+</div>
 </body>
 </html>

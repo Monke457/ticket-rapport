@@ -1,34 +1,33 @@
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml"
-      layout:decorate="~{layout}" th:with="title='Delete Checklist Item Template'">
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{layout(title='Elementvorlage Löschung')}" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.w3.org/1999/xhtml">
 <body>
-<section layout:fragment="content">
-    <div class="form-wrapper">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <span></span>
-            <h5>Delete Checklist Item Template</h5>
-            <div th:replace="~{fragments/forms/return-form :: return-form}"></div>
-        </div>
+<div layout:fragment="content">
+    <th:block th:replace="~{fragments/layout-elements :: heading(title='Elementvorlage löschen', backBtn=true)}"></th:block>
 
-        <div class="mb-3">
-            <div class="form-label">Description</div>
-            <div class="form-control bg-light" th:text="${entry.description}"></div>
-        </div>
+    <table class="table table-hover table-bordered table-details table-light">
+        <tr th:replace="~{fragments/table-elements :: details-row('Beschreibung', ${entry.description})}"></tr>
+    </table>
 
-        <div class="alert alert-danger" th:if="${entry.templates.size > 0}">
-            Item template will be removed from
-            <span th:text="${entry.templates.size}"></span> checklist
-            <span th:text="${entry.templates.size > 1 ? ' templates' : ' template'}"></span>
-            <ul class="mb-0">
-                <li th:each="checklist: ${entry.templates}" th:text="${checklist.description}"></li>
-            </ul>
+    <div class="mb-3">
+        <h5>Checklisten</h5>
+        <div class="list-group">
+            <th:block th:each="item, info: ${entry.checklists}">
+                <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-start">
+                    <div class="d-flex gap-1">
+                        <span th:text="${item.checklist.title}"></span>
+                    </div>
+                    <span class="badge text-bg-primary rounded-pill" th:text="${#lists.size(item.item.checklists)}"></span>
+                </div>
+            </th:block>
         </div>
-        <form th:action="@{delete(id=${entry.id})}" method="post">
-            <input type="hidden" th:value="${referer}" th:name="referer">
-            <div class="text-end">
-                <button class="btn btn-danger">Delete</button>
-            </div>
-        </form>
+        <div th:if="${entry.checklists.isEmpty()}" class="alert alert-warning">Dieses Element gehört keine Checklisten</div>
     </div>
-</section>
+
+    <form th:object="${entry}" th:action="@{delete(id=*{id})}" method="post">
+        <input type="hidden" name="redirectValue" th:value="${redirectValue}">
+        <div th:replace="~{fragments/form-elements :: button-delete}"></div>
+    </form>
+</div>
 </body>
 </html>

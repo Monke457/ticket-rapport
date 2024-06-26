@@ -1,32 +1,57 @@
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml"
-      layout:decorate="~{layout}" th:with="title='Clients', controller='clients'">
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{layout(title=Kunden)}" xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
 <body>
-<section layout:fragment="content">
-    <h5 class="mb-2">Clients</h5>
-    <a class="btn btn-sm btn-outline-success" th:href="@{/clients/create}">New Client +</a>
+<div layout:fragment="content">
+    <th:block th:replace="~{fragments/layout-elements :: heading(Kunden)}"></th:block>
 
-    <form class="row row-cols-lg-auto g-1 align-items-center my-4" th:object="${filter}" th:action="@{/clients}" method="get">
-        <div th:replace="~{fragments/forms/filter-fields :: filter-fields}"></div>
-        <div class="d-flex ps-0">
-            <input class="form-control input-flush" style="min-width:200px;" th:field="*{search}" placeholder="Search">
-            <button class="btn btn-sm btn-primary button-flush" type="submit">
-                <img th:src="@{/img/search.svg}" style="filter:invert(1)" alt="search.svg" title="Search"/>
+    <a class="btn btn-sm btn-outline-success" th:href="@{/clients/create}">
+        <svg th:replace="~{fragments/vectors :: plus}"></svg>
+        Hinzufügen
+    </a>
+
+    <form id="filter-form" class="row row-cols-lg-auto g-2 my-3" th:object="${filter}" method="get">
+        <input type="hidden" th:field="*{sort}">
+        <input type="hidden" th:field="*{asc}">
+        <div class="col d-flex">
+            <input class="form-control inline-field svelte-r filter-input" th:field="*{search}" placeholder="Suche...">
+            <button class="btn btn-sm btn-outline-primary svelte-l" type="submit">
+                <svg th:replace="~{fragments/vectors :: search}"></svg>
+            </button>
+        </div>
+        <div class="col d-flex filter-clear">
+            <button type="button" class="btn btn-sm btn-outline-secondary" style="min-width:150px;" onclick="clear_form()">
+                Filter löschen
+                <svg th:replace="~{fragments/vectors :: cross}"></svg>
             </button>
         </div>
     </form>
 
-    <table class="table my-4">
-        <tr>
-            <th th:replace="~{fragments/table-header :: table-header('clients', 'name', 'Name')}"></th>
-            <th style="min-width:140px;"></th>
-        </tr>
-        <tr th:each="entry: ${entries}">
-            <td th:text="${entry.name}"></td>
-            <td>
-                <div th:replace="~{fragments/table-buttons :: table-buttons(clients)}"></div>
-            </td>
-        </tr>
-    </table>
-</section>
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th th:replace="~{fragments/table-elements :: sortable-header('/clients', 'name', 'Name')}"></th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody class="table-group-divider">
+            <tr></tr>
+            <tr th:each="entry: ${entries}">
+                <td class="wrap-cell" th:text="${entry.name}"></td>
+                <td>
+                    <div th:replace="~{fragments/table-elements :: links('/clients', ${entry.id})}"></div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:if="${entries.isEmpty()}" class="alert alert-info">Es wurde keine Kunden gefunden</div>
+
+    <div th:replace="~{fragments/content-elements :: pagination('/clients')}"></div>
+</div>
+<th:block layout:fragment="scripts">
+    <script th:src="@{/js/filter.js}"></script>
+</th:block>
 </body>
 </html>

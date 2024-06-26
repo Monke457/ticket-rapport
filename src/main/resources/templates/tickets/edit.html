@@ -1,18 +1,41 @@
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml"
-      layout:decorate="~{layout}" th:with="title='Edit Ticket'">
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{layout(title='Ticket Bearbeitung')}" xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
 <body>
-<section layout:fragment="content">
+<div layout:fragment="content">
+    <th:block th:replace="~{fragments/layout-elements :: heading(title='Ticket bearbeitung', backBtn=true, del=true, delUrl='/tickets/delete(id=${entry.id}, returnValue=${returnValue}, referer=${referer} ?: edit)')}"></th:block>
+
     <div class="form-wrapper">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <span></span>
-            <h5>Edit Ticket</h5>
-            <div th:replace="~{fragments/forms/return-form :: return-form}"></div>
-        </div>
-        <form th:action="@{edit(id=${entry.id})}" th:object="${entry}" method="post">
-            <div th:replace="~{fragments/forms/ticket-form :: ticket-form('edit')}"></div>
-            <button type="submit" class="btn btn-primary float-end">Submit</button>
+        <form th:object="${entry}" th:action="@{edit(id=*{id}, referer=${referer}, returnValue=${returnValue + 1})}" method="post">
+            <div th:replace="~{fragments/form-elements :: input-field(field=title, label='* Titel', required=true, maxLength=50)}"></div>
+            <div th:replace="~{fragments/form-elements :: input-field(field=description, label=Beschreibung, maxLength=100)}"></div>
+            <div th:replace="~{fragments/form-elements :: input-field(field=protocol, label=Protokoll, tag=textarea, maxLength=2000)}"></div>
+            <div th:replace="~{fragments/form-elements :: input-field(field=solution, label=Lösung, tag=textarea, maxLength=2000)}"></div>
+
+            <label class="form-label mb-0" th:for="workHours">Arbeitszeit</label>
+            <div class="d-flex gap-3">
+                <div th:replace="~{fragments/form-elements :: input-field(field='workHours', label='Stunden', type='number', required=true, min=0, max=99, labelClass='form-label-sm', excludeError=true)}"></div>
+                <div th:replace="~{fragments/form-elements :: input-field(field='workMinutes', label='Minuten', type='number', required=true, min=0, max=59, labelClass='form-label-sm', excludeError=true)}"></div>
+            </div>
+            <div th:if="${#fields.hasErrors('workMinutes')}" class="alert alert-danger my-1 py-2">
+                <div th:each="err: ${#fields.errors('workMinutes')}" th:text="${err}"></div>
+            </div>
+
+            <div th:replace="~{fragments/form-elements :: input-field(field='learner.id', label='Lernende', tag=select, options=${learners}, defaultOption='Lernende zuweisen', optionValue=id, optionText=fullName)}"></div>
+            <div th:replace="~{fragments/form-elements :: input-field(field='client.id', label='Kunde', tag=select, options=${clients}, defaultOption='Kunde zuweisen', optionValue=id, optionText=name)}"></div>
+            <div th:replace="~{fragments/form-elements :: input-field(field='status.id', label='Status', tag=select, options=${statuses}, defaultOption='Status auswählen', optionValue=id, optionText=description)}"></div>
+
+            <div class="mb-3">
+                <h5>Checkliste</h5>
+                <div th:replace="~{fragments/checklists :: input-field(checklist=${checklist}, withCheckbox=true)}"></div>
+            </div>
+
+            <div th:replace="~{fragments/form-elements :: button-submit}"></div>
         </form>
     </div>
-</section>
+</div>
+<th:block layout:fragment="scripts">
+    <script th:src="@{/js/resizer.js}"></script>
+    <script th:src="@{/js/checklist.js}"></script>
+</th:block>
 </body>
 </html>

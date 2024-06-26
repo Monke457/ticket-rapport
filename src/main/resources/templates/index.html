@@ -1,82 +1,40 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml"
-      layout:decorate="~{layout}" th:with="title='Home'" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="en" layout:decorate="~{layout(title=Home)}" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
 <body>
-<section layout:fragment="content">
-    <div sec:authorize="hasRole('ROLE_ADMIN')">
-        <h5 class="mb-4" th:text="#{tickets.unassigned}"></h5>
-        <div th:replace="~{fragments/ticket-cards :: ticket-cards(tickets=${unassigned}, editable=true)}"></div>
-        <hr class="mt-4">
-
-        <h5 class="my-4" th:text="#{tickets.open}"></h5>
-        <div th:replace="~{fragments/ticket-cards :: ticket-cards(tickets=${open}, editable=true)}"></div>
-        <hr class="mt-4">
-
-        <h5 class="my-4" th:text="#{tickets.completed}"></h5>
-        <div th:replace="~{fragments/ticket-cards :: ticket-cards(tickets=${completed}, editable=true)}"></div>
-    </div>
-
-    <div sec:authorize="hasRole('ROLE_LEARNER')">
-        <h5 class="mb-4" th:text="#{tasks.open}"></h5>
-        <div th:replace="~{fragments/ticket-cards :: ticket-cards(tickets=${open})}"></div>
-        <hr class="mt-4">
-
-        <h5 class="my-4" th:text="#{tasks.completed}"></h5>
-        <div th:replace="~{fragments/ticket-cards :: ticket-cards(tickets=${completed})}"></div>
-        <hr class="mt-4">
-
-        <h5 class="my-4" th:text="#{tickets.closed}"></h5>
-        <form class="row row-cols-lg-auto g-1 align-items-center my-4" th:object="${filter}" onkeydown="if(event.keyCode === 13) { getFilteredTickets(); return false; }">
-            <div class="col" style="min-width:200px;">
-                <input id="search" class="form-control" th:field="*{search}" placeholder="Search">
+<div layout:fragment="content">
+    <div sec:authorize="!isAuthenticated()" class="d-flex flex-column gap-3 align-items-center text-center mt-5">
+        <h3>Willkommen beim Kauz Ticket Rapport System!</h3>
+        <h5>Bitte melden Sie sich an, um auf die App zuzugreifen</h5>
+        <a class="btn btn-dark" th:href="@{/login}">Anmelden</a>
+        <div class="mt-5 p-3 shadow rounded" style="max-width: 400px;">
+            <div class="p-3 shadow rounded">
+                <img class="rounded shadow w-100" th:src="@{/img/ticket.png}" alt="ticket.png">
             </div>
-
-            <div class="d-flex">
-                <select id="client" class="form-select input-flush" style="min-width:200px;" th:field="*{clientId}">
-                    <option value="">All Clients</option>
-                    <option th:each="client: ${clients}" th:value="${client.id}" th:text="${client.name}"></option>
-                </select>
-                <button class="btn btn-sm btn-primary button-flush" type="button" th:onclick="getFilteredTickets()">
-                    <img th:src="@{/img/search.svg}" style="filter:invert(1)" alt="search.svg" title="Search"/>
-                </button>
-            </div>
-        </form>
-        <div id="filtered">
         </div>
     </div>
 
-    <div sec:authorize="!isAuthenticated()" class="text-center d-flex flex-column gap-4 align-items-center">
-        <h3 th:text="#{welcome}"></h3>
-        <img id="welcomeImg" class="img-fluid rounded" th:src="@{/img/minimalist1.jpg}" alt="minimalist1.jpg"/>
-        <a class="btn btn-outline-dark" th:href="@{/login}" th:text="#{login}"></a>
-    </div>
-</section>
-</body>
-<style layout:fragment="styles" sec:authorize="!isAuthenticated()">
-    #welcomeImg {
-        max-height: 400px;
-        content: url("/img/minimalist1.jpg");
-    }
-    @media only screen and (max-width: 720px)  {
-        #welcomeImg {
-            content: url("/img/minimalist.jpg");
-        }
-    }
-</style>
-<script sec:authorize="hasRole('ROLE_LEARNER')" layout:fragment="scripts" th:inline="javascript" >
-    // live filter
-    async function getFilteredTickets() {
-        var search = document.getElementById('search');
-        var client = document.getElementById('client');
+    <div sec:authorize="hasRole('ADMIN')">
+        <div th:replace="~{fragments/layout-elements :: heading('Unzugewiesene Tickets')}"></div>
+        <div th:replace="~{fragments/content-elements :: card-grid(tickets=${unassigned}, alertClass='alert-success', alertText='Alle Tickets werden den Lernenden zugewiesen')}"></div>
 
-        await fetch(`filter?search=${search.value}&clientId=${client.value}`).then(function (response) {
-            return response.text();
-        }).then(function (html) {
-            document.getElementById('filtered').innerHTML = html;
-        }).catch(function (err) {
-            console.warn('Something went wrong.', err);
-        });
-    }
-    getFilteredTickets();
-</script>
+        <div th:replace="~{fragments/layout-elements :: heading('Offene Tickets')}"></div>
+        <div th:replace="~{fragments/content-elements :: card-grid(tickets=${open}, alertClass='alert-info', alertText='Keine Tickets sind aktuell in Bearbeitung')}"></div>
+
+        <div th:replace="~{fragments/layout-elements :: heading('Beendete Tickets')}"></div>
+        <div th:replace="~{fragments/content-elements :: card-grid(tickets=${completed}, alertClass='alert-info', alertText='Keine Tickets sind als beendet markiert')}"></div>
+    </div>
+
+    <div sec:authorize="hasRole('LEARNER')">
+        <div th:replace="~{fragments/layout-elements :: heading('Offene Tickets')}"></div>
+        <div th:replace="~{fragments/content-elements :: card-grid(tickets=${open}, alertClass='alert-success', alertText='Keine offene Tickets werden ihnen zugewiesen')}"></div>
+
+        <div th:replace="~{fragments/layout-elements :: heading('Beendete Tickets')}"></div>
+        <div th:replace="~{fragments/content-elements :: card-grid(tickets=${completed}, alertClass='alert-info', alertText='Sie haben keine ihre Tickets als beendet markiert')}"></div>
+
+        <div th:replace="~{fragments/layout-elements :: heading('Geschlossene Tickets')}"></div>
+        <div th:replace="~{fragments/content-elements :: card-grid(tickets=${closed}, alertClass='alert-info', alertText='Sie haben keine Tickets abgeschlossen')}"></div>
+    </div>
+</div>
+</body>
 </html>

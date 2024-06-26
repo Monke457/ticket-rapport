@@ -1,32 +1,29 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-<head th:replace="~{fragments/head :: head('Login')}"></head>
+<head th:replace="~{fragments/layout-elements :: head('Login')}"></head>
 <body>
-
-<main class="container text-center m-auto">
-    <div class="p-4 border rounded m-auto mb-5 text-start"
-         style="max-width:450px; box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);">
+<main class="container text-center">
+    <div class="p-4 border rounded mx-auto my-5 text-start form-card">
         <form class="form" th:action="@{/login}" method="post">
             <legend>Login</legend>
-            <div th:if="${param.error}" class="alert alert-danger">Incorrect username or password</div>
+            <div th:if="${param.error}" class="alert alert-danger">Email oder Passwort sind falsch</div>
             <div class="mb-3">
-                <label class="form-label" for="username">Username</label>
-                <input class="form-control" type="text" id="username" name="username" />
+                <label class="form-label" for="username">Email</label>
+                <input class="form-control" type="text" id="username" name="username"/>
             </div>
             <div class="mb-3">
-                <label class="form-label" for="password">Password</label>
-                <input class="form-control" type="password" id="password" name="password" />
+                <label class="form-label" for="password">Passwort</label>
+                <input class="form-control" type="password" id="password" name="password"/>
             </div>
             <div class="text-end">
-                <button class="btn btn-outline-dark">Login</button>
+                <button class="btn btn-outline-dark">Anmelden</button>
             </div>
         </form>
     </div>
 
-    <a th:href="@{/}"
-       class="d-inline-flex align-items-center text-muted text-decoration-none">
-        <img th:src="@{/img/logo.png}" alt="logo.png" Title="Ticket Rapport Logo" style="max-width:100px;"/>
-        <h3 class="fw-lighter" style="letter-spacing:4px;">Ticket Rapport</h3>
+    <a th:href="@{/}" class="d-flex align-items-end justify-content-center gap-3" style="text-decoration:none">
+        <svg th:replace="~{fragments/vectors :: logo}"></svg>
+        <span class="app-title">Ticket Rapport</span>
     </a>
 </main>
 </body>

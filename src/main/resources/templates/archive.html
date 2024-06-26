@@ -1,28 +1,40 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
-      xmlns:layout="http://www.w3.org/1999/xhtml"
-      layout:decorate="~{layout}"
-      th:with="title='__#{archive}__', controller='archive'">
+<html lang="en" layout:decorate="~{layout(title=Archiv)}" xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
 <body>
-<section layout:fragment="content">
-    <h5 th:text="#{tickets.closed}"></h5>
+<div layout:fragment="content">
+    <div th:replace="~{fragments/layout-elements :: heading('Geschlossene Tickets')}"></div>
 
-    <form class="row row-cols-lg-auto g-1 align-items-center my-4" th:object="${filter}" th:action="@{archive}" method="get">
-        <div class="col" style="min-width:200px;">
-            <input id="search" class="form-control" th:field="*{search}" th:placeholder="#{search}">
+    <form id="filter-form" class="row row-cols-lg-auto g-2 my-3" th:object="${filter}" method="get">
+        <input type="hidden" th:field="*{sort}">
+        <input type="hidden" th:field="*{asc}">
+        <div class="col inline-field">
+            <input class="form-control filter-input" th:field="*{search}" placeholder="Suche...">
         </div>
-        <div class="d-flex">
-            <select id="client" class="form-select input-flush" style="min-width:200px;" th:field="*{clientId}">
-                <option value="" th:text="#{clients.all}"></option>
-                <option th:each="client: ${clients}" th:value="${client.id}" th:text="${client.name}"></option>
+
+        <div class="col d-flex">
+            <select class="form-select inline-field svelte-r filter-select" th:field="*{clientId}" onchange="submit_filter()">
+                <option value="">Alle Kunden</option>
+                <option th:each="client : ${clients}" th:value="${client.id}" th:text="${client.name}"></option>
             </select>
-            <button class="btn btn-sm btn-primary button-flush">
-                <img th:src="@{/img/search.svg}" style="filter:invert(1)" alt="search.svg" th:title="#{Search}"/>
+            <button type="submit" class="btn btn-sm btn-outline-primary svelte-l" >
+                <svg th:replace="~{fragments/vectors :: search}"></svg>
+            </button>
+        </div>
+
+        <div class="col d-flex filter-clear">
+            <button type="button" class="btn btn-sm btn-outline-secondary" style="min-width:150px;" onclick="clear_form()">
+                Filter löschen
+                <svg th:replace="~{fragments/vectors :: cross}"></svg>
             </button>
         </div>
     </form>
 
-    <div th:replace="~{fragments/ticket-cards :: ticket-cards(tickets=${tickets}, editable=true)}"></div>
-</section>
+    <th:block th:replace="~{fragments/content-elements :: card-grid(tickets=${tickets}, alertClass='alert-info', alertText='Es wurde keine Tickets gefunden')}"></th:block>
+
+    <div th:replace="~{fragments/content-elements :: pagination('/archive')}"></div>
+</div>
+<th:block layout:fragment="scripts">
+    <script th:src="@{/js/filter.js}"></script>
+</th:block>
 </body>
 </html>

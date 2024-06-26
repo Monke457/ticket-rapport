@@ -1,32 +1,20 @@
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml"
-      layout:decorate="~{layout}" th:with="title='Create User'">
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{layout(title='Benutzer Erstellung')}" xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
 <body>
-<section layout:fragment="content">
-    <div class="form-wrapper">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <span></span>
-            <h5>New User</h5>
-            <div th:replace="~{fragments/forms/return-form :: return-form}"></div>
-        </div>
-        <form th:action="@{create}" th:object="${entry}" method="post">
-            <div th:replace="~{fragments/forms/user-form :: user-form(false)}"></div>
-            <div class="mb-3">
-                <label class="form-label" th:for="*{password}">* Password</label>
-                <input class="form-control" type="password" th:field="*{password}" th:classappend="${#fields.hasErrors('password') ? 'input-error' : ''}">
-                <div th:replace="~{fragments/forms/error-alert :: error-alert('password')}"></div>
-            </div>
-            <div class="mb-3">
-                <label class="form-label" th:for="*{confirmPassword}">* Confirm Password</label>
-                <input class="form-control" type="password" th:field="*{confirmPassword}"
-                       th:classappend="${#fields.hasErrors('confirmPassword') || passError != null ? 'input-error' : ''}">
-                <div class="alert alert-warning mt-1" th:if="${#fields.hasErrors('confirmPassword') || passError != null}">
-                    <div th:each="err : ${#fields.errors('confirmPassword')}" th:text="${err}"></div>
-                    <div th:if="${passError != null}" th:text="${passError}"></div>
-                </div>
-            </div>
-            <button type="submit" class="btn btn-primary float-end">Submit</button>
-        </form>
-    </div>
-</section>
+<div layout:fragment="content">
+  <th:block th:replace="~{fragments/layout-elements :: heading(title='Benutzer erstellen', backBtn=true)}"></th:block>
+
+  <div class="form-wrapper">
+    <form th:object="${entry}" th:action="@{create(returnValue=${returnValue + 1})}" method="post">
+      <div th:replace="~{fragments/form-elements :: input-field(field=firstname, label='* Vorname', maxLength=50, required=true)}"></div>
+      <div th:replace="~{fragments/form-elements :: input-field(field=lastname, label='* Nachname', maxLength=50, required=true)}"></div>
+      <div th:replace="~{fragments/form-elements :: input-field(field=email, label='* Email', maxLength=50, required=true)}"></div>
+      <div th:replace="~{fragments/form-elements :: input-field(field=password, label='* Passwort', minLength=5, maxLength=50, type=password, required=true)}"></div>
+      <div th:replace="~{fragments/form-elements :: input-field(field=passwordConfirm, label='* Passwort bestätigen', minLength=5, maxLength=50, type=password, required=true)}"></div>
+      <div th:replace="~{fragments/form-elements :: input-field(field=roleId, label='* Rolle', tag=select, options=${roles}, defaultOption='Rolle Auswählen', optionValue=id, optionText=description, required=true)}"></div>
+      <div th:replace="~{fragments/form-elements :: button-submit}"></div>
+    </form>
+  </div>
+</div>
 </body>
 </html>

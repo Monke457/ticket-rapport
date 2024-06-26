@@ -1,96 +1,109 @@
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml"
-      layout:decorate="~{layout}" th:with="title='Tickets', controller='tickets'"
-      xmlns:sec="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{layout(title=Tickets)}" xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
 <body>
-<section layout:fragment="content">
-    <h5 class="mb-2">Tickets</h5>
-    <div sec:authorize="hasRole('ROLE_ADMIN')">
-        <a class="btn btn-sm btn-outline-success" th:href="@{/tickets/create}">New Ticket +</a>
-    </div>
+<div layout:fragment="content">
+    <th:block th:replace="~{fragments/layout-elements :: heading(Tickets)}"></th:block>
+    <a class="btn btn-sm btn-outline-success" th:href="@{/tickets/create}">
+        <svg th:replace="~{fragments/vectors :: plus}"></svg>
+        Hinzufügen
+    </a>
 
-    <form class="row row-cols-lg-auto g-1 align-items-center my-4" th:object="${filter}" th:action="@{tickets}" method="get">
-        <div th:replace="~{fragments/forms/filter-fields :: filter-fields}"></div>
-        <div class="col ps-0">
-            <input class="form-control" style="min-width:200px;" th:field="*{search}" placeholder="Search">
+    <form id="filter-form" class="row row-cols-lg-auto g-2 my-3" th:object="${filter}" method="get">
+        <input type="hidden" th:field="*{sort}">
+        <input type="hidden" th:field="*{asc}">
+        <div class="col inline-field">
+            <input class="form-control filter-input" th:field="*{search}" placeholder="Suche...">
         </div>
-        <div class="col" style="min-width:200px;">
-            <select class="form-select" th:field="*{clientId}">
-                <option value="">All Clients</option>
-                <option th:each="client: ${clients}" th:value="${client.id}" th:text="${client.name}"></option>
+
+        <div class="col d-flex">
+            <select class="form-select inline-field filter-select" th:field="*{clientId}" onchange="submit_filter()">
+                <option value="">Alle Kunden</option>
+                <option th:each="client : ${clients}" th:value="${client.id}" th:text="${client.name}"></option>
             </select>
         </div>
-        <div class="d-flex">
-            <select class="form-select input-flush" style="min-width:200px;" th:field="*{statusId}">
-                <option value="">Any Status</option>
-                <option th:each="status: ${statuses}" th:value="${status.id}" th:text="${status.description}"></option>
+
+        <div class="col d-flex">
+            <select class="form-select inline-field svelte-r filter-select" th:field="*{statusId}" onchange="submit_filter()">
+                <option value="">Alle Statuses</option>
+                <option th:each="status : ${statuses}" th:value="${status.id}" th:text="${status.description}"></option>
             </select>
-            <button class="btn btn-sm btn-primary button-flush" type="submit">
-                <img th:src="@{/img/search.svg}" style="filter:invert(1)" alt="search.svg" title="Search"/>
+            <button class="btn btn-sm btn-outline-primary svelte-l" type="submit">
+                <svg th:replace="~{fragments/vectors :: search}"></svg>
+            </button>
+        </div>
+
+        <div class="col d-flex filter-clear">
+            <button type="button" class="btn btn-sm btn-outline-secondary" style="min-width:150px;" onclick="clear_form()">
+                Filter löschen
+                <svg th:replace="~{fragments/vectors :: cross}"></svg>
             </button>
         </div>
     </form>
 
-    <table class="table responsive my-4">
-        <tr>
-            <th th:replace="~{fragments/table-header :: table-header('tickets', 'title', 'Title')}"></th>
-            <th style="width:400px;">Description</th>
-            <th th:replace="~{fragments/table-header :: table-header('tickets', 'workHours,workMinutes', 'Work Time')}"></th>
-            <div sec:authorize="hasRole('ROLE_ADMIN')">
-                <th th:replace="~{fragments/table-header :: table-header('tickets', 'assignedUser.firstname,assignedUser.lastname', 'Assigned Learner')}"></th>
-            </div>
-            <th th:replace="~{fragments/table-header :: table-header('tickets', 'client.name', 'Client')}"></th>
-            <th th:replace="~{fragments/table-header :: table-header('tickets', 'status.description', 'Status')}"></th>
-            <th style="min-width:140px;"></th>
-        </tr>
-        <tr th:each="entry: ${entries}">
-            <td id="title" th:text="${entry.title}"></td>
-            <td id="description" th:text="${#strings.abbreviate(entry.description, 100)}"></td>
-            <td id="worktime" th:text="${entry.worktime}"></td>
-            <div sec:authorize="hasRole('ROLE_ADMIN')">
-                <td th:if="${entry.assignedUser == null}">No assigned learner</td>
-                <td id="user" th:unless="${entry.assignedUser == null}" th:text="${entry.assignedUser.fullName}"></td>
-            </div>
-            <td id="client" th:unless="${entry.client == null}" th:text="${entry.client.name}"></td>
-            <td th:if="${entry.client == null}">No client</td>
-            <td id="status" th:unless="${entry.status == null}" th:text="${entry.status.description}"></td>
-            <td th:if="${entry.status == null}">No status</td>
-            <td>
-                <div class="table-links d-flex flex-wrap justify-content-end gap-1">
-                    <a class="btn btn-sm btn-primary" th:href="@{/tickets/details(id=${entry.id})}">
-                        <img th:src="@{/img/view.svg}" style="filter:invert(1)" alt="view.svg" title="View"/>
-                    </a>
-                    <div sec:authorize="hasRole('ROLE_ADMIN')" class="d-flex flex-wrap justify-content-end gap-1">
-                        <a class="btn btn-sm btn-warning" th:href="@{/tickets/edit(id=${entry.id})}">
-                            <img th:src="@{/img/edit.svg}" alt="edit.svg" title="Edit"/>
-                        </a>
-                        <a class="btn btn-sm btn-danger" th:href="@{/tickets/delete(id=${entry.id})}">
-                            <img th:src="@{/img/trash.svg}" style="filter:invert(1)" alt="trash.svg" title="Delete"/>
-                        </a>
-                    </div>
-                </div>
-            </td>
-        </tr>
-    </table>
-</section>
+    <div class="table-responsive">
+        <table class="table responsive-lg table-hover">
+            <thead>
+            <tr>
+                <th th:replace="~{fragments/table-elements :: sortable-header('/tickets', 'title', 'Titel')}"></th>
+                <th>Beschreibung</th>
+                <th th:replace="~{fragments/table-elements :: sortable-header('/tickets', 'workHours,workMinutes', 'Arbeitszeit')}"></th>
+                <th th:replace="~{fragments/table-elements :: sortable-header('/tickets', 'learner.fullName', 'Lernende')}"></th>
+                <th th:replace="~{fragments/table-elements :: sortable-header('/tickets', 'client.name', 'Kunde')}"></th>
+                <th th:replace="~{fragments/table-elements :: sortable-header('/tickets', 'status.description', 'Status')}"></th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody class="table-group-divider">
+            <tr></tr>
+            <tr th:each="entry: ${entries}">
+                <td class="title wrap-cell" th:text="${entry.title}"></td>
+                <td class="description wrap-cell" th:text="${entry.description}"></td>
+                <td class="work-time" th:text="${entry.workTime}"></td>
+                <td class="learner wrap-cell" th:text="${entry.learner}"></td>
+                <td class="client wrap-cell" th:text="${entry.client}"></td>
+                <td class="status" th:text="${entry.status}"></td>
+                <td>
+                    <div th:replace="~{fragments/table-elements :: links('/tickets', ${entry.id})}"></div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:if="${entries.isEmpty()}" class="alert alert-info">Es wurde keine Tickets gefunden</div>
+
+    <div th:replace="~{fragments/content-elements :: pagination('/tickets')}"></div>
+</div>
+<th:block layout:fragment="scripts">
+    <script th:src="@{/js/filter.js}"></script>
+</th:block>
 </body>
-<style layout:fragment="styles" media="screen and (max-width: 720px)">
-    #title {
-        font-weight: bold;
-        font-size: large;
-        text-align: center;
-    }
-    #worktime::before {
-        content: "\AWork Time: ";
-        white-space: pre;
-    }
-    #user::before {
-        content: "Learner: ";
-    }
-    #client::before {
-        content: "Client: ";
-    }
-    #status::before {
-        content: "Status: ";
+<style layout:fragment="styles">
+    @media only screen and (max-width: 992px) {
+        .title {
+            font-weight: bold;
+            font-size: large;
+            text-align: center;
+        }
+        .description {
+            padding-top: 5px !important;
+            padding-bottom: 15px !important;
+        }
+        .work-time::before {
+            content: "Arbeitszeit: ";
+        }
+        .work-time {
+            padding-bottom: 15px;
+        }
+        .learner::before {
+            content: "Lernende: ";
+        }
+        .client::before {
+            content: "Kunde: ";
+        }
+        .status::before {
+            content: "Status: ";
+        }
     }
 </style>
 </html>

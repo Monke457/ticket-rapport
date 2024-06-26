@@ -1,18 +1,24 @@
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml"
-      layout:decorate="~{layout}" th:with="title='Edit User'">
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{layout(title='Benutzer Bearbeitung')}" xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
 <body>
-<section layout:fragment="content">
-    <div class="form-wrapper">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <span></span>
-            <h5>Edit User</h5>
-            <div th:replace="~{fragments/forms/return-form :: return-form}"></div>
-        </div>
-        <form th:action="@{edit(id=${entry.id})}" th:object="${entry}" method="post">
-            <div th:replace="~{fragments/forms/user-form :: user-form(true)}"></div>
-            <button type="submit" class="btn btn-primary float-end">Submit</button>
-        </form>
-    </div>
-</section>
+<div layout:fragment="content">
+  <th:block th:replace="~{fragments/layout-elements :: heading(title='Benutzer bearbeiten', backBtn=true, del=true, delUrl='/users/delete(id=${entry.id}, returnValue=${returnValue}, referer=${referer} ?: edit)')}"></th:block>
+
+  <div class="form-wrapper">
+    <form th:object="${entry}" th:action="@{edit(id=*{id}, referer=${referer}, returnValue=${returnValue + 1})}" method="post">
+      <div th:replace="~{fragments/form-elements :: input-field(field=firstname, label='* Vorname', maxLength=50, required=true)}"></div>
+      <div th:replace="~{fragments/form-elements :: input-field(field=lastname, label='* Nachname', maxLength=50, required=true)}"></div>
+      <div th:replace="~{fragments/form-elements :: input-field(field=email, label='* Email', maxLength=50, required=true)}"></div>
+      <div th:replace="~{fragments/form-elements :: input-field(field='role.id', label='* Rolle', tag=select, options=${roles}, defaultOption='Rolle Auswählen', optionValue=id, optionText=description, required=true, errorField='role')}"></div>
+      <div class="alert alert-info d-flex justify-content-between">
+        <span>Rollenänderungen werden beim erneuten Anmelden angewendet</span>
+        <span class="text-info">
+          <svg th:replace="~{fragments/vectors :: info}"></svg>
+        </span>
+      </div>
+      <div th:replace="~{fragments/form-elements :: button-submit}"></div>
+    </form>
+  </div>
+</div>
 </body>
 </html>

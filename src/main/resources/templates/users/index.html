@@ -1,66 +1,92 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml"
-      layout:decorate="~{layout}" th:with="title='Users', controller='users'">
+<html lang="en" layout:decorate="~{layout(title=Benutzer)}" xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
 <body>
-<section layout:fragment="content">
-    <h5 class="mb-2">Users</h5>
-    <a class="btn btn-sm btn-outline-success" th:href="@{/users/create}">New User +</a>
+<div layout:fragment="content">
+    <th:block th:replace="~{fragments/layout-elements :: heading(Benutzer)}"></th:block>
+    <a class="btn btn-sm btn-outline-success" th:href="@{/users/create}">
+        <svg th:replace="~{fragments/vectors :: plus}"></svg>
+        Hinzufügen
+    </a>
 
-    <form class="row row-cols-lg-auto g-1 align-items-center my-4" th:object="${filter}" th:action="@{/users}" method="get">
-        <div th:replace="~{fragments/forms/filter-fields :: filter-fields}"></div>
-        <div class="col ps-0">
-            <input class="form-control" style="min-width:200px;" th:field="*{search}" placeholder="Search">
+    <form id="filter-form" class="row row-cols-lg-auto g-2 my-3" th:object="${filter}" method="get">
+        <input type="hidden" th:field="*{sort}">
+        <input type="hidden" th:field="*{asc}">
+        <div class="col inline-field">
+            <input class="form-control filter-input" th:field="*{search}" placeholder="Suche...">
         </div>
-        <div class="d-flex">
-            <select class="form-select input-flush" style="min-width:200px;" th:field="*{roleId}">
-                <option value="">All Roles</option>
-                <option th:each="role: ${roles}" th:value="${role.id}" th:text="${role.description}"></option>
+        <div class="col d-flex">
+            <select class="form-select inline-field svelte-r filter-select" th:field="*{roleId}" onchange="submit_filter()">
+                <option value="">Alle Rolle</option>
+                <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.description}"></option>
             </select>
-            <button class="btn btn-sm btn-primary button-flush" type="submit">
-                <img th:src="@{/img/search.svg}" style="filter:invert(1)" alt="search.svg" title="Search"/>
+            <button class="btn btn-sm btn-outline-primary svelte-l" type="submit">
+                <svg th:replace="~{fragments/vectors :: search}"></svg>
+            </button>
+        </div>
+        <div class="col d-flex filter-clear">
+            <button type="button" class="btn btn-sm btn-outline-secondary" style="min-width:150px;" onclick="clear_form()">
+                Filter löschen
+                <svg th:replace="~{fragments/vectors :: cross}"></svg>
             </button>
         </div>
     </form>
 
-    <table class="table responsive my-4">
-        <tr>
-            <th th:replace="~{fragments/table-header :: table-header('users', 'firstname,lastname', 'Firstname')}"></th>
-            <th th:replace="~{fragments/table-header :: table-header('users', 'lastname,firstname', 'Lastname')}"></th>
-            <th th:replace="~{fragments/table-header :: table-header('users', 'email', 'Email')}"></th>
-            <th th:replace="~{fragments/table-header :: table-header('users', 'role', 'Role')}"></th>
-            <th style="min-width:140px;"></th>
-        </tr>
-        <tr th:each="entry: ${entries}">
-            <td id="firstname" th:text="${entry.firstname}"></td>
-            <td id="lastname" th:text="${entry.lastname}"></td>
-            <td id="fullname" class="d-none" th:text="${entry.fullName}"></td>
-            <td id="email" th:text="${entry.email}"></td>
-            <td id="role" th:text="${entry.role.description}"></td>
-            <td>
-                <div th:replace="~{fragments/table-buttons :: table-buttons(users)}"></div>
-            </td>
-        </tr>
-    </table>
-</section>
+    <div class="table-responsive">
+        <table class="table responsive table-hover">
+            <thead>
+            <tr>
+                <th th:replace="~{fragments/table-elements :: sortable-header('/users', 'firstname,lastname', 'Vorname')}"></th>
+                <th th:replace="~{fragments/table-elements :: sortable-header('/users', 'lastname,firstname', 'Nachname')}"></th>
+                <th th:replace="~{fragments/table-elements :: sortable-header('/users', 'email', 'Email')}"></th>
+                <th th:replace="~{fragments/table-elements :: sortable-header('/users', 'role.description', 'Rolle')}"></th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody class="table-group-divider">
+            <tr></tr>
+            <tr th:each="entry: ${entries}">
+                <td class="fullName wrap-cell" th:text="${entry.fullName}"></td>
+                <td class="firstname wrap-cell" th:text="${entry.firstname}"></td>
+                <td class="lastname wrap-cell" th:text="${entry.lastname}"></td>
+                <td class="email wrap-cell" th:text="${entry.email}"></td>
+                <td class="role" th:text="${entry.role == null ? 'keine' : entry.role.description}"></td>
+                <td>
+                    <div th:replace="~{fragments/table-elements :: links('/users', ${entry.id})}"></div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:if="${entries.isEmpty()}" class="alert alert-info">Es wurde keine Benutzer gefunden</div>
+
+    <div th:replace="~{fragments/content-elements :: pagination('/users')}"></div>
+</div>
+<th:block layout:fragment="scripts">
+    <script th:src="@{/js/filter.js}"></script>
+</th:block>
 </body>
-<style layout:fragment="styles" media="screen and (max-width: 720px)">
-    #firstname {
-       display:none;
+<style layout:fragment="styles">
+    .fullName {
+        display: none;
     }
-    #lastname {
-        display:none
-    }
-    #fullname {
-        display:block !important;
-        font-weight: bold;
-        font-size: large;
-        text-align: center;
-    }
-    #email::before {
-        content: "Email: ";
-    }
-    #role::before {
-        content: "Role: ";
+    @media only screen and (max-width: 767px) {
+        .firstname, .lastname {
+            display: none !important;
+        }
+        .fullName {
+            display: block;
+            font-weight: bold;
+            font-size: large;
+            text-align: center;
+            padding-bottom: 5px;
+        }
+        .email::before {
+            content: "Email: ";
+        }
+        .role::before {
+            content: "Rolle: ";
+        }
     }
 </style>
 </html>

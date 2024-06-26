@@ -1,23 +1,16 @@
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml"
-      layout:decorate="~{layout}" th:with="title='Edit Checklist Item Template'">
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{layout(title='Elementvorlage Bearbeitung')}"
+      xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
 <body>
-<section layout:fragment="content">
+<div layout:fragment="content">
+    <th:block th:replace="~{fragments/layout-elements :: heading(title='Elementvorlage bearbeiten', backBtn=true, del=true, delUrl='/checklists/items/delete(id=${entry.id}, returnValue=${returnValue}, referer=${referer} ?: edit)')}"></th:block>
+
     <div class="form-wrapper">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <span></span>
-            <h5>Edit Checklist Item Template</h5>
-            <div th:replace="~{fragments/forms/return-form :: return-form}"></div>
-        </div>
-        <form th:action="@{edit(id=${entry.id})}" th:object="${entry}" method="post">
-            <input type="hidden" th:value="${referer}" th:name="referer">
-            <div class="mb-3">
-                <label class="form-label" th:for="*{description}">* Description</label>
-                <input class="form-control" th:field="*{description}" th:classappend="${#fields.hasErrors('description') ? 'input-error' : ''}">
-                <div th:replace="~{fragments/forms/error-alert :: error-alert('description')}"></div>
-            </div>
-            <button type="submit" class="btn btn-primary float-end">Submit</button>
+        <form th:object="${entry}" th:action="@{edit(id=*{id}, returnValue=${returnValue + 1})}" method="post">
+            <div th:replace="~{fragments/form-elements :: input-field(field=description, label='* Beschreibung', required=true, maxLength=100)}"></div>
+            <div th:replace="~{fragments/form-elements :: button-submit}"></div>
         </form>
     </div>
-</section>
+</div>
 </body>
 </html>

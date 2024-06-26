@@ -1,18 +1,54 @@
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml"
-      layout:decorate="~{layout}" th:with="title='Create Ticket'">
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{layout(title='Ticket Erstellung')}" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.w3.org/1999/xhtml">
 <body>
-<section layout:fragment="content">
+<div layout:fragment="content">
+    <th:block th:replace="~{fragments/layout-elements :: heading(title='Ticket erstellen', backBtn=true)}"></th:block>
+
     <div class="form-wrapper">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <span></span>
-            <h5>New Ticket</h5>
-            <div th:replace="~{fragments/forms/return-form :: return-form}"></div>
-        </div>
-        <form th:action="@{create}" th:object="${entry}" method="post">
-            <div th:replace="~{fragments/forms/ticket-form :: ticket-form('create')}"></div>
-            <button type="submit" class="btn btn-primary float-end">Submit</button>
+        <form th:object="${entry}" th:action="@{create(returnValue=${returnValue + 1})}" method="post">
+            <div th:replace="~{fragments/form-elements :: input-field(field=title, label='* Titel', required=true, maxLength=50)}"></div>
+            <div th:replace="~{fragments/form-elements :: input-field(field=description, label=Beschreibung, maxLength=100)}"></div>
+            <div th:replace="~{fragments/form-elements :: input-field(field='learner.id', label='Lernende', tag=select, options=${learners}, defaultOption='Lernende zuweisen', optionValue=id, optionText=fullName)}"></div>
+            <div th:replace="~{fragments/form-elements :: input-field(field='client.id', label='Kunde', tag=select, options=${clients}, defaultOption='Kunde zuweisen', optionValue=id, optionText=name)}"></div>
+
+            <div th:object="${checklist}">
+                <div class="mb-3">
+                    <h5>Checkliste</h5>
+                    <div class="mb-3">
+                        <input id="save-template" class="form-check-input" type="checkbox" th:field="*{saveAsTemplate}">
+                        <label class="form-label" th:for="save-template">Als Vorlage speichern</label>
+                        <div style="display:none;">
+                            <label class="form-label" th:for="template-title">* Vorlage Titel</label>
+                            <input id="template-title" class="form-control" th:field="*{templateName}" th:classappend="${#fields.hasErrors('templateName') ? 'input-error' : ''}">
+                            <div th:if="${#fields.hasErrors('templateName')}" class="alert alert-warning py-2 mt-1">
+                                <div th:each="err: ${#fields.errors('templateName')}" th:text="${err}"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3 d-flex">
+                        <select id="templateSelect" class="form-select svelte-r">
+                            <option value="">Vorlage auswählen</option>
+                            <option th:each="template: ${templates}" th:value="${template.id}" th:text="${template.title}"></option>
+                        </select>
+                        <button type="button" class="btn btn-sm btn-outline-success svelte-l" onclick="generate_list()">Generieren</button>
+                    </div>
+                    <div th:replace="~{fragments/checklists :: input-field(${checklist})}"></div>
+                </div>
+            </div>
+
+            <div th:replace="~{fragments/form-elements :: button-submit}"></div>
         </form>
     </div>
-</section>
+</div>
+<th:block layout:fragment="scripts">
+    <script th:src="@{/js/checklist.js}"></script>
+</th:block>
 </body>
+
+<style layout:fragment="styles">
+    #save-template:checked ~ div {
+        display: block !important;
+    }
+</style>
 </html>

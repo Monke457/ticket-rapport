@@ -1,14 +1,57 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml">
-<section th:replace="~{fragments/head :: head(${title})}"></section>
-<section th:replace="~{fragments/header :: header}"></section>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments/layout-elements :: head(${title})}"></head>
+<style layout:fragment="styles"></style>
 <body>
+<!--HEADER-->
+<nav class="navbar navbar-expand-lg border-bottom">
+    <div class="container">
+        <a class="navbar-brand fw-lighter fs-3 py-0" href="/">
+            <svg th:replace="~{fragments/vectors :: logo}"></svg>
+        </a>
+
+        <th:block sec:authorize="isAuthenticated()">
+            <button sec:authorize="isAuthenticated()" class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div sec:authorize="isAuthenticated()" class="collapse navbar-collapse" id="navbarToggler">
+                <!--MENU-->
+                <div class="me-auto mb-2 mb-lg-0">
+                    <ul th:replace="~{fragments/layout-elements :: menu('navbar-nav')}"></ul>
+                </div>
+                <div class="d-flex align-items-center justify-content-between gap-2">
+                    <span class="fw-lighter" th:text="${authUser == null ? '' : authUser.fullName}"></span>
+                    <form class="form" th:action="@{/logout}" method="post">
+                        <button class="btn btn-sm btn-outline-dark">Abmelden</button>
+                    </form>
+                </div>
+            </div>
+        </th:block>
+
+        <th:block sec:authorize="!isAuthenticated()">
+            <a class="btn btn-sm btn-outline-dark" th:href="@{/login}">Anmelden</a>
+        </th:block>
+    </div>
+</nav>
+
+<!--CONTENT-->
 <main class="container">
-    <section layout:fragment="content"></section>
+    <div layout:fragment="content"></div>
 </main>
+
+<!--FOOTER-->
+<footer class="border-top mt-auto">
+    <div class="container py-2 d-flex flex-wrap align-items-center gap-2" style="justify-content:space-between;">
+        <div class="copyright text-muted">&copy; 2024 Kauz Informatik Medien AG</div>
+        <a th:href="@{/}" style="text-decoration:none">
+            <span class="app-title">Ticket Rapport</span>
+        </a>
+        <!--MENU-->
+        <ul th:replace="~{fragments/layout-elements :: menu('nav')}"></ul>
+    </div>
+</footer>
+
+<th:block layout:fragment="scripts"></th:block>
 </body>
-<section th:replace="~{fragments/pagination :: pagination(${controller})}"></section>
-<section th:replace="~{fragments/footer :: footer}"></section>
-<section layout:fragment="styles"></section>
-<section layout:fragment="scripts"></section>
 </html>

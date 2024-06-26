@@ -1,69 +1,106 @@
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml"
-      layout:decorate="~{layout}" th:with="title='Checklist Templates', controller='checklists'">
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{layout(title=Checklistevorlagen)}" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.w3.org/1999/xhtml">
 <body>
-<section layout:fragment="content">
-    <div class="d-flex justify-content-between flex-wrap align-items-start gap-2 mb-2">
-        <h5>Checklist Templates</h5>
-        <a class="btn btn-sm btn-outline-primary" th:href="@{/checklists/items}">Item Templates</a>
+<div layout:fragment="content">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+        <h4>Checklistevorlagen</h4>
+        <a class="btn btn-sm btn-outline-primary" th:href="@{/checklists/items}">Elementvorlagen</a>
     </div>
-    <a class="btn btn-sm btn-outline-success" th:href="@{/checklists/create}">New Checklist Template +</a>
+    <hr class="mt-2 mb-4">
 
-    <form class="row row-cols-lg-auto g-1 align-items-center my-4" th:object="${filter}" th:action="@{/checklists}" method="get">
-        <div th:replace="~{fragments/forms/filter-fields :: filter-fields}"></div>
-        <div class="d-flex ps-0">
-            <input class="form-control input-flush" style="min-width:200px;" th:field="*{search}" placeholder="Search">
-            <button class="btn btn-sm btn-primary button-flush" type="submit">
-                <img th:src="@{/img/search.svg}" style="filter:invert(1)" alt="search.svg" title="Search"/>
+    <a class="btn btn-sm btn-outline-success" th:href="@{/checklists/create}">
+        <svg th:replace="~{fragments/vectors :: plus}"></svg>
+        Hinzufügen
+    </a>
+
+    <form id="filter-form" class="row row-cols-lg-auto g-2 my-3" th:object="${filter}" method="get">
+        <input type="hidden" th:field="*{sort}">
+        <input type="hidden" th:field="*{asc}">
+        <div class="col d-flex">
+            <input class="form-control inline-field svelte-r filter-input" th:field="*{search}" placeholder="Suche...">
+            <button class="btn btn-sm btn-outline-primary svelte-l" type="submit">
+                <svg th:replace="~{fragments/vectors :: search}"></svg>
+            </button>
+        </div>
+        <div class="col d-flex filter-clear">
+            <button type="button" class="btn btn-sm btn-outline-secondary" style="min-width:150px;" onclick="clear_form()">
+                Filter löschen
+                <svg th:replace="~{fragments/vectors :: cross}"></svg>
             </button>
         </div>
     </form>
 
-    <table class="table responsive my-4">
-        <tr>
-            <th th:replace="~{fragments/table-header :: table-header('checklists', 'description', 'Description')}"></th>
-            <th class="w-50">Items</th>
-            <th style="min-width:140px;"></th>
-        </tr>
-        <tr th:each="entry: ${entries}">
-            <td id="description" th:text="${entry.description}"></td>
-            <td>
-                <div class="d-flex justify-content-between gap-3 border rounded p-2"
-                     th:classappend="${entry.items.size == 0 ? 'd-none' : ''}"
-                     style="background:#f5f5f5">
-                    <div>
-                        <li th:if="${entry.items.size > 0}"
-                            th:each="i: ${#numbers.sequence(0, T(java.lang.Math).min(entry.items.size -1, 2))}"
-                            th:text="${entry.items[i].description}">
-                        </li>
-                        <div class="collapse" th:if="${entry.items.size > 3}" th:id="'items-list-' + ${entry.id}">
-                            <li th:each="i: ${#numbers.sequence(3, entry.items.size -1)}" th:text="${entry.items[i].description}"></li>
+    <div class="table-responsive">
+        <table class="table responsive table-hover">
+            <thead>
+            <tr>
+                <th th:replace="~{fragments/table-elements :: sortable-header('/checklists', 'title', 'Titel')}"></th>
+                <th style="min-width:66%">Elementen</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody class="table-group-divider">
+            <tr></tr>
+            <tr th:each="entry: ${entries}">
+                <td class="title wrap-cell" th:text="${entry.title}"></td>
+
+                <td class="text-start bg-light p-0">
+                    <div th:unless="${entry.items.isEmpty()}" class="d-flex justify-content-between gap-3 p-2" th:with="len=${#lists.size(entry.items)}">
+                        <div class="wrap-cell">
+                            <ol class="mb-0">
+                                <li th:each="i: ${#numbers.sequence(0, T(java.lang.Math).min(len-1, 2))}" th:text="${entry.items[i].item.description}"></li>
+                            </ol>
+                            <div th:if="${len > 3}" class="collapse" th:id="${entry.id}">
+                                <ol start="4" class="mb-0">
+                                    <li th:each="i: ${#numbers.sequence(3, len-1)}" th:text="${entry.items[i].item.description}"></li>
+                                </ol>
+                            </div>
                         </div>
+                        <a th:if="${len > 3}" th:href="'#' + ${entry.id}" class="collapse-btn text-decoration-none" data-bs-toggle="collapse" role="button" aria-expanded="false">
+                            <div id="up">
+                                <svg th:replace="~{fragments/vectors :: chevron-up}"></svg>
+                            </div>
+                            <div id="down">
+                                <svg th:replace="~{fragments/vectors :: chevron-down}"></svg>
+                            </div>
+                        </a>
                     </div>
-                    <a th:if="${entry.items.size > 3}" class="collapse-btn text-decoration-none"
-                       data-bs-toggle="collapse" th:href="'#items-list-' + ${entry.id}"
-                       role="button" aria-expanded="false" aria-controls="collapseExample">
-                    </a>
-                </div>
-            </td>
-            <td>
-                <div th:replace="~{fragments/table-buttons :: table-buttons(checklists)}"></div>
-            </td>
-        </tr>
-    </table>
-</section>
+                </td>
+
+                <td>
+                    <div th:replace="~{fragments/table-elements :: links('/checklists', ${entry.id})}"></div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:if="${entries.isEmpty()}" class="alert alert-info">Es wurde keine Checklistevorlagen gefunden</div>
+
+    <div th:replace="~{fragments/content-elements :: pagination('/checklists')}"></div>
+</div>
+<th:block layout:fragment="scripts">
+    <script th:src="@{/js/filter.js}"></script>
+</th:block>
 </body>
 <style layout:fragment="styles">
-    .collapse-btn[aria-expanded="false"]:before {
-        content:"More";
+    #up, #down {
+    display: none;
     }
-    .collapse-btn[aria-expanded="true"]:before {
-        content:"Less";
+    .collapse-btn[aria-expanded="false"] > #down {
+    display: block !important;
     }
-    @media only screen and (max-width: 720px) {
-         #description{
+    .collapse-btn[aria-expanded="true"] > #up {
+    display: block !important;
+    }
+
+    @media only screen and (max-width: 767px) {
+        .title {
             font-weight: bold;
             font-size: large;
             text-align: center;
+            padding-bottom: 5px;
         }
     }
 </style>

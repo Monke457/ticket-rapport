@@ -1,25 +1,110 @@
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml"
-      layout:decorate="~{layout}" th:with="title='Ticket Details'">
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{layout(title='Ticket Details')}" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
 <body>
-<section layout:fragment="content">
-    <div class="form-wrapper">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <span></span>
-            <h5>Ticket Details</h5>
-            <div th:replace="~{fragments/forms/return-form :: return-form}"></div>
+<div layout:fragment="content">
+    <th:block sec:authorize="hasRole('ADMIN')">
+        <th:block th:replace="~{fragments/layout-elements :: heading(title='Ticket Details', backBtn=true, edit=true, editUrl='/tickets/edit(id=${entry.id}, referer=details)')}"></th:block>
+
+        <table class="table table-hover table-bordered table-details table-light" th:object="${entry}">
+            <tr th:replace="~{fragments/table-elements :: details-row('Titel', *{title})}"></tr>
+            <tr th:replace="~{fragments/table-elements :: details-row('Beschreibung', *{description})}"></tr>
+            <tr th:replace="~{fragments/table-elements :: details-row('Protokoll', *{protocol})}"></tr>
+            <tr th:replace="~{fragments/table-elements :: details-row('Lösung', *{solution})}"></tr>
+            <tr th:replace="~{fragments/table-elements :: details-row('Arbeitszeit', *{workTime})}"></tr>
+            <tr th:replace="~{fragments/table-elements :: details-row(header='Lernende', content=*{learner}, url=*{learnerId != null ? '/users/details(id=*{learnerId})' : 'false'})}"></tr>
+            <tr th:replace="~{fragments/table-elements :: details-row(header='Kunde', content=*{client}, url=*{clientId != null ? '/clients/details(id=*{clientId})' : 'false'})}"></tr>
+            <tr th:replace="~{fragments/table-elements :: details-row('Status', *{status})}"></tr>
+        </table>
+
+        <h5>Checkliste</h5>
+        <th:block th:replace="~{fragments/checklists :: display(${entry.checklistItems})}"></th:block>
+
+        <div th:if="${entry.isCompleted()}" class="my-4 text-center">
+            <form th:action="@{/tickets/process(id=${entry.id})}" method="post">
+                <button class="btn btn-success" name="submit" value="close">Genehmigen
+                    <svg th:replace="~{fragments/vectors :: double-check}"></svg>
+                </button>
+                <button class="btn btn-danger" name="submit" value="reopen">Ablehnen
+                    <svg th:replace="~{fragments/vectors :: cross}"></svg>
+                </button>
+            </form>
         </div>
-        <div th:replace="~{fragments/details/ticket-details :: ticket-details('false')}"></div>
-        <form th:if="${authUser.isAdmin && entry.status.description == 'Completed'}"
-              th:action="@{/tickets/status(id=${entry.id})}"  method="post" class="text-end">
-            <input type="hidden" name="referer" th:value="${referer}">
-            <button class="btn btn-success" name="action" value="close">Mark as closed</button>
-            <button class="btn btn-danger" name="action" value="reopen">Reopen</button>
-        </form>
-        <form th:if="${!authUser.isAdmin && entry.status.description == 'Completed'}"
-              th:action="@{/tickets/details/reopen(id=${entry.id})}"  method="post" class="text-end">
-            <button class="btn btn-warning">Reopen</button>
-        </form>
-    </div>
-</section>
+    </th:block>
+
+    <th:block sec:authorize="hasRole('LEARNER')">
+        <th:block th:replace="~{fragments/layout-elements :: heading(title='Ticket Details', backBtn=true)}"></th:block>
+
+        <table class="table table-hover table-bordered table-details table-light">
+            <tr th:replace="~{fragments/table-elements :: details-row('Titel', ${entry.title})}"></tr>
+            <tr th:replace="~{fragments/table-elements :: details-row('Beschreibung', ${entry.description})}"></tr>
+            <th:block th:unless="${entry.isOpen()}">
+                <tr th:replace="~{fragments/table-elements :: details-row('Protokoll', ${entry.protocol})}"></tr>
+                <tr th:replace="~{fragments/table-elements :: details-row('Lösung', ${entry.solution})}"></tr>
+                <tr th:replace="~{fragments/table-elements :: details-row('Arbeitszeit', ${entry.workTime})}"></tr>
+            </th:block>
+            <tr th:replace="~{fragments/table-elements :: details-row('Kunde', ${entry.client})}"></tr>
+            <tr th:replace="~{fragments/table-elements :: details-row('Status', ${entry.status})}"></tr>
+        </table>
+
+        <th:block th:unless="${entry.isOpen()}">
+            <h5>Checkliste</h5>
+            <th:block th:replace="~{fragments/checklists :: display(${entry.checklistItems})}"></th:block>
+        </th:block>
+
+        <th:block th:if="${entry.isOpen()}">
+            <form th:action="@{/tickets/protocol(id=${entry.id})}" th:object="${protocol}" method="post">
+                <div th:replace="~{fragments/form-elements :: input-field(field='protocol', label='Protokoll', tag='textarea', maxLength=2000)}"></div>
+                <div th:replace="~{fragments/form-elements :: input-field(field='solution', label='Lösung', tag='textarea', maxLength=2000)}"></div>
+
+                <div class="mb-3">
+                    <label class="form-label mb-0" th:for="workHours">Arbeitszeit</label>
+                    <div class="d-flex gap-3">
+                        <div th:replace="~{fragments/form-elements :: input-field(field='workHours', label='Stunden', type='number', required=true, min=0, max=99, labelClass='form-label-sm', excludeError=true)}"></div>
+                        <div th:replace="~{fragments/form-elements :: input-field(field='workMinutes', label='Minuten', type='number', required=true, min=0, max=59, labelClass='form-label-sm', excludeError=true)}"></div>
+                    </div>
+                    <div th:if="${#fields.hasErrors('workMinutes')}" class="alert alert-danger my-1 py-2">
+                        <div th:each="err: ${#fields.errors('workMinutes')}" th:text="${err}"></div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <h5>Checkliste</h5>
+                    <div class="list-group">
+                        <label class="d-flex gap-2 px-2 align-items-center list-group-item checklist-item" th:each="item, info: ${protocol.checklistItems}">
+                            <input type="hidden" th:field="*{checklistItems[__${info.index}__].id}">
+                            <input class="form-check-input" type="checkbox" th:field="*{checklistItems[__${info.index}__].completed}"/>
+                            <span th:text="${item.description}"></span>
+                            <input type="hidden" th:field="*{checklistItems[__${info.index}__].description}">
+                        </label>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button class="btn btn-primary" name="submit" value="save">Speichern
+                        <svg th:replace="~{fragments/vectors :: check}"></svg>
+                    </button>
+                    <button class="btn btn-success" name="submit" value="complete">Abgeben
+                        <svg th:replace="~{fragments/vectors :: double-check}"></svg>
+                    </button>
+                </div>
+            </form>
+        </th:block>
+
+        <th:block th:if="${entry.isCompleted()}">
+            <form th:action="@{/tickets/reopen(id=${entry.id})}" method="post" class="my-4">
+                <div class="alert alert-info py-2 d-flex flex-wrap justify-content-center align-items-center gap-3 text-center">
+                    <span>Ein Administrator wird das Ticket überprüfen.</span>
+                    <button class="btn btn-sm btn-warning">Weider öffnen</button>
+                </div>
+            </form>
+        </th:block>
+
+        <div class="text-center mt-1" th:text="${saved} ?: ''"></div>
+    </th:block>
+</div>
+<th:block sec:authorize="hasRole('LEARNER')" layout:fragment="scripts">
+    <script th:src="@{/js/resizer.js}"></script>
+</th:block>
 </body>
 </html>
