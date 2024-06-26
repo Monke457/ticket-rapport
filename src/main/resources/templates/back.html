@@ -1,0 +1,7 @@
+<th:block xmlns:th="http://www.w3.org/1999/xhtml">
+  <script th:src="@{/js/back.js}"></script>
+  <script th:inline="javascript">
+      var ret = "[[${returnValue}]]";
+      redirect(ret);
+  </script>
+</th:block>

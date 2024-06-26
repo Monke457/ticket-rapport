@@ -1,0 +1,37 @@
+<th:block xmlns:th="http://www.w3.org/1999/xhtml">
+    <!--DETAILS TABLE ROW-->
+    <tr th:fragment="details-row(header, content)">
+        <th th:text="${header}"></th>
+        <td th:if="${url ?: false}"><a th:href="@{__${url}__}" th:text="${content}"></a></td>
+        <td th:unless="${url}" class="wrap-cell" th:text="${content}"></td>
+    </tr>
+
+    <!--SORTABLE HEADER-->
+    <th th:fragment="sortable-header(url, sort, text)" th:classappend="${class} ?: ''">
+        <a class="text-decoration-none d-flex" th:href="@{__${url + filter.toQueryString(sort)}__}">
+            <span class="me-1" th:text="${text}"></span>
+            <span th:classappend="${filter.sort == sort} ? '' : 'invisible'">
+                <th:block th:if="${filter.asc}">
+                    <svg th:replace="~{fragments/vectors :: caret-up}"></svg>
+                </th:block>
+                <th:block th:unless="${filter.asc}">
+                    <svg th:replace="~{fragments/vectors :: caret-down}"></svg>
+                </th:block>
+            </span>
+        </a>
+    </th>
+
+    <!--OVERVIEW TABLE LINKS-->
+    <div th:fragment="links(url, id)" class="d-flex justify-content-end table-links">
+        <a class="btn btn-sm btn-outline-primary svelte-r" th:href="@{__${url}__/details(id=${id})}">
+            <svg th:replace="~{fragments/vectors :: eye}"></svg>
+        </a>
+        <a class="btn btn-sm btn-outline-primary svelte-r svelte-l border-start-0"
+           th:href="@{__${url}__/edit(id=${id})}">
+            <svg th:replace="~{fragments/vectors :: edit}"></svg>
+        </a>
+        <a class="btn btn-sm btn-outline-danger svelte-l border-start-0" th:href="@{__${url}__/delete(id=${id})}">
+            <svg th:replace="~{fragments/vectors :: trash}"></svg>
+        </a>
+    </div>
+</th:block>

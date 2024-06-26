@@ -1,0 +1,64 @@
+<th:block xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+    <!--HEAD-->
+    <head th:fragment="head(title)">
+        <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+        <title th:text="'Ticket Rapport | ' + ${title}"></title>
+        <link rel="icon" th:href="@{/img/logo.ico}" sizes="any">
+        <link rel="icon" th:href="@{/img/logo.svg}" type="image/svg+xml"/>
+        <script th:src="@{/js/popper.min.js}"></script>
+        <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+        <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
+        <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
+    </head>
+
+    <!--HEADING-->
+    <th:block th:fragment="heading(title)">
+        <div class="d-flex justify-content-between align-items-center">
+            <h4 th:text="${title}"></h4>
+
+            <div class="d-flex gap-1">
+                <th:block sec:authorize="hasRole('ADMIN')">
+                    <a th:if="${edit} ?: false" th:href="@{__${editUrl}__}" class="btn btn-sm btn-outline-primary">
+                        <img th:replace="~{fragments/vectors :: edit}">
+                    </a>
+                    <a th:if="${del} ?: false" th:href="@{__${delUrl}__}" class="btn btn-sm btn-outline-danger">
+                        <img th:replace="~{fragments/vectors :: trash}">
+                    </a>
+                </th:block>
+                <th:block th:if="${backBtn} ?: false">
+                    <a sec:authorize="hasRole('LEARNER')" class="btn btn-sm btn-outline-secondary" th:href="@{/}">Zurück</a>
+                    <a sec:authorize="hasRole('ADMIN')" class="btn btn-sm btn-outline-secondary" th:with="ret=-1 * ${returnValue ?: 1}" th:onclick="history.go([[${ret}]])">Zurück</a>
+                </th:block>
+            </div>
+        </div>
+        <hr class="mt-2 mb-4">
+    </th:block>
+
+    <!--NAVIGATION MENU-->
+    <ul th:fragment="menu(class)" th:classappend="${class}" sec:authorize="hasRole('ADMIN')">
+        <li class="nav-item">
+            <a class="nav-link text-muted" th:href="@{/}">Home</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-muted" th:href="@{/archive}">Archiv</a>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link text-muted dropdown-toggle" href data-bs-toggle="dropdown"
+               aria-expanded="false">Admin</a>
+            <ul class="dropdown-menu">
+                <li>
+                    <a class="dropdown-item" th:href="@{/tickets}">Tickets</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" th:href="@{/clients}">Kunden</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" th:href="@{/checklists}">Checklisten</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" th:href="@{/users}">Benutzer</a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</th:block>

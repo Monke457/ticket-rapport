@@ -1,0 +1,55 @@
+<th:block xmlns:th="http://www.w3.org/1999/xhtml">
+    <!--READ ONLY DISPLAY-->
+    <th:block th:fragment="display(items)">
+        <div th:unless="${items.isEmpty()}" class="list-group list-group-numbered">
+            <div th:each="item: ${items}" class="d-flex gap-2 px-2 list-group-item list-group-item-action">
+                <div class="d-flex gap-2 w-100 justify-content-between">
+                    <span th:text="${item.description}"></span>
+                    <div th:if="${item.completed}" class="text-success align-self-end">
+                        <svg th:replace="~{fragments/vectors :: check}"/>
+                    </div>
+                    <div th:unless="${item.completed}" class="text-danger align-self-end">
+                        <svg th:replace="~{fragments/vectors :: cross}"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div th:if="${items.isEmpty()}" class="alert alert-warning">Es gibt keine Checklistelementen</div>
+    </th:block>
+
+    <!--EDITABLE CHECKLIST-->
+    <div id="checklist" th:fragment="input-field(checklist)" th:with="withCheckbox = ${withCheckbox} ?: false">
+        <div id="checklist-items" th:object="${checklist}">
+            <th:block th:each="item, info: ${checklist.items}">
+                <div th:replace="~{fragments/checklists :: item-field(${item}, ${info.index})}"></div>
+            </th:block>
+        </div>
+        <div id="checklist-alert" class="alert alert-info py-2 mb-2" style="display:none">Es gibt keine Elemente in dieser Checkliste</div>
+        <input id="checklist-data" type="hidden" name="checklistData">
+        <button type="button" class="btn btn-sm btn-outline-success" th:onclick="add([[${withCheckbox}]])">
+            <svg th:replace="~{fragments/vectors :: plus}"></svg> Hinzufügen
+        </button>
+    </div>
+
+    <!--EDITABLE ITEMS-->
+    <div th:fragment="item-field(item, i)" class="checklist-item d-flex pb-2">
+        <div class="d-flex flex-column justify-content-center pe-2">
+            <a class="list-arrow" onclick="move_up(this.parentElement.parentElement)"><svg th:replace="~{fragments/vectors :: caret-up}"></svg></a>
+            <a class="list-arrow" onclick="move_down(this.parentElement.parentElement)"><svg th:replace="~{fragments/vectors :: caret-down}"></svg></a>
+        </div>
+
+        <input class="form-check-input align-self-center check-lg me-1" type="checkbox" th:value="${item.id}" th:checked="${item.completed}" onchange="update_data()" th:classappend="${withCheckbox} ? '' : 'd-none'">
+        <input class="form-control svelte-r" type="text" th:value="${item.description}" maxLength="100" onkeyup="update_data()" th:classappend="${i != null && #fields.hasErrors('items[__${i}__]') ? 'input-error' : ''}">
+        <input type="hidden" th:value="${item.templateItemId}">
+
+        <button type="button" class="btn btn-sm btn-outline-danger svelte-l" onclick="remove(this)">
+            <svg th:replace="~{fragments/vectors :: cross}"></svg>
+        </button>
+
+        <th:block th:unless="${i == null}">
+            <div th:if="${#fields.hasErrors('items[__${i}__]')}" class="alert alert-danger my-1 py-1">
+                <div th:each="err: ${#fields.errors('items[__${i}__]')}" th:text="${err}"></div>
+            </div>
+        </th:block>
+    </div>
+</th:block>

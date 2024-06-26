@@ -1,0 +1,89 @@
+<th:block xmlns:th="http://www.w3.org/1999/xhtml">
+    <!--BUTTON DELETE-->
+    <div th:fragment="button-delete" class="text-end">
+        <button class="btn btn-sm btn-danger">Löschen</button>
+    </div>
+
+    <!--BUTTON SUBMIT-->
+    <div th:fragment="button-submit" class="text-end">
+        <button type=submit class="btn btn-sm btn-primary">Speichern</button>
+    </div>
+
+    <!--INPUT FIELD-->
+    <div th:fragment="input-field(field, label)" class="mb-3">
+        <label class="form-label" th:classappend="${labelClass}" th:for="${field}" th:text="${label}"></label>
+
+        <input th:if="${tag} == null" th:type="${type} ?: 'text'" class="form-control" th:maxlength="${maxLength}" th:min="${min}" th:max="${max}" th:required="${required} ?: 'false'" th:field="*{__${field}__}"
+               th:classappend="${#fields.hasErrors('__${errorField ?: field}__') ? 'input-error' : ''}">
+
+        <select th:if="${tag} == 'select'" class="form-select" th:required="${required} ?: 'false'" th:field="*{__${field}__}"
+                th:classappend="${#fields.hasErrors('__${errorField ?: field}__') ? 'input-error' : ''}">
+            <option th:if="${defaultOption} != null" value="" th:text="${defaultOption}"></option>
+            <option th:each="option: ${options}" th:value="${option.id}" th:text="${option.__${optionText}__}"></option>
+        </select>
+
+        <textarea th:if="${tag} == 'textarea'" class="form-control" th:maxlength="${maxLength}" th:required="${required} ?: 'false'"
+                  th:classappend="${#fields.hasErrors('__${field}__') ? 'input-error' : ''}" th:field="*{__${field}__}"></textarea>
+
+        <th:block th:unless="${excludeError}">
+            <div th:if="${#fields.hasErrors('__${errorField ?: field}__')}" class="alert alert-danger my-1 py-2">
+                <div th:each="err: ${#fields.errors('__${errorField ?: field}__')}" th:text="${err}"></div>
+            </div>
+        </th:block>
+    </div>
+
+    <!--MULTISELECT-->
+    <th:block th:fragment="multiselect(items, boundItemCount)">
+        <div class="border rounded">
+            <div class="d-flex">
+                <input type="checkbox" class="btn-check" id="selected-only" onchange="filter()">
+                <label class="btn btn-sm btn-outline-primary svelte-r svelte-b" for="selected-only" title="Nur Ausgewählte anzeigen">
+                    <svg th:replace="~{fragments/vectors :: check}"></svg>
+                </label>
+                <input id="search" class="form-control multiselect-input svelte-l svelte-r svelte-b" type="text" placeholder="Suche..." autocomplete="off" maxlength="50" onkeyup="return filter(event.key)"/>
+                <button class="btn btn-sm btn-outline-secondary svelte-l svelte-b" type="button" th:onclick="clear_search()">
+                    <svg th:replace="~{fragments/vectors :: cross}"></svg>
+                </button>
+            </div>
+
+            <div id="multiselect-items" class="overflow-y-scroll">
+                <th:block th:each="item, info: ${items}" th:with="bound=${info.index < boundItemCount}">
+                    <div th:replace="~{fragments/form-elements :: multiselect-option(item=${item}, err=${bound && #fields.hasErrors('items[__${info.index}__]')})}"></div>
+                </th:block>
+            </div>
+
+            <div id="multiselect-alert" class="alert alert-info mb-0 rounded-0" style="display:none;">Keine Elementvorlagen gefunden</div>
+
+            <div class="d-flex">
+                <input id="description-input" class="form-control multiselect-input svelte-r svelte-t" type="text" placeholder="Hinzufügen..." name="addItem" maxlength="100" onkeyup="return event.key == 'Enter' ? add_item() : true;"/>
+                <button class="btn btn-sm btn-outline-success svelte-l svelte-t" type="button" th:onclick="add_item()">
+                    <svg th:replace="~{fragments/vectors :: plus}"></svg>
+                </button>
+            </div>
+            <input id="items-data" type="hidden" th:name="itemsData">
+        </div>
+
+        <div th:if="${#fields.hasErrors('items')}" class="alert alert-danger my-1 py-2">
+            <div th:each="err: ${#fields.errors('items')}" th:text="${err}"></div>
+        </div>
+    </th:block>
+
+    <!--MULTISELECT OPTION-->
+    <div th:fragment="multiselect-option(item)" class="multiselect-option border-bottom" th:with="err=${err ?: false}" th:classappend="${err ? 'multiselect-error' : ''}">
+        <input class="form-check mx-2 multiselect-check" type="checkbox" name="item-option"
+               th:id="${item.id}" th:value="${item.description}" th:checked="${item.selected}" th:onchange="update_data(); filter();" />
+
+        <label class="d-flex w-100 p-2 border-start border-end multiselect-label" th:for="${item.id}">
+            <span class="align-self-center" th:text="${item.description}"></span>
+        </label>
+
+        <div class="flex-column justify-content-around px-2 multiselect-arrows">
+            <a class="list-arrow" th:onclick="move_up(this.parentElement.parentElement)">
+                <svg th:replace="~{fragments/vectors :: chevron-up}"/>
+            </a>
+            <a class="list-arrow" th:onclick="move_down(this.parentElement.parentElement)">
+                <svg th:replace="~{fragments/vectors :: chevron-down}"/>
+            </a>
+        </div>
+    </div>
+</th:block>
